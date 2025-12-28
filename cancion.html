@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Canción</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="track">
+  <header class="topbar">
+    <div class="row">
+      <a class="back" href="javascript:history.back()"><span class="backArrow">‹</span></a>
+      <div class="brand" id="trackHeader">CANCIÓN</div>
+      <div style="width:38px"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="pageTitle" id="trackTitle"></div>
+    <div class="muted small" style="text-align:center;margin-top:-6px" id="trackArtistLine"></div>
+
+    <section class="hero" style="margin-top:14px">
+      <div class="img" id="trackCover" style="height:320px"></div>
+      <div class="meta">
+        <div class="kicker" id="trackAlbum"></div>
+      </div>
+    </section>
+
+    <section class="player">
+      <div class="playerRow">
+        <div id="timeNow">0:00</div>
+        <div id="timeLeft">0:30</div>
+      </div>
+
+      <div class="seek" id="seekBar">
+        <div class="fill" id="seekFill"></div>
+        <div class="dot" id="seekDot"></div>
+      </div>
+
+      <div class="controls">
+        <button class="ctrlBtn" id="btnBack" aria-label="Atrás 10s">⟲</button>
+        <button class="ctrlBtn ctrlMain" id="btnPlay" aria-label="Play/Pause">▶</button>
+        <button class="ctrlBtn" id="btnFwd" aria-label="Adelante 10s">⟳</button>
+      </div>
+
+      
+      <div class="extBtns">
+        <a class="extBtn" id="btnSpotify" target="_blank" rel="noopener">
+          <span class="badge">⦿</span>
+          <span>Escuchar en <span class="brandWord">Spotify</span></span>
+        </a>
+        <a class="extBtn" id="btnYtMusic" target="_blank" rel="noopener">
+          <span class="badge">▶</span>
+          <span>Escuchar en <span class="brandWord">YouTube Music</span></span>
+        </a>
+      </div>
+
+
+      <div class="muted small" id="trackBlurb" style="margin-top:12px;text-align:center"></div>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
