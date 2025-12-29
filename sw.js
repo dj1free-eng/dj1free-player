@@ -1,4 +1,4 @@
-const CACHE_NAME = "dj1free-records-v7"; // cambia el número cuando actualices
+const CACHE_NAME = "dj1free-records-v8"; // sube el número cuando actualices
 const ASSETS = [
   "./",
   "index.html",
@@ -8,16 +8,18 @@ const ASSETS = [
   "cancion.html",
   "css/style.css",
   "js/app.js",
-  "data/catalog.json",
+  "catalog.json",
   "manifest.webmanifest"
 ];
 
-self.addEventListener("install", e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+self.addEventListener("install", (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS))
+  );
 });
 
-self.addEventListener("fetch", e => {
+self.addEventListener("fetch", (e) => {
   e.respondWith(
-    caches.match(e.request).then(hit => hit || fetch(e.request))
+    caches.match(e.request).then((hit) => hit || fetch(e.request))
   );
 });
