@@ -245,3 +245,53 @@ body:has(#playerDock:not([hidden])){
   background-position:center;
   background-size: 12px 12px;
 }
+/* =========================
+   Cards en móvil: que no se recorte el badge / textos
+========================= */
+
+/* En pantallas estrechas: badge abajo, texto con clamp */
+@media (max-width: 420px){
+  .cardInner{
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    row-gap: 8px;
+    align-items: center;
+  }
+
+  .cardCover{
+    grid-row: 1 / span 2;
+    grid-column: 1;
+  }
+
+  /* El bloque de texto ocupa la columna 2 */
+  .cardInner > div{
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0; /* clave para ellipsis */
+  }
+
+  /* El badge baja abajo y ya no invade */
+  .badge{
+    grid-column: 2;
+    grid-row: 2;
+    margin-left: 0;
+    justify-self: start;
+  }
+
+  /* Título en 2 líneas máximo */
+  .cardTitle{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  /* Subtítulo en 1 línea */
+  .cardSub{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
