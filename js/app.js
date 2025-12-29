@@ -87,7 +87,7 @@ function sectionReleases(title, releases){
                 <div class="cardTitle">${escapeHtml(r.title)}</div>
                 <div class="cardSub">${escapeHtml(artistName(r.artistId))} · ${r.year || "—"}</div>
               </div>
-              <div class="badge">Álbum</div>
+<div class="badge">${r.type === "single" ? "Single" : "Álbum"}</div>
             </div>
           </article>
         `).join("")}
@@ -173,7 +173,8 @@ function buildHome(){
   const featured = byId(DATA.tracks, DATA.featured?.trackId) || DATA.tracks[0];
   const rel = featured ? releaseById(featured.releaseId) : null;
   const heroBg = coverForTrack(featured);
-  const newHtml = `
+
+  $("#app").innerHTML = `
     <section class="hero">
       <div class="heroBg" style="background-image:url('${encodeURI(heroBg)}')"></div>
       <div class="heroOverlay"></div>
@@ -183,6 +184,7 @@ function buildHome(){
           <div class="heroKicker">Destacado</div>
           <div class="heroTitle">${escapeHtml(featured?.title || "—")}</div>
           <div class="heroMeta">${escapeHtml(artistName(featured?.artistId))}${rel?.title ? " · " + escapeHtml(rel.title) : ""}</div>
+
           <div class="heroBtns">
             <button class="btn primary" data-action="play" data-track="${featured?.id || ""}">▶ Reproducir 30s</button>
             ${featured?.spotifyUrl ? `<a class="btn" target="_blank" rel="noreferrer noopener" href="${featured.spotifyUrl}">Spotify</a>` : ""}
@@ -192,14 +194,47 @@ function buildHome(){
       </div>
     </section>
 
-    ${sectionReleases("Álbumes", (DATA.releases||[]).filter(r => r.type==="album").sort((a,b)=>(b.year||0)-(a.year||0)).slice(0,6))}
-    ${sectionTracks("Recomendado", DATA.tracks.slice(0,12))}
-    ${sectionArtists("Artistas", DATA.artists)}
+    <section class="section">
+      <div class="sectionHead">
+        <h2 class="h2">Explorar</h2>
+        <div class="small">Elige una sección</div>
+      </div>
+      <div class="grid">
+        <article class="card" onclick="location.hash='#/albums'">
+          <div class="cardInner">
+            <div>
+              <div class="cardTitle">Álbumes</div>
+              <div class="cardSub">Ver todos los álbumes</div>
+            </div>
+            <div class="badge good">Abrir</div>
+          </div>
+        </article>
+
+        <article class="card" onclick="location.hash='#/singles'">
+          <div class="cardInner">
+            <div>
+              <div class="cardTitle">Singles</div>
+              <div class="cardSub">Ver todos los singles</div>
+            </div>
+            <div class="badge good">Abrir</div>
+          </div>
+        </article>
+
+        <article class="card" onclick="location.hash='#/artists'">
+          <div class="cardInner">
+            <div>
+              <div class="cardTitle">Artistas</div>
+              <div class="cardSub">Ir a artistas</div>
+            </div>
+            <div class="badge good">Abrir</div>
+          </div>
+        </article>
+      </div>
+    </section>
   `;
-  $("#app").innerHTML = newHtml;
+
   $("#app").addEventListener("click", onAppClick, { passive:true });
 }
-
 function buildArtists(){
   $("#app").innerHTML = `
     <section class="section">
