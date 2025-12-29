@@ -4,7 +4,7 @@
         {
             "id": "dj1free",
             "name": "dj1fRee",
-"banner": "assets/artists/dj1free.jpg",
+            "banner": "assets/artists/dj1free.jpg",
             "albums": [
                 {
                     "id": "gymwave",
@@ -95,7 +95,7 @@
                         {
                             "id": "santa_01",
                             "title": "Deck the Halls",
-"previewUrl": "assets/previews/dj1free/santa-drops-the-bass/01-deck-the-halls.mp3",
+                            "previewUrl": "assets/previews/dj1free/santa-drops-the-bass/01-deck-the-halls.mp3",
                             "durationSec": 30,
                             "spotifyUrl": "https://open.spotify.com/track/2PyLUtE1tXeaNk8ZLlxAVL",
                             "ytMusicUrl": "https://music.youtube.com/watch?v=W08UR4Sf8eo"
@@ -103,7 +103,7 @@
                         {
                             "id": "santa_02",
                             "title": "We Wish You a Merry Bass",
-                            "previewUrl": "assets/previews/santadrops/02-we-wish-you-a-merry-bass.mp3",
+                            "previewUrl": "assets/previews/dj1free/santa-drops-the-bass/02-we-wish-you-a-merry-bass.mp3",
                             "durationSec": 30,
                             "spotifyUrl": "https://open.spotify.com/track/4faJFaRjQPu1FDSxCdeFBm",
                             "ytMusicUrl": "https://music.youtube.com/watch?v=PUHTHCR86do"
@@ -111,7 +111,7 @@
                         {
                             "id": "santa_03",
                             "title": "Jingle Bells",
-                            "previewUrl": "assets/previews/santadrops/03-jingle-bells.mp3",
+                            "previewUrl": "assets/previews/dj1free/santa-drops-the-bass/03-jingle-bells.mp3",
                             "durationSec": 30,
                             "spotifyUrl": "https://open.spotify.com/track/4q9w5mJEkgsGvrQctRsxVr",
                             "ytMusicUrl": "https://music.youtube.com/watch?v=zUnOB1nZYVE"
@@ -119,7 +119,7 @@
                         {
                             "id": "santa_04",
                             "title": "Carol of the Bass",
-                            "previewUrl": "assets/previews/santadrops/04-carol-of-the-bass.mp3",
+                            "previewUrl": "assets/previews/dj1free/santa-drops-the-bass/04-carol-of-the-bass.mp3",
                             "durationSec": 30,
                             "spotifyUrl": "https://open.spotify.com/track/6NTxrTXWPQ1oaU1ziJF795",
                             "ytMusicUrl": "https://music.youtube.com/watch?v=GooBhUhb_yQ"
@@ -127,7 +127,7 @@
                         {
                             "id": "santa_05",
                             "title": "Joy to the Rave",
-                            "previewUrl": "assets/previews/santadrops/05-joy-to-the-rave.mp3",
+                            "previewUrl": "assets/previews/dj1free/santa-drops-the-bass/05-joy-to-the-rave.mp3",
                             "durationSec": 30,
                             "spotifyUrl": "https://open.spotify.com/track/7MO5uTwgJpIiDDkOnLAtFH",
                             "ytMusicUrl": "https://music.youtube.com/watch?v=kTt0XexmdxU"
@@ -135,7 +135,7 @@
                         {
                             "id": "santa_06",
                             "title": "O Christmas Tree",
-                            "previewUrl": "assets/previews/santadrops/06-o-christmas-tree.mp3",
+                            "previewUrl": "assets/previews/dj1free/santa-drops-the-bass/06-o-christmas-tree.mp3",
                             "durationSec": 30,
                             "spotifyUrl": "https://open.spotify.com/track/1TqDA4yQ373zVWAFEeRXs5",
                             "ytMusicUrl": "https://music.youtube.com/watch?v=gddG15eaSy8"
