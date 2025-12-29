@@ -57,7 +57,7 @@ body{
   margin:0 auto;
 
   /* Hueco real para que el final del scroll quede por encima del reproductor */
-  padding-bottom: calc(30px + 140px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(30px + 148px + env(safe-area-inset-bottom, 0px));
 }
 
 .hero{
