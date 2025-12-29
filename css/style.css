@@ -181,3 +181,7 @@ body{
 @media (min-width: 980px){
   .card{ grid-column: span 3; }
 }
+/* Reservar hueco inferior solo cuando el dock está visible */
+body:has(#playerDock:not([hidden])){
+  padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+}
