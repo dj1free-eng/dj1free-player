@@ -76,6 +76,45 @@ function openAppOrWeb(appUrl, webUrl){
     window.location.href = web;
   }, 900);
 }
+function guessMimeFromUrl(url){
+  const u = safeUrl(url).toLowerCase();
+  if(u.endsWith(".png")) return "image/png";
+  if(u.endsWith(".webp")) return "image/webp";
+  return "image/jpeg";
+}
+
+/**
+ * iOS usa esta metadata para mostrar carátula y texto en Dynamic Island/Lockscreen.
+ */
+function setMediaSession(track){
+  if(!track || !("mediaSession" in navigator)) return;
+
+  const rel = releaseById(track.releaseId);
+  const cover = safeUrl(coverForTrack(track));
+  const mime = guessMimeFromUrl(cover);
+
+  try{
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: track.title || "—",
+      artist: artistName(track.artistId) || "—",
+      album: rel?.title || "",
+      artwork: cover ? [
+        { src: cover, sizes: "96x96", type: mime },
+        { src: cover, sizes: "192x192", type: mime },
+        { src: cover, sizes: "512x512", type: mime }
+      ] : []
+    });
+
+    // Controles estándar (por si iOS/lockscreen los muestra)
+    navigator.mediaSession.setActionHandler?.("play", async ()=>{ try{ await audio.play(); btnPlay.textContent="Pausa"; }catch(_){} });
+    navigator.mediaSession.setActionHandler?.("pause", ()=>{ audio.pause(); btnPlay.textContent="Play"; });
+    navigator.mediaSession.setActionHandler?.("seekto", (details)=>{
+      if(typeof details.seekTime === "number"){
+        audio.currentTime = details.seekTime;
+      }
+    });
+  }catch(_){}
+}
 async function loadCatalog(){
   const res = await fetch(CATALOG_URL + "?v=" + Date.now(), { cache:"no-store" });
   if(!res.ok) throw new Error(`No se pudo cargar ${CATALOG_URL} (HTTP ${res.status})`);
@@ -456,6 +495,7 @@ async function playTrackById(trackId){
   setQueueFromTrack(trackId);
   openDock();
   updateDockUI(track);
+  setMediaSession(track);
 
   const url = safeUrl(track.previewUrl);
   if(!url){
@@ -539,11 +579,22 @@ btnYTM.addEventListener("click", (e)=>{
     tCur.textContent = fmtTime(Number(seek.value));
   });
 
-  audio.addEventListener("timeupdate", ()=>{
+    audio.addEventListener("timeupdate", ()=>{
     const limit = Number(seek.max || PREVIEW_FALLBACK_SEC);
     const t = Math.min(audio.currentTime || 0, limit);
     seek.value = String(t);
     tCur.textContent = fmtTime(t);
+
+    // Progreso en lockscreen/Dynamic Island
+    if("mediaSession" in navigator && typeof navigator.mediaSession.setPositionState === "function"){
+      try{
+        navigator.mediaSession.setPositionState({
+          duration: limit,
+          playbackRate: audio.playbackRate || 1,
+          position: t
+        });
+      }catch(_){}
+    }
   });
 
   audio.addEventListener("ended", ()=>{ btnPlay.textContent = "Play"; });
