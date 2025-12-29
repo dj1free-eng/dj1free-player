@@ -192,3 +192,56 @@ body{
 body:has(#playerDock:not([hidden])){
   padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
 }
+/* =========================
+   Brand buttons: Spotify / YTM
+   (sin cambiar tamaño del dock)
+========================= */
+
+#btnSpotify, #btnYTM{
+  /* mantiene el mismo tamaño visual del resto */
+  font-weight: 800;
+  letter-spacing: .2px;
+  border-color: rgba(255,255,255,.12);
+}
+
+/* --- Spotify (solo icono) --- */
+#btnSpotify{
+  background: rgba(29,185,84,.18);
+  border-color: rgba(29,185,84,.35);
+}
+#btnSpotify:hover{
+  background: rgba(29,185,84,.26);
+}
+#btnSpotify::before{
+  content:"";
+  width: 22px;
+  height: 22px;
+  display:block;
+  border-radius: 50%;
+  background-color:#1DB954;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%23000000' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M6.5 10.3c3.8-1.2 7.9-.9 11.3 1.1'/%3E%3Cpath d='M7.2 14c3.1-1 6.5-.7 9.3.9'/%3E%3Cpath d='M7.9 17.4c2.4-.7 5.1-.5 7.2.7'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size: 16px 16px;
+}
+
+/* --- YouTube Music (solo icono) --- */
+#btnYTM{
+  background: rgba(255,0,0,.14);
+  border-color: rgba(255,0,0,.28);
+}
+#btnYTM:hover{
+  background: rgba(255,0,0,.22);
+}
+#btnYTM::before{
+  content:"";
+  width: 22px;
+  height: 22px;
+  display:block;
+  border-radius: 50%;
+  background-color:#FF0000;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M10 8.7v6.6c0 .6.6.9 1.1.6l6-3.3c.6-.3.6-1.1 0-1.4l-6-3.3c-.5-.3-1.1 0-1.1.6z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size: 12px 12px;
+}
