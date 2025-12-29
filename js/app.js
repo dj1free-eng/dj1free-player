@@ -291,7 +291,9 @@ function renderArtist(data){
   const a = byId(data.artists, id);
   if(!a) return;
 
-  $("#artistTitle").textContent = a.name;
+// Guard: algunos HTML no incluyen este ID
+const artistTitleEl = $("#artistTitle");
+if(artistTitleEl) artistTitleEl.textContent = a.name;
   $("#artistName").textContent = a.name;
   $("#artistBio").textContent = a.bio || "";
   setBg($("#artistHeroImg"), a.heroImage);
@@ -327,12 +329,16 @@ function renderAlbum(data){
   const release = artist?.releases?.find(r => r.id === albumId);
 
   if(!artist || !release){
-    $("#albumHeader").textContent = "ÁLBUM";
+// Guard: algunos HTML no incluyen este ID
+const albumHeaderElNF = $("#albumHeader");
+if(albumHeaderElNF) albumHeaderElNF.textContent = "ÁLBUM";
     $("#albumTitle").textContent = "No encontrado";
     return;
   }
 
-  $("#albumHeader").textContent = "ÁLBUM";
+  // Guard: algunos HTML no incluyen este ID
+const albumHeaderEl = $("#albumHeader");
+if(albumHeaderEl) albumHeaderEl.textContent = "ÁLBUM";
   $("#albumTitle").textContent = release.title;
   $("#albumArtist").textContent = artist.name;
   setBg($("#albumCover"), release.cover);
@@ -367,7 +373,9 @@ function renderTrack(data){
   const a = byId(data.artists, t.artistId);
 
   $("#trackTitle").textContent = t.title;
-  $("#trackHeader").textContent = "CANCIÓN";
+// Guard: algunos HTML no incluyen este ID
+const trackHeaderEl = $("#trackHeader");
+if(trackHeaderEl) trackHeaderEl.textContent = "CANCIÓN";
   $("#trackAlbum").textContent = t.album || "";
   $("#trackArtistLine").textContent = a?.name || "";
   $("#trackBlurb").textContent = t.blurb || "";
@@ -388,7 +396,20 @@ function renderTrack(data){
 
   const audio = new Audio(t.previewUrl);
   audio.preload = "metadata";
-
+// Si el audio no existe (404) o el navegador no puede cargarlo,
+// evitamos que la página quede “muerta” y deshabilitamos Play.
+const btnPlay = $("#btnPlay");
+audio.addEventListener("error", () => {
+  if(btnPlay){
+    btnPlay.disabled = true;
+    btnPlay.textContent = "✖";
+    btnPlay.title = "Preview no disponible";
+  }
+  const blurbEl = $("#trackBlurb");
+  if(blurbEl && !blurbEl.textContent){
+    blurbEl.textContent = "Preview no disponible.";
+  }
+}, { once:true });
   let playing = false;
 
   const fill = $("#seekFill");
