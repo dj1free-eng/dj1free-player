@@ -260,12 +260,24 @@ function buildArtists(){
   `;
   $("#app").addEventListener("click", onAppClick, { passive:true });
 }
+function buildAlbums(){
+  const albums = (DATA.releases||[]).filter(r => r.type === "album").sort((a,b)=>(b.year||0)-(a.year||0));
+  $("#app").innerHTML = sectionReleases("Álbumes", albums);
+  $("#app").addEventListener("click", onAppClick, { passive:true });
+}
 
+function buildSingles(){
+  const singles = (DATA.releases||[]).filter(r => r.type === "single").sort((a,b)=> (b.year||0)-(a.year||0));
+  $("#app").innerHTML = sectionReleases("Singles", singles);
+  $("#app").addEventListener("click", onAppClick, { passive:true });
+}
 function buildArtist(id){
   const a = byId(DATA.artists, id);
   if(!a) return notFound("Artista no encontrado");
+
   const rels = (DATA.releases||[]).filter(r => r.artistId === id);
-  const tracks = DATA.tracks.filter(t => t.artistId === id);
+  const albums = rels.filter(r => r.type === "album").sort((x,y)=>(y.year||0)-(x.year||0));
+  const singles = rels.filter(r => r.type === "single").sort((x,y)=>(y.year||0)-(x.year||0));
 
   $("#app").innerHTML = `
     <section class="hero">
@@ -276,16 +288,19 @@ function buildArtist(id){
         <div class="heroText">
           <div class="heroKicker">Artista</div>
           <div class="heroTitle">${escapeHtml(a.name)}</div>
-          <div class="heroMeta">${rels.length} releases · ${tracks.length} temas</div>
+          <div class="heroMeta">${albums.length} álbumes · ${singles.length} singles</div>
           <div class="heroBtns">
-            <a class="btn" href="#/">← Home</a>
+            <a class="btn" href="#/artists">← Artistas</a>
+            <a class="btn" href="#/">Home</a>
           </div>
         </div>
       </div>
     </section>
-    ${sectionReleases("Releases", rels.sort((x,y)=>(y.year||0)-(x.year||0)).slice(0,50))}
-    ${sectionTracks("Temas", tracks.slice(0,200))}
+
+    ${sectionReleases("Álbumes", albums)}
+    ${sectionReleases("Singles", singles)}
   `;
+
   $("#app").addEventListener("click", onAppClick, { passive:true });
 }
 
@@ -340,6 +355,16 @@ function route(){
   if(parts[0] === "artists"){
     setNavActive("/artists");
     buildArtists();
+    return;
+  }
+    if(parts[0] === "albums"){
+    setNavActive("/albums");
+    buildAlbums();
+    return;
+  }
+  if(parts[0] === "singles"){
+    setNavActive("/singles");
+    buildSingles();
     return;
   }
   if(parts[0] === "artist" && parts[1]){
