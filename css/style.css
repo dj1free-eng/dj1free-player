@@ -21,7 +21,7 @@ body{
     radial-gradient(900px 600px at 85% 0%, rgba(182,140,255,.18), transparent 55%),
     radial-gradient(900px 700px at 50% 120%, rgba(71,255,184,.10), transparent 60%),
     var(--bg);
-  padding-bottom: 96px;
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
 }
 .topbar{
   position:sticky; top:0; z-index:10;
