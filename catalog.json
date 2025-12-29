@@ -239,7 +239,8 @@
           "previewUrl": "",
           "durationSec": 30,
           "spotifyUrl": "",
-          "ytMusicUrl": "https://music.youtube.com/watch?v=1S3CX79cedI"
+          "ytMusicUrl": "https://music.youtube.com/watch?v=1S3CX79cedI",
+          "cover": "assets/covers/silice/silicio-y-verso.jpg"
         }
       ]
     },
@@ -254,7 +255,8 @@
           "previewUrl": "",
           "durationSec": 30,
           "spotifyUrl": "https://open.spotify.com/track/5mY6NRFSdNfHIVbAPS4Rlk",
-          "ytMusicUrl": "https://music.youtube.com/watch?v=ktN_KRM0KmU"
+          "ytMusicUrl": "https://music.youtube.com/watch?v=ktN_KRM0KmU",
+          "cover": "assets/covers/juan-del-muelle/hoy-me-pesa-el-silencio.jpg"
         },
         {
           "id": "jdm_02",
@@ -262,7 +264,8 @@
           "previewUrl": "",
           "durationSec": 30,
           "spotifyUrl": "https://open.spotify.com/track/3YoTiHjbYzcR1nDWxjKADb",
-          "ytMusicUrl": "https://music.youtube.com/watch?v=G-r8m0Vw1Uo"
+          "ytMusicUrl": "https://music.youtube.com/watch?v=G-r8m0Vw1Uo",
+          "cover": "assets/covers/juan-del-muelle/entre-tus-pasos.jpg"
         },
         {
           "id": "jdm_03",
@@ -270,7 +273,8 @@
           "previewUrl": "",
           "durationSec": 30,
           "spotifyUrl": "https://open.spotify.com/track/0dvSaxYUZWJbWA1N7FRbWb",
-          "ytMusicUrl": "https://music.youtube.com/watch?v=ugRznVWqvtw"
+          "ytMusicUrl": "https://music.youtube.com/watch?v=ugRznVWqvtw",
+          "cover": "assets/covers/juan-del-muelle/mientras-bailas-con-el.jpg"
         },
         {
           "id": "jdm_04",
@@ -278,7 +282,8 @@
           "previewUrl": "",
           "durationSec": 30,
           "spotifyUrl": "https://open.spotify.com/track/5hKY9ZdNNCVXaWvUPwE1Ih",
-          "ytMusicUrl": "https://music.youtube.com/watch?v=VZoTZ83Z_YQ"
+          "ytMusicUrl": "https://music.youtube.com/watch?v=VZoTZ83Z_YQ",
+          "cover": "assets/covers/juan-del-muelle/baila-conmigo.jpg"
         },
         {
           "id": "jdm_05",
@@ -286,7 +291,8 @@
           "previewUrl": "",
           "durationSec": 30,
           "spotifyUrl": "https://open.spotify.com/track/2vKZmkwZfTzjBAiDBf7cJv",
-          "ytMusicUrl": "https://music.youtube.com/watch?v=fZlZ6RFSRSQ"
+          "ytMusicUrl": "https://music.youtube.com/watch?v=fZlZ6RFSRSQ",
+          "cover": "assets/covers/juan-del-muelle/baila-con-amor-la-bachata.jpg"
         }
       ]
     }
