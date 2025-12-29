@@ -311,3 +311,23 @@ body:has(#playerDock:not([hidden])){
     opacity: .92;
   }
 }
+/* 📱 iPhone en vertical: tarjetas a ancho completo */
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    width: 100%;
+  }
+
+  .cardInner {
+    padding: 14px 16px;
+  }
+
+  .cardCover {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+  }
+}
