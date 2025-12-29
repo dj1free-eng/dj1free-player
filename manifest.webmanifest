@@ -1,12 +1,9 @@
 {
-  "name": "dJ1fRee Records",
+  "name": "dJ1fRee Player",
   "short_name": "dJ1fRee",
-  "start_url": "index.html",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#0b0c0f",
-  "theme_color": "#0b0c0f",
-  "icons": [
-    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ]
+  "background_color": "#0b0d14",
+  "theme_color": "#0b0d14",
+  "icons": []
 }

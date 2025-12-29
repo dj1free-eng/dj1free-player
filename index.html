@@ -1,56 +1,53 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>dJ1fRee Records</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="theme-color" content="#0b0d14"/>
+  <title>dJ1fRee Player</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css?v=1">
 </head>
-<body data-page="home">
+<body>
   <header class="topbar">
-    <div class="row">
-      <div class="brand" data-label-name>dJ1fRee Records</div>
-      <div class="topActions">
-        <button class="iconbtn" id="goArtists" title="Artistas">☰</button>
-        <button class="iconbtn" id="goFav" title="Favoritos">♥</button>
-      </div>
-    </div>
+    <a class="brand" href="#/">
+      <span class="brandMark"></span>
+      <span class="brandText">dJ1fRee Records</span>
+    </a>
+    <nav class="topnav">
+      <a href="#/" class="navlink" data-route="/">Home</a>
+      <a href="#/artists" class="navlink" data-route="/artists">Artistas</a>
+      <button id="btnNow" class="btn ghost" type="button" aria-label="Abrir reproductor">▶</button>
+    </nav>
   </header>
 
-  <main class="container">
-    <section class="hero">
-      <div class="img" id="heroImg"></div>
-      <div class="meta">
-        <div class="kicker" id="heroKicker">Nuevo lanzamiento</div>
-        <div class="title" id="heroTitle"></div>
+  <main id="app" class="app"></main>
+
+  <div id="playerDock" class="dock" hidden>
+    <div class="dockCover" id="dockCover" role="img" aria-label="Portada"></div>
+    <div class="dockMeta">
+      <div class="dockTitle" id="dockTitle">—</div>
+      <div class="dockSub" id="dockSub">—</div>
+      <div class="dockControls">
+        <button id="btnPrev" class="btn icon" type="button" aria-label="Anterior">⟨⟨</button>
+        <button id="btnPlay" class="btn primary" type="button" aria-label="Play/Pause">Play</button>
+        <button id="btnNext" class="btn icon" type="button" aria-label="Siguiente">⟩⟩</button>
+        <a id="btnSpotify" class="btn icon" target="_blank" rel="noreferrer noopener" aria-label="Abrir en Spotify">Spotify</a>
+        <a id="btnYTM" class="btn icon" target="_blank" rel="noreferrer noopener" aria-label="Abrir en YouTube Music">YTM</a>
       </div>
-    </section>
-
-    <button class="cta" id="ctaPlay">Escuchar ahora</button>
-
-    <section class="section">
-      <div class="sectionHeader">
-        <h3>Novedades</h3><div class="chev">›</div>
+      <div class="dockBar">
+        <input id="seek" type="range" min="0" max="30" value="0" step="0.25" aria-label="Posición"/>
+        <div class="dockTime">
+          <span id="tCur">0:00</span>
+          <span id="tMax">0:30</span>
+        </div>
       </div>
-      <div class="hscroll" id="rowNovedades"></div>
-    </section>
+    </div>
+    <button id="btnCloseDock" class="btn ghost" type="button" aria-label="Cerrar">✕</button>
+  </div>
 
-    <section class="section">
-      <div class="sectionHeader">
-        <h3>Recomendado</h3><div class="chev">›</div>
-      </div>
-      <div class="hscroll" id="rowRecomendado"></div>
-    </section>
+  <audio id="audio" preload="none" playsinline></audio>
 
-    <section class="section">
-      <div class="sectionHeader">
-        <h3>Artistas</h3><div class="chev">›</div>
-      </div>
-      <div class="hscroll" id="rowArtists"></div>
-    </section>
-  </main>
-
-  <script src="js/app.js"></script>
+  <script src="js/app.js?v=1" defer></script>
 </body>
 </html>
