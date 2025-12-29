@@ -233,7 +233,6 @@ function buildHome(){
     </section>
   `;
 
-  $("#app").addEventListener("click", onAppClick, { passive:true });
 }
 function buildArtists(){
   $("#app").innerHTML = `
@@ -258,18 +257,15 @@ function buildArtists(){
       </div>
     </section>
   `;
-  $("#app").addEventListener("click", onAppClick, { passive:true });
 }
 function buildAlbums(){
   const albums = (DATA.releases||[]).filter(r => r.type === "album").sort((a,b)=>(b.year||0)-(a.year||0));
   $("#app").innerHTML = sectionReleases("Álbumes", albums);
-  $("#app").addEventListener("click", onAppClick, { passive:true });
 }
 
 function buildSingles(){
   const singles = (DATA.releases||[]).filter(r => r.type === "single").sort((a,b)=> (b.year||0)-(a.year||0));
   $("#app").innerHTML = sectionReleases("Singles", singles);
-  $("#app").addEventListener("click", onAppClick, { passive:true });
 }
 function buildArtist(id){
   const a = byId(DATA.artists, id);
@@ -301,7 +297,6 @@ function buildArtist(id){
     ${sectionReleases("Singles", singles)}
   `;
 
-  $("#app").addEventListener("click", onAppClick, { passive:true });
 }
 
 function buildRelease(id){
@@ -328,7 +323,6 @@ function buildRelease(id){
     </section>
     ${sectionTracks("Tracks", tracks)}
   `;
-  $("#app").addEventListener("click", onAppClick, { passive:true });
 }
 
 function notFound(msg){
@@ -509,6 +503,10 @@ function wireDock(){
 async function init(){
   DATA = await loadCatalog();
   wireDock();
+
+  // Un solo listener global (evita duplicados al navegar)
+  $("#app").addEventListener("click", onAppClick, { passive:true });
+
   window.addEventListener("hashchange", route);
   route();
 }
