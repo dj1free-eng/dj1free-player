@@ -51,7 +51,14 @@ body{
   border-color: var(--line);
   background: rgba(255,255,255,.05);
 }
-.app{ padding: 18px 16px 30px; max-width: 1100px; margin:0 auto; }
+.app{
+  padding: 18px 16px 30px;
+  max-width: 1100px;
+  margin:0 auto;
+
+  /* Hueco real para que el final del scroll quede por encima del reproductor */
+  padding-bottom: calc(30px + 140px + env(safe-area-inset-bottom, 0px));
+}
 
 .hero{
   border-radius: calc(var(--r) + 8px);
