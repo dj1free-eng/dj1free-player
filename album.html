@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Álbum</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="album">
+  <header class="topbar">
+    <div class="row">
+      <a class="back" href="javascript:history.back()"><span class="backArrow">‹</span></a>
+      <div class="brand" id="albumHeader">ÁLBUM</div>
+      <div style="width:38px"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" style="margin-top:8px">
+      <div class="img" id="albumCover" style="height:320px"></div>
+      <div class="meta">
+        <div class="kicker" id="albumArtist"></div>
+        <div class="title" id="albumTitle"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sectionHeader">
+        <h3>Tracklist</h3><div class="chev">›</div>
+      </div>
+      <div class="trackList" id="albumTrackList"></div>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

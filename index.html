@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>dJ1fRee Records</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-page="home">
+  <header class="topbar">
+    <div class="row">
+      <div class="brand" data-label-name>dJ1fRee Records</div>
+      <div class="topActions">
+        <button class="iconbtn" id="goArtists" title="Artistas">☰</button>
+        <button class="iconbtn" id="goFav" title="Favoritos">♥</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="img" id="heroImg"></div>
+      <div class="meta">
+        <div class="kicker" id="heroKicker">Nuevo lanzamiento</div>
+        <div class="title" id="heroTitle"></div>
+      </div>
+    </section>
+
+    <button class="cta" id="ctaPlay">Escuchar ahora</button>
+
+    <section class="section">
+      <div class="sectionHeader">
+        <h3>Novedades</h3><div class="chev">›</div>
+      </div>
+      <div class="hscroll" id="rowNovedades"></div>
+    </section>
+
+    <section class="section">
+      <div class="sectionHeader">
+        <h3>Recomendado</h3><div class="chev">›</div>
+      </div>
+      <div class="hscroll" id="rowRecomendado"></div>
+    </section>
+
+    <section class="section">
+      <div class="sectionHeader">
+        <h3>Artistas</h3><div class="chev">›</div>
+      </div>
+      <div class="hscroll" id="rowArtists"></div>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
