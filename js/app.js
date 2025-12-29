@@ -473,5 +473,11 @@ audio.addEventListener("error", () => {
 
 init().catch(err => {
   console.error(err);
-  alert("Error cargando la app. Revisa data/catalog.json y rutas de archivos.");
+
+  // Mostrar el error en pantalla (iOS-friendly)
+  const msg = (err && err.message) ? err.message : String(err);
+  const heroTitle = document.querySelector("#heroTitle");
+  if(heroTitle) heroTitle.textContent = "ERROR: " + msg;
+
+  alert("Error cargando la app: " + msg);
 });
