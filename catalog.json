@@ -4,7 +4,7 @@
         {
             "id": "dj1free",
             "name": "dj1fRee",
-            "banner": "assets/artists/dj1free/banner.jpg",
+"banner": "assets/artists/dj1free.jpg",
             "albums": [
                 {
                     "id": "gymwave",
@@ -95,7 +95,7 @@
                         {
                             "id": "santa_01",
                             "title": "Deck the Halls",
-                            "previewUrl": "assets/previews/santadrops/01-deck-the-halls.mp3",
+"previewUrl": "assets/previews/dj1free/santa-drops-the-bass/01-deck-the-halls.mp3",
                             "durationSec": 30,
                             "spotifyUrl": "https://open.spotify.com/track/2PyLUtE1tXeaNk8ZLlxAVL",
                             "ytMusicUrl": "https://music.youtube.com/watch?v=W08UR4Sf8eo"
@@ -219,7 +219,7 @@
         {
             "id": "silice",
             "name": "SiLiCe",
-            "banner": "assets/artists/silice/banner.jpg",
+"banner": "assets/artists/silice.jpg",
             "singles": [
                 {
                     "id": "silice_01",
@@ -234,7 +234,7 @@
         {
             "id": "juandelmuelle",
             "name": "Juan del Muelle",
-            "banner": "assets/artists/juandelmuelle/banner.jpg",
+"banner": "assets/artists/juan-del-muelle.jpg",
             "singles": [
                 {
                     "id": "jdm_01",
