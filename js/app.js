@@ -37,7 +37,45 @@ function safeUrl(u){
   if(!u || typeof u !== "string") return "";
   return u.trim();
 }
+function toSpotifyAppUrl(url){
+  const u = safeUrl(url);
+  const m = u.match(/open\.spotify\.com\/(track|album|artist|playlist)\/([A-Za-z0-9]+)/);
+  if(!m) return "";
+  return `spotify:${m[1]}:${m[2]}`;
+}
 
+function toYouTubeMusicAppUrl(url){
+  const u = safeUrl(url);
+  // YouTube Music suele aceptar ytmusic:// con watch?v=...
+  // Si no podemos extraer el id, devolvemos vacío y usaremos web.
+  const m = u.match(/[?&]v=([^&]+)/);
+  if(!m) return "";
+  return `ytmusic://music.youtube.com/watch?v=${encodeURIComponent(m[1])}`;
+}
+
+/**
+ * Intenta abrir app vía esquema. Si falla (no instalada), vuelve al web.
+ * En iOS: usamos navegación directa (no window.open) para maximizar compatibilidad.
+ */
+function openAppOrWeb(appUrl, webUrl){
+  const app = safeUrl(appUrl);
+  const web = safeUrl(webUrl);
+  if(!web) return;
+
+  if(!app){
+    window.location.href = web;
+    return;
+  }
+
+  // Intento abrir app
+  window.location.href = app;
+
+  // Fallback a web si la app no responde
+  setTimeout(() => {
+    // Si el usuario ya salió a la app, esta línea no se ejecuta en la práctica.
+    window.location.href = web;
+  }, 900);
+}
 async function loadCatalog(){
   const res = await fetch(CATALOG_URL + "?v=" + Date.now(), { cache:"no-store" });
   if(!res.ok) throw new Error(`No se pudo cargar ${CATALOG_URL} (HTTP ${res.status})`);
@@ -394,13 +432,16 @@ function updateDockUI(track){
 
   const sp = safeUrl(track.spotifyUrl);
   const yt = safeUrl(track.ytMusicUrl);
-  btnSpotify.href = sp || "#";
-  btnSpotify.style.opacity = sp ? "1" : ".4";
-  btnSpotify.style.pointerEvents = sp ? "auto" : "none";
+  // Quitamos href directo: lo manejamos con click para intentar abrir app
+btnSpotify.dataset.web = sp;
+btnSpotify.dataset.app = toSpotifyAppUrl(sp);
+btnSpotify.style.opacity = sp ? "1" : ".4";
+btnSpotify.style.pointerEvents = sp ? "auto" : "none";
 
-  btnYTM.href = yt || "#";
-  btnYTM.style.opacity = yt ? "1" : ".4";
-  btnYTM.style.pointerEvents = yt ? "auto" : "none";
+btnYTM.dataset.web = yt;
+btnYTM.dataset.app = toYouTubeMusicAppUrl(yt);
+btnYTM.style.opacity = yt ? "1" : ".4";
+btnYTM.style.pointerEvents = yt ? "auto" : "none";
 }
 
 function setQueueFromTrack(trackId){
@@ -462,7 +503,15 @@ function wireDock(){
     dock.hidden = true;
     stopPlayback();
   });
+btnSpotify.addEventListener("click", (e)=>{
+  e.preventDefault();
+  openAppOrWeb(btnSpotify.dataset.app, btnSpotify.dataset.web);
+});
 
+btnYTM.addEventListener("click", (e)=>{
+  e.preventDefault();
+  openAppOrWeb(btnYTM.dataset.app, btnYTM.dataset.web);
+});
   btnPlay.addEventListener("click", async ()=>{
     if(btnPlay.disabled) return;
     if(audio.paused){
