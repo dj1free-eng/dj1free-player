@@ -416,7 +416,7 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
 /* Botones SKIP 10s: se colocan sobre los dos círculos pequeños */
 .ps-skipback,
 .ps-skipfwd{
-  top: 42%;
+  top: 50%;
   width: 7.2%;
   height: 16%;
   border-radius: 999px;
