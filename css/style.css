@@ -311,23 +311,51 @@ body:has(#playerDock:not([hidden])){
     opacity: .92;
   }
 }
-/* 📱 iPhone en vertical: tarjetas a ancho completo */
+/* 📱 iPhone en vertical: 1 columna + tarjetas estilo horizontal (cover grande + texto al lado) */
 @media (max-width: 600px) {
-  .grid {
+  .grid{
     grid-template-columns: 1fr;
   }
 
-  .card {
+  .card{
     width: 100%;
   }
 
-  .cardInner {
-    padding: 14px 16px;
+  /* fuerza composición horizontal dentro de cada tarjeta */
+  .cardInner{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
   }
 
-  .cardCover {
-    width: 64px;
-    height: 64px;
-    border-radius: 12px;
+  /* carátula más protagonista */
+  .cardCover{
+    width: 88px;
+    height: 88px;
+    flex: 0 0 88px;
+    border-radius: 16px;
+  }
+
+  /* el bloque de texto ocupa el centro y permite ellipsis */
+  .cardInner > div{
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  /* badge siempre al final */
+  .badge{
+    margin-left: auto;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  /* evita saltos feos en móvil */
+  .cardTitle,
+  .cardSub{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
