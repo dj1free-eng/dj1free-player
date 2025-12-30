@@ -256,7 +256,7 @@ body{
   position: fixed;
   left: 10px;
   right: 10px;
-  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   margin: 0 auto;
 
   width: min(1100px, calc(100vw - 20px));
@@ -452,12 +452,18 @@ body{
   height: 26%;
   border-radius: 999px;
 
-  /* Texto “Play/Pausa” legible y centrado */
-  color: rgba(230,240,255,.70);
-  font-size: clamp(12px, 1.4vw, 16px);
-  text-shadow: 0 1px 10px rgba(0,0,0,.55);
+  color: transparent;          /* mata el texto */
+  text-shadow: none;
 }
-
+.ps-play::before{
+  content: "▶";
+  font-size: clamp(34px, 4.8vw, 56px);
+  color: rgba(242,245,255,.85);
+  text-shadow:
+    0 2px 12px rgba(0,0,0,.6),
+    0 0 18px rgba(138,230,255,.25);
+  line-height: 1;
+}
 /* Spotify / YTM: exactamente sobre los iconos detectados */
 .ps-spotify{
   left: var(--ps-spotify-left);
