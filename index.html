@@ -5,73 +5,74 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
   <meta name="theme-color" content="#0b0d14"/>
   <title>dJ1fRee Player</title>
+
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="dJ1fRee">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="dJ1fRee">
+
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="css/style.css?v=1">
 </head>
+
 <body>
   <header class="topbar">
     <a class="brand" href="#/">
       <span class="brandMark"></span>
       <span class="brandText">dJ1fRee Records</span>
     </a>
+
     <nav class="topnav">
-  <a href="#/" class="navlink" data-route="/">Home</a>
-  <a href="#/albums" class="navlink" data-route="/albums">Álbumes</a>
-  <a href="#/singles" class="navlink" data-route="/singles">Singles</a>
-  <a href="#/artists" class="navlink" data-route="/artists">Artistas</a>
-  <button id="btnNow" class="btn ghost" type="button" aria-label="Abrir reproductor">▶</button>
-</nav>
+      <a href="#/" class="navlink" data-route="/">Home</a>
+      <a href="#/albums" class="navlink" data-route="/albums">Álbumes</a>
+      <a href="#/singles" class="navlink" data-route="/singles">Singles</a>
+      <a href="#/artists" class="navlink" data-route="/artists">Artistas</a>
+
+      <!-- mantiene el mismo ID para que tu JS siga abriendo/cerrando el reproductor -->
+      <button id="btnNow" class="btn ghost" type="button" aria-label="Abrir reproductor">▶</button>
+    </nav>
   </header>
 
   <main id="app" class="app"></main>
 
-<div id="playerDock" class="dock" hidden>
+  <!-- =========================
+       PLAYER: PNG SKIN + OVERLAY
+       Mantiene los IDs que ya usa tu JS
+  ========================== -->
+  <div id="playerDock" class="playerSkin" hidden aria-label="Reproductor">
+    <!-- “Skin” como fondo (CSS). Esta capa solo contiene la UI clicable/visible -->
+    <div class="ps-ui" aria-hidden="false">
 
-  <!-- “Pantalla” superior -->
-  <div class="dockScreen">
-    <div class="dockCover" id="dockCover" role="img" aria-label="Portada"></div>
+      <!-- Portada -->
+      <div id="dockCover" class="ps-cover" role="img" aria-label="Portada"></div>
 
-    <div class="dockMeta">
-      <div class="dockKicker">Now Playing</div>
-      <div class="dockTitle" id="dockTitle">—</div>
-      <div class="dockSub" id="dockSub">—</div>
-
-      <!-- mini barra (decorativa o sincronizable por JS) -->
-      <div class="miniBar" aria-hidden="true">
-        <div class="miniFill"></div>
+      <!-- Textos -->
+      <div class="ps-text">
+        <div class="ps-title" id="dockTitle">—</div>
+        <div class="ps-artist" id="dockSub">—</div>
       </div>
+
+      <!-- Barra progreso (visual) -->
+      <div class="ps-progress" aria-label="Progreso">
+        <input id="seek" class="ps-seek" type="range" min="0" max="30" value="0" step="0.25" aria-label="Posición"/>
+        <div class="ps-time">
+          <span id="tCur">0:00</span>
+          <span id="tMax">0:30</span>
+        </div>
+      </div>
+
+      <!-- Botones “zonas clicables” encima del PNG -->
+      <button id="btnPrev" class="ps-btn ps-prev" type="button" aria-label="Anterior"></button>
+      <button id="btnPlay" class="ps-btn ps-play" type="button" aria-label="Play/Pause"></button>
+      <button id="btnNext" class="ps-btn ps-next" type="button" aria-label="Siguiente"></button>
+
+      <a id="btnSpotify" class="ps-btn ps-spotify" target="_blank" rel="noreferrer noopener" aria-label="Abrir en Spotify"></a>
+      <a id="btnYTM" class="ps-btn ps-ytm" target="_blank" rel="noreferrer noopener" aria-label="Abrir en YouTube Music"></a>
+
+      <!-- Cerrar (lo he “mapeado” al engranaje del PNG) -->
+      <button id="btnCloseDock" class="ps-btn ps-close" type="button" aria-label="Cerrar"></button>
     </div>
-
-    <button id="btnCloseDock" class="btnClose" type="button" aria-label="Cerrar">✕</button>
   </div>
-
-  <!-- Botonera “gadget” -->
-  <div class="dockControls">
-    <button id="btnPrev" class="btnSide" type="button" aria-label="Anterior"></button>
-
-    <!-- mismo id, pero ahora será redondo y con icono -->
-    <button id="btnPlay" class="btnMain" type="button" aria-label="Play/Pause"></button>
-
-    <button id="btnNext" class="btnSide" type="button" aria-label="Siguiente"></button>
-
-    <a id="btnSpotify" class="btnBrand" target="_blank" rel="noreferrer noopener" aria-label="Abrir en Spotify"></a>
-    <a id="btnYTM" class="btnBrand" target="_blank" rel="noreferrer noopener" aria-label="Abrir en YouTube Music"></a>
-  </div>
-
-  <!-- Barra inferior -->
-  <div class="dockBottom">
-    <div class="dockTimeSingle"><span id="tCur">0:00</span></div>
-
-    <input id="seek" type="range" min="0" max="30" value="0" step="0.25" aria-label="Posición"/>
-
-    <div class="dockTimeSingle"><span id="tMax">0:30</span></div>
-  </div>
-
-</div>
 
   <audio id="audio" preload="none" playsinline></audio>
 
