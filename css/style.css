@@ -423,7 +423,7 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
 }
 
 /* círculo izquierdo */
-.ps-skipback{ left: 31.8%; }
+.ps-skipback{ left: 32.5%; }
 /* círculo derecho */
 .ps-skipfwd{ left: 60.0%; }
 
