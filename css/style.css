@@ -359,85 +359,28 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   text-overflow: ellipsis;
 }
 
-/* Progreso: slider invisible/limpio + tiempos */
-.ps-progress{
-  position: absolute;
-
-  /* Subida ligera para que “respire” mejor con el knob */
-  left: 33.5%;
-  top: 31.5%;
-  width: 56%;
-
-  display: grid;
-  grid-template-rows: auto auto;
-  gap: 8px;
-
-  pointer-events: none; /* solo el input aceptará eventos */
-}
-
-.ps-seek{
-  width: 100%;
-  background: transparent;
-  pointer-events: auto;
-
-  -webkit-appearance: none;
-  appearance: none;
-  height: 18px;
-}
-
-/* Track */
-.ps-seek::-webkit-slider-runnable-track{
-  height: 5px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.16);
-}
-
-/* Thumb */
-.ps-seek::-webkit-slider-thumb{
-  -webkit-appearance: none;
-  width: 13px;
-  height: 13px;
-  border-radius: 999px;
-  background: rgba(242,245,255,.92);
-  border: 1px solid rgba(0,0,0,.25);
-  margin-top: -4px;
-}
-
-.ps-time{
+/* Tiempos en las cápsulas superiores (sin seek) */
+.ps-times{
   position: absolute;
   left: 33.5%;
-  top: 40.5%;
+  top: 32%;
   width: 56%;
-  height: 0;
+  height: 10%;
   pointer-events: none;
-  color: rgba(242,245,255,.72);
-  font-size: 12px;
-  text-shadow: 0 1px 10px rgba(0,0,0,.55);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: rgba(242,245,255,.80);
+  font-size: 15px;
+  font-weight: 800;
+  text-shadow: 0 1px 12px rgba(0,0,0,.65);
 }
 
-.ps-time #tCur,
-.ps-time #tMax{
-  position: absolute;
-  top: 0;
-  line-height: 1;
-}
-
-/* Tiempo actual: a la IZQUIERDA del círculo izquierdo */
-.ps-time #tCur{
-  left: 8.5%;
-  transform: translateX(-100%);
-  padding-right: 10px;
-  text-align: right;
-}
-
-/* Tiempo total: a la DERECHA del círculo derecho */
-.ps-time #tMax{
-  right: 8.5%;
-  transform: translateX(100%);
-  padding-left: 10px;
-  text-align: left;
-}
-
+/* Ajuste fino: que el tiempo no “toque” los círculos */
+.ps-times #tCur{ padding-left: 14px; }
+.ps-times #tMax{ padding-right: 14px; }
 /* Botones (zonas clicables transparentes) */
 .ps-btn{
   position: absolute;
@@ -479,17 +422,11 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   border-radius: 999px;
 }
 
-/* Izquierda: círculo pequeño del lado izquierdo */
-.ps-skipback{
-  left: 34.8%;
-}
+/* círculo izquierdo */
+.ps-skipback{ left: 34.8%; }
+/* círculo derecho */
+.ps-skipfwd{ left: 56.0%; }
 
-/* Derecha: círculo pequeño del lado derecho */
-.ps-skipfwd{
-  left: 56.0%;
-}
-
-/* Iconos dentro de los círculos */
 .ps-skipback::before{
   content: "↺";
   font-size: clamp(18px, 2.2vw, 26px);
@@ -513,9 +450,10 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   height: 26%;
   border-radius: 999px;
 
-  color: transparent;          /* mata el texto */
+  color: transparent;
   text-shadow: none;
 }
+
 .ps-play::before{
   content: "▶";
   font-size: clamp(34px, 4.8vw, 56px);
@@ -524,6 +462,7 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
     0 2px 12px rgba(0,0,0,.6),
     0 0 18px rgba(138,230,255,.25);
   line-height: 1;
+  transform: translateY(10px);
 }
 /* Spotify / YTM: exactamente sobre los iconos detectados */
 .ps-spotify{
@@ -550,7 +489,14 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   height: var(--ps-close-h);
   border-radius: 999px;
 }
-
+.ps-close::before{
+  content: "✕";
+  font-size: clamp(16px, 2.0vw, 22px);
+  font-weight: 900;
+  color: rgba(242,245,255,.90);
+  text-shadow: 0 1px 12px rgba(0,0,0,.70);
+  transform: translateY(-1px);
+}
 /* Móvil: el skin escala solo, pero ajustamos tipografías y padding del main */
 @media (max-width: 520px){
   .app{
