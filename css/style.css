@@ -28,14 +28,14 @@ body{
   background-image: linear-gradient(
     180deg,
     #ffffff 0%,
-    #ffe8f2 6%,
-    #ffe7d6 12%,
-    #fff2c7 18%,
-    #e9ffd6 24%,
-    #d9fff6 30%,
-    #d9e8ff 36%,
-    #e4d9ff 42%,
-    #0b0e1a 58%
+    #ffe8f2 8%,
+    #ffe7d6 16%,
+    #fff2c7 22%,
+    #e9ffd6 28%,
+    #d9fff6 33%,
+    #d9e8ff 39%,
+    #e4d9ff 45%,
+    #0b0e1a 55%
   );
 
   background-repeat: no-repeat;
