@@ -362,8 +362,8 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
 /* Tiempos en las cápsulas superiores (sin seek) */
 .ps-times{
   position: absolute;
-  left: 33.5%;
-  top: 32%;
+  left: 40.5%;
+  top: 40%;
   width: 56%;
   height: 10%;
   pointer-events: none;
