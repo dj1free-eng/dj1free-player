@@ -13,17 +13,35 @@
   --coverRadius: 18px;
 }
 *{ box-sizing:border-box; }
-html,body{ height:100%; }
+html, body{
+  height: 100%;
+}
+
 body{
-  margin:0;
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Arial, sans-serif;
-  color:var(--text);
-  background:
-    radial-gradient(1200px 600px at 15% -10%, rgba(138,230,255,.22), transparent 60%),
-    radial-gradient(900px 600px at 85% 0%, rgba(182,140,255,.18), transparent 55%),
-    radial-gradient(900px 700px at 50% 120%, rgba(71,255,184,.10), transparent 60%),
-    var(--bg);
-  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  min-height: 100%;
+  margin: 0;
+
+  /* Fondo arcoíris continuo (no se repite) */
+  background-repeat: no-repeat;
+  background-attachment: scroll; /* iOS friendly */
+  background-size: 100% 300%;     /* “estira” el gradiente para que dure más */
+  background-position: top center;
+
+  /* Arcoíris claro arriba -> oscuro abajo */
+  background-image: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f7fbff 4%,
+    #ffe8f2 10%,
+    #ffe7d6 18%,
+    #fff2c7 26%,
+    #e9ffd6 34%,
+    #d9fff6 42%,
+    #d9e8ff 50%,
+    #e4d9ff 58%,
+    #2a2342 82%,
+    #120a24 100%
+  );
 }
 .topbar{
   position:sticky; top:0; z-index:10;
