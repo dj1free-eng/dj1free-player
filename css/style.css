@@ -1,61 +1,55 @@
 :root{
-  --bg:#070913;
-  --panel:rgba(255,255,255,.06);
-  --text:#f2f5ff;
-  --muted:rgba(242,245,255,.72);
-  --line:rgba(255,255,255,.10);
+  --bg: transparent;                 /* el fondo lo lleva el gradient del body */
+  --panel: rgba(255,255,255,.70);    /* tarjetas/paneles claros */
+  --text: rgba(0,0,0,.88);           /* texto principal oscuro */
+  --muted: rgba(0,0,0,.58);          /* texto secundario */
+  --line: rgba(0,0,0,.10);           /* bordes suaves */
   --accent:#8ae6ff;
   --accent2:#b68cff;
-  --good:#47ffb8;
-  --shadow: 0 10px 40px rgba(0,0,0,.45);
+  --good:#1db954;
+  --shadow: 0 14px 45px rgba(0,0,0,.14);
   --r:16px;
-  --coverSize: 88px;   /* tamaño por defecto (iPad/horizontal se ve muy bien) */
+  --coverSize: 88px;
   --coverRadius: 18px;
 }
 *{ box-sizing:border-box; }
-html, body{
-  height: 100%;
-}
+html, body { height: 100%; }
 
 body{
-  margin: 0;
-  min-height: 100%;
-
-  /* Fondo base oscuro (para todo el scroll) */
-  background-color: #0b0e1a;
-
-  /* Gradiente corto arriba */
-  background-image: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    #ffe8f2 8%,
-    #ffe7d6 16%,
-    #fff2c7 22%,
-    #e9ffd6 28%,
-    #d9fff6 33%,
-    #d9e8ff 39%,
-    #e4d9ff 45%,
-    #0b0e1a 55%
-  );
-
+  background-color: #fff;
+  background-attachment: fixed;
   background-repeat: no-repeat;
-  background-size: 100% 520px;   /* ⬅️ AQUÍ controlas lo “corto” */
-  background-position: top center;
+  background-image:
+    linear-gradient(180deg,
+      rgba(255,255,255,1) 0%,
+      rgba(255,236,246,1) 10%,
+      rgba(255,244,224,1) 22%,
+      rgba(255,251,220,1) 34%,
+      rgba(232,255,233,1) 48%,
+      rgba(220,252,255,1) 62%,
+      rgba(226,232,255,1) 76%,
+      rgba(244,232,255,1) 90%,
+      rgba(255,255,255,1) 100%
+    );
 }
 .topbar{
-  position: sticky;
-  top: 0;
-  z-index: 50;
-
-  background: rgba(11, 14, 26, 0.65);
+  background: rgba(255,255,255,.62);
+  border-bottom: 1px solid rgba(0,0,0,.08);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-
-  border-bottom: 1px solid rgba(255,255,255,.10);
-
-  /* sombra muy sutil para separarla del gradiente claro */
-  box-shadow: 0 6px 20px rgba(0,0,0,.25);
 }
+
+.dock{
+  background: rgba(255,255,255,.62);
+  border: 1px solid rgba(0,0,0,.10);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 18px 60px rgba(0,0,0,.18);
+}
+
+.dockTitle{ color: rgba(0,0,0,.88); }
+.dockSub{ color: rgba(0,0,0,.58); }
+.dockTime{ color: rgba(0,0,0,.55); }
 .brand{ display:flex; gap:10px; align-items:center; text-decoration:none; color:var(--text); }
 .brandMark{
   width:30px; height:30px; border-radius:10px;
@@ -174,6 +168,33 @@ body{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Cards claras y legibles sobre fondo arcoíris */
+.card{
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+.card:hover{
+  background: rgba(255,255,255,.80);
+  border-color: rgba(0,0,0,.12);
+}
+
+/* Botones en modo claro */
+.btn{
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.55);
+  color: var(--text);
+}
+.btn:hover{ background: rgba(255,255,255,.72); }
+
+/* Navegación en claro */
+.navlink{ color: var(--muted); }
+.navlink.active{
+  color: var(--text);
+  border-color: var(--line);
+  background: rgba(255,255,255,.55);
+}
+.brand{ color: var(--text); }
 /* Badge siempre en su columna, sin afectar a portada/texto */
 .badge{
   justify-self: end;
@@ -198,21 +219,7 @@ body{
 }
 .btn.ghost{ background: transparent; }
 .btn.icon{ padding: 10px 10px; }
-.dock{
-  position: fixed;
-  left: 10px; right: 10px; bottom: 10px;
-  max-width: 1100px;
-  margin: 0 auto;
-  border-radius: calc(var(--r) + 8px);
-  border:1px solid var(--line);
-  background: rgba(9,12,24,.72);
-  backdrop-filter: blur(18px);
-  box-shadow: var(--shadow);
-  display:flex;
-  gap: 12px;
-  padding: 10px;
-  align-items:center;
-}
+
 .dockCover{
   width:64px; height:64px; border-radius: 16px;
   background: rgba(255,255,255,.08);
