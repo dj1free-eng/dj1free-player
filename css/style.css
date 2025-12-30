@@ -311,51 +311,47 @@ body:has(#playerDock:not([hidden])){
     opacity: .92;
   }
 }
-/* 📱 iPhone en vertical: 1 columna + tarjetas estilo horizontal (cover grande + texto al lado) */
+/* 📱 iPhone en vertical: 1 columna + carátula SIEMPRE igual */
 @media (max-width: 600px) {
-  .grid{
+  .grid {
     grid-template-columns: 1fr;
   }
 
-  .card{
-    width: 100%;
-  }
-
-  /* fuerza composición horizontal dentro de cada tarjeta */
   .cardInner{
-    display: flex;
-    flex-direction: row;
+    display: flex;          /* por si no lo era */
     align-items: center;
     gap: 14px;
-    padding: 16px;
+    padding: 14px 16px;
   }
 
-  /* carátula más protagonista */
+  /* Carátula: tamaño fijo + NO se encoge jamás */
   .cardCover{
-    width: 88px;
-    height: 88px;
-    flex: 0 0 88px;
+    width: 140px;
+    height: 80px;
+    flex: 0 0 140px;        /* clave: bloquea el ancho */
     border-radius: 16px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 
-  /* el bloque de texto ocupa el centro y permite ellipsis */
+  /* Bloque de texto: que se ajuste y no empuje a la carátula */
   .cardInner > div{
-    min-width: 0;
     flex: 1 1 auto;
+    min-width: 0;           /* clave para elipsis/wrap correcto */
   }
 
-  /* badge siempre al final */
+  /* Badge: ancho fijo para que nunca reestructure la tarjeta */
   .badge{
-    margin-left: auto;
-    flex: 0 0 auto;
+    flex: 0 0 110px;
+    text-align: center;
     white-space: nowrap;
   }
 
-  /* evita saltos feos en móvil */
-  .cardTitle,
-  .cardSub{
+  /* Opcional: si quieres que el título no “rompa” el layout */
+  .cardTitle{
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
