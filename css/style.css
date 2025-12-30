@@ -268,89 +268,66 @@ body:has(#playerDock:not([hidden])){
   background-position:center;
   background-size: 12px 12px;
 }
-/* =========================
-   MÓVIL: Cards verticales (portada grande arriba)
-   - más visual
-   - cero recortes
-   - estructura limpia tipo Spotify
-========================= */
-@media (max-width: 520px){
+/* =========================================================
+   📱 MÓVIL (iPhone vertical): tarjetas tipo BANNER SIEMPRE
+   - 1 columna
+   - carátula fija (no cambia por el texto)
+   - texto al lado, no debajo
+   ========================================================= */
+@media (max-width: 600px){
 
-  /* 2 columnas estables y más aire */
+  /* 1 columna */
   .grid{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr !important;
     gap: 14px;
   }
 
-  .card{
-    min-height: unset;
-  }
-
-  /* Card vertical */
+  /* Asegura layout de banner (3 columnas: cover | texto | badge) */
   .cardInner{
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-auto-rows: auto;
-    padding: 12px;
-    gap: 10px;
-    align-items: start;
+    display: grid !important;
+    grid-template-columns: 140px minmax(0,1fr) auto !important;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
   }
 
-  /* Portada grande arriba */
+  /* Carátula fija SIEMPRE igual (rectángulo banner) */
   .cardCover{
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    height: auto;
+    width: 140px !important;
+    height: 80px !important;
+    aspect-ratio: auto !important;   /* mata el 1/1 */
+    flex: 0 0 140px !important;
     border-radius: 16px;
-  }
-
-  /* Texto debajo, centrado y limpio */
-  .cardTitle{
-    font-size: 15px;
-    line-height: 1.15;
-    text-align: left;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     overflow: hidden;
-    margin: 0;
   }
 
-  .cardSub{
-    font-size: 12.5px;
-    line-height: 1.2;
+  /* Bloque de texto: no empuja ni rompe */
+  .cardInner > div{
+    min-width: 0 !important;
+  }
+
+  .cardTitle{
+    min-width: 0 !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-top: -4px;
   }
 
-  /* Badge pequeño y discreto (no empuja nada) */
+  .cardSub{
+    min-width: 0 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Badge estable */
   .badge{
-    margin-left: 0;
-    justify-self: start;
-    font-size: 11px;
-    padding: 5px 9px;
-    opacity: .92;
-  }
-}
-/* 📱 iPhone vertical: 1 columna, tarjeta a ancho completo, portada grande y fija */
-@media (max-width: 600px){
-  :root{
-    --coverSize: 110px;     /* aquí está la magia: grande en vertical */
-    --coverRadius: 20px;
-  }
-
-  .grid{
-    grid-template-columns: 1fr;
-  }
-
-  .card{
-    width: 100%;
-  }
-
-  .cardInner{
-    padding: 14px 16px;
-    gap: 14px;
+    justify-self: end;
+    white-space: nowrap;
+    min-width: 92px;
+    text-align: center;
   }
 }
