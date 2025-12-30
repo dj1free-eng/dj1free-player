@@ -21,6 +21,8 @@ const btnYTM = $("#btnYTM");
 const seek = $("#seek");
 const tCur = $("#tCur");
 const tMax = $("#tMax");
+const btnRew10 = $("#btnRew10");
+const btnFwd10 = $("#btnFwd10");
 
 let queue = [];
 let queueIndex = -1;
@@ -598,6 +600,28 @@ btnYTM.addEventListener("click", (e)=>{
   });
 
   audio.addEventListener("ended", ()=>{ btnPlay.textContent = "Play"; });
+  // =========================
+  // SKIP ±10 segundos
+  // =========================
+  function clamp(v, min, max){
+    return Math.max(min, Math.min(max, v));
+  }
+
+  btnRew10?.addEventListener("click", ()=>{
+    const limit = Number(seek.max || PREVIEW_FALLBACK_SEC);
+    const next = clamp((audio.currentTime || 0) - 10, 0, limit);
+    audio.currentTime = next;
+    seek.value = String(next);
+    tCur.textContent = fmtTime(next);
+  });
+
+  btnFwd10?.addEventListener("click", ()=>{
+    const limit = Number(seek.max || PREVIEW_FALLBACK_SEC);
+    const next = clamp((audio.currentTime || 0) + 10, 0, limit);
+    audio.currentTime = next;
+    seek.value = String(next);
+    tCur.textContent = fmtTime(next);
+  });
 }
 
 async function init(){
