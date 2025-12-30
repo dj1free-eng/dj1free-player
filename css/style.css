@@ -363,7 +363,7 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
 .ps-times{
   position: absolute;
   left: 25.5%;
-  top: 55%;
+  top: 53%;
   width: 56%;
   height: 10%;
   pointer-events: none;
