@@ -12,13 +12,10 @@ const dockCover = $("#dockCover");
 const dockTitle = $("#dockTitle");
 const dockSub = $("#dockSub");
 const btnPlay = $("#btnPlay");
-const btnPrev = $("#btnPrev");
-const btnNext = $("#btnNext");
 const btnNow = $("#btnNow");
 const btnCloseDock = $("#btnCloseDock");
 const btnSpotify = $("#btnSpotify");
 const btnYTM = $("#btnYTM");
-const seek = $("#seek");
 const tCur = $("#tCur");
 const tMax = $("#tMax");
 const btnRew10 = $("#btnRew10");
@@ -27,6 +24,9 @@ const btnFwd10 = $("#btnFwd10");
 let queue = [];
 let queueIndex = -1;
 let hardStopTimer = null;
+
+/** Límite actual del preview cargado (para timeupdate y ±10s) */
+let currentLimitSec = PREVIEW_FALLBACK_SEC;
 
 function fmtTime(sec){
   sec = Math.max(0, Math.floor(sec));
@@ -39,6 +39,7 @@ function safeUrl(u){
   if(!u || typeof u !== "string") return "";
   return u.trim();
 }
+
 function toSpotifyAppUrl(url){
   const u = safeUrl(url);
   const m = u.match(/open\.spotify\.com\/(track|album|artist|playlist)\/([A-Za-z0-9]+)/);
@@ -48,8 +49,6 @@ function toSpotifyAppUrl(url){
 
 function toYouTubeMusicAppUrl(url){
   const u = safeUrl(url);
-  // YouTube Music suele aceptar ytmusic:// con watch?v=...
-  // Si no podemos extraer el id, devolvemos vacío y usaremos web.
   const m = u.match(/[?&]v=([^&]+)/);
   if(!m) return "";
   return `ytmusic://music.youtube.com/watch?v=${encodeURIComponent(m[1])}`;
@@ -69,15 +68,13 @@ function openAppOrWeb(appUrl, webUrl){
     return;
   }
 
-  // Intento abrir app
   window.location.href = app;
 
-  // Fallback a web si la app no responde
   setTimeout(() => {
-    // Si el usuario ya salió a la app, esta línea no se ejecuta en la práctica.
     window.location.href = web;
   }, 900);
 }
+
 function guessMimeFromUrl(url){
   const u = safeUrl(url).toLowerCase();
   if(u.endsWith(".png")) return "image/png";
@@ -107,9 +104,13 @@ function setMediaSession(track){
       ] : []
     });
 
-    // Controles estándar (por si iOS/lockscreen los muestra)
-    navigator.mediaSession.setActionHandler?.("play", async ()=>{ try{ await audio.play(); btnPlay.textContent="Pausa"; }catch(_){} });
-    navigator.mediaSession.setActionHandler?.("pause", ()=>{ audio.pause(); btnPlay.textContent="Play"; });
+    navigator.mediaSession.setActionHandler?.("play", async ()=>{
+      try{ await audio.play(); btnPlay.textContent="Pausa"; }catch(_){}
+    });
+    navigator.mediaSession.setActionHandler?.("pause", ()=>{
+      audio.pause();
+      btnPlay.textContent="Play";
+    });
     navigator.mediaSession.setActionHandler?.("seekto", (details)=>{
       if(typeof details.seekTime === "number"){
         audio.currentTime = details.seekTime;
@@ -117,6 +118,7 @@ function setMediaSession(track){
     });
   }catch(_){}
 }
+
 async function loadCatalog(){
   const res = await fetch(CATALOG_URL + "?v=" + Date.now(), { cache:"no-store" });
   if(!res.ok) throw new Error(`No se pudo cargar ${CATALOG_URL} (HTTP ${res.status})`);
@@ -166,7 +168,7 @@ function sectionReleases(title, releases){
                 <div class="cardTitle">${escapeHtml(r.title)}</div>
                 <div class="cardSub">${escapeHtml(artistName(r.artistId))} · ${r.year || "—"}</div>
               </div>
-<div class="badge">${r.type === "single" ? "Single" : "Álbum"}</div>
+              <div class="badge">${r.type === "single" ? "Single" : "Álbum"}</div>
             </div>
           </article>
         `).join("")}
@@ -198,31 +200,6 @@ function sectionTracks(title, tracks){
             </article>
           `;
         }).join("")}
-      </div>
-    </section>
-  `;
-}
-
-function sectionArtists(title, artists){
-  return `
-    <section class="section">
-      <div class="sectionHead">
-        <h2 class="h2">${escapeHtml(title)}</h2>
-        <div class="small">${artists.length} artistas</div>
-      </div>
-      <div class="grid">
-        ${artists.map(a => `
-          <article class="card" data-action="openArtist" data-artist="${a.id}">
-            <div class="cardInner">
-              <div class="cardCover" style="background-image:url('${encodeURI(safeUrl(a.banner))}')"></div>
-              <div>
-                <div class="cardTitle">${escapeHtml(a.name)}</div>
-                <div class="cardSub">Ver catálogo</div>
-              </div>
-              <div class="badge">Artista</div>
-            </div>
-          </article>
-        `).join("")}
       </div>
     </section>
   `;
@@ -311,8 +288,8 @@ function buildHome(){
       </div>
     </section>
   `;
-
 }
+
 function buildArtists(){
   $("#app").innerHTML = `
     <section class="section">
@@ -337,6 +314,7 @@ function buildArtists(){
     </section>
   `;
 }
+
 function buildAlbums(){
   const albums = (DATA.releases||[]).filter(r => r.type === "album").sort((a,b)=>(b.year||0)-(a.year||0));
   $("#app").innerHTML = sectionReleases("Álbumes", albums);
@@ -346,6 +324,7 @@ function buildSingles(){
   const singles = (DATA.releases||[]).filter(r => r.type === "single").sort((a,b)=> (b.year||0)-(a.year||0));
   $("#app").innerHTML = sectionReleases("Singles", singles);
 }
+
 function buildArtist(id){
   const a = byId(DATA.artists, id);
   if(!a) return notFound("Artista no encontrado");
@@ -375,7 +354,6 @@ function buildArtist(id){
     ${sectionReleases("Álbumes", albums)}
     ${sectionReleases("Singles", singles)}
   `;
-
 }
 
 function buildRelease(id){
@@ -430,7 +408,7 @@ function route(){
     buildArtists();
     return;
   }
-    if(parts[0] === "albums"){
+  if(parts[0] === "albums"){
     setNavActive("/albums");
     buildAlbums();
     return;
@@ -455,14 +433,17 @@ function route(){
 }
 
 function openDock(){ dock.hidden = false; }
+
 function stopPlayback(){
   clearTimeout(hardStopTimer);
   hardStopTimer = null;
   audio.pause();
   audio.removeAttribute("src");
   audio.load();
-  seek.value = "0";
+
+  currentLimitSec = PREVIEW_FALLBACK_SEC;
   tCur.textContent = "0:00";
+  tMax.textContent = fmtTime(currentLimitSec);
 }
 
 function updateDockUI(track){
@@ -473,16 +454,16 @@ function updateDockUI(track){
 
   const sp = safeUrl(track.spotifyUrl);
   const yt = safeUrl(track.ytMusicUrl);
-  // Quitamos href directo: lo manejamos con click para intentar abrir app
-btnSpotify.dataset.web = sp;
-btnSpotify.dataset.app = toSpotifyAppUrl(sp);
-btnSpotify.style.opacity = sp ? "1" : ".4";
-btnSpotify.style.pointerEvents = sp ? "auto" : "none";
 
-btnYTM.dataset.web = yt;
-btnYTM.dataset.app = toYouTubeMusicAppUrl(yt);
-btnYTM.style.opacity = yt ? "1" : ".4";
-btnYTM.style.pointerEvents = yt ? "auto" : "none";
+  btnSpotify.dataset.web = sp;
+  btnSpotify.dataset.app = toSpotifyAppUrl(sp);
+  btnSpotify.style.opacity = sp ? "1" : ".4";
+  btnSpotify.style.pointerEvents = sp ? "auto" : "none";
+
+  btnYTM.dataset.web = yt;
+  btnYTM.dataset.app = toYouTubeMusicAppUrl(yt);
+  btnYTM.style.opacity = yt ? "1" : ".4";
+  btnYTM.style.pointerEvents = yt ? "auto" : "none";
 }
 
 function setQueueFromTrack(trackId){
@@ -503,6 +484,8 @@ async function playTrackById(trackId){
   if(!url){
     btnPlay.textContent = "Sin preview";
     btnPlay.disabled = true;
+    currentLimitSec = PREVIEW_FALLBACK_SEC;
+    tMax.textContent = fmtTime(currentLimitSec);
     return;
   }
 
@@ -514,6 +497,9 @@ async function playTrackById(trackId){
   audio.src = url;
   audio.load();
 
+  currentLimitSec = Number(track.durationSec || PREVIEW_FALLBACK_SEC);
+  tMax.textContent = fmtTime(currentLimitSec);
+
   try{
     await audio.play();
     btnPlay.textContent = "Pausa";
@@ -522,37 +508,36 @@ async function playTrackById(trackId){
     console.error(e);
   }
 
-  const limit = Number(track.durationSec || PREVIEW_FALLBACK_SEC);
-  tMax.textContent = fmtTime(limit);
-
   hardStopTimer = setTimeout(()=>{
     audio.pause();
     audio.currentTime = 0;
     btnPlay.textContent = "Play";
     tCur.textContent = "0:00";
-  }, limit * 1000);
+  }, currentLimitSec * 1000);
 }
 
 function wireDock(){
-  $("#btnNow").addEventListener("click", ()=>{
+  btnNow?.addEventListener("click", ()=>{
     const id = DATA?.featured?.trackId || DATA?.tracks?.[0]?.id;
     if(id) playTrackById(id);
   });
 
-  $("#btnCloseDock").addEventListener("click", ()=>{
+  btnCloseDock?.addEventListener("click", ()=>{
     dock.hidden = true;
     stopPlayback();
   });
-btnSpotify.addEventListener("click", (e)=>{
-  e.preventDefault();
-  openAppOrWeb(btnSpotify.dataset.app, btnSpotify.dataset.web);
-});
 
-btnYTM.addEventListener("click", (e)=>{
-  e.preventDefault();
-  openAppOrWeb(btnYTM.dataset.app, btnYTM.dataset.web);
-});
-  btnPlay.addEventListener("click", async ()=>{
+  btnSpotify?.addEventListener("click", (e)=>{
+    e.preventDefault();
+    openAppOrWeb(btnSpotify.dataset.app, btnSpotify.dataset.web);
+  });
+
+  btnYTM?.addEventListener("click", (e)=>{
+    e.preventDefault();
+    openAppOrWeb(btnYTM.dataset.app, btnYTM.dataset.web);
+  });
+
+  btnPlay?.addEventListener("click", async ()=>{
     if(btnPlay.disabled) return;
     if(audio.paused){
       try{ await audio.play(); btnPlay.textContent = "Pausa"; }catch(e){ console.error(e); }
@@ -562,28 +547,15 @@ btnYTM.addEventListener("click", (e)=>{
     }
   });
 
-  btnPrev.addEventListener("click", ()=>{
-    if(queue.length === 0) return;
-    queueIndex = (queueIndex - 1 + queue.length) % queue.length;
-    playTrackById(queue[queueIndex].id);
-  });
-
-  btnNext.addEventListener("click", ()=>{
-    if(queue.length === 0) return;
-    queueIndex = (queueIndex + 1) % queue.length;
-    playTrackById(queue[queueIndex].id);
-  });
-
-    audio.addEventListener("timeupdate", ()=>{
-    const limit = PREVIEW_FALLBACK_SEC;
-    const t = Math.min(audio.currentTime || 0, limit);
+  audio.addEventListener("timeupdate", ()=>{
+    const t = Math.min(audio.currentTime || 0, currentLimitSec);
     tCur.textContent = fmtTime(t);
+    tMax.textContent = fmtTime(currentLimitSec);
 
-    // Progreso en lockscreen/Dynamic Island
     if("mediaSession" in navigator && typeof navigator.mediaSession.setPositionState === "function"){
       try{
         navigator.mediaSession.setPositionState({
-          duration: limit,
+          duration: currentLimitSec,
           playbackRate: audio.playbackRate || 1,
           position: t
         });
@@ -591,7 +563,10 @@ btnYTM.addEventListener("click", (e)=>{
     }
   });
 
-  audio.addEventListener("ended", ()=>{ btnPlay.textContent = "Play"; });
+  audio.addEventListener("ended", ()=>{
+    btnPlay.textContent = "Play";
+  });
+
   // =========================
   // SKIP ±10 segundos
   // =========================
@@ -600,18 +575,14 @@ btnYTM.addEventListener("click", (e)=>{
   }
 
   btnRew10?.addEventListener("click", ()=>{
-    const limit = Number(seek.max || PREVIEW_FALLBACK_SEC);
-    const next = clamp((audio.currentTime || 0) - 10, 0, limit);
+    const next = clamp((audio.currentTime || 0) - 10, 0, currentLimitSec);
     audio.currentTime = next;
-    seek.value = String(next);
     tCur.textContent = fmtTime(next);
   });
 
   btnFwd10?.addEventListener("click", ()=>{
-    const limit = Number(seek.max || PREVIEW_FALLBACK_SEC);
-    const next = clamp((audio.currentTime || 0) + 10, 0, limit);
+    const next = clamp((audio.currentTime || 0) + 10, 0, currentLimitSec);
     audio.currentTime = next;
-    seek.value = String(next);
     tCur.textContent = fmtTime(next);
   });
 }
@@ -620,7 +591,6 @@ async function init(){
   DATA = await loadCatalog();
   wireDock();
 
-  // Un solo listener global (evita duplicados al navegar)
   $("#app").addEventListener("click", onAppClick, { passive:true });
 
   window.addEventListener("hashchange", route);
