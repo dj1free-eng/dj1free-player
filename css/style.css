@@ -1,363 +1,293 @@
+/* =========================================================
+   VARIABLES BASE
+========================================================= */
 :root{
-  --bg: transparent;                 /* el fondo lo lleva el gradient del body */
-  --panel: rgba(255,255,255,.70);    /* tarjetas/paneles claros */
-  --text: rgba(0,0,0,.88);           /* texto principal oscuro */
-  --muted: rgba(0,0,0,.58);          /* texto secundario */
-  --line: rgba(0,0,0,.10);           /* bordes suaves */
+  --bg:#070913;
+  --panel:rgba(255,255,255,.06);
+  --text:#f2f5ff;
+  --muted:rgba(242,245,255,.72);
+  --line:rgba(255,255,255,.10);
   --accent:#8ae6ff;
   --accent2:#b68cff;
-  --good:#1db954;
-  --shadow: 0 14px 45px rgba(0,0,0,.14);
+  --good:#47ffb8;
+  --shadow: 0 10px 40px rgba(0,0,0,.45);
   --r:16px;
   --coverSize: 88px;
   --coverRadius: 18px;
 }
+
 *{ box-sizing:border-box; }
-html, body { height: 100%; }
+html, body{ min-height:100%; }
 
+/* =========================================================
+   FONDO GLOBAL — oscuro premium con profundidad (NO pastel)
+========================================================= */
 body{
-  background-color: #fff;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  margin:0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text);
+
+  background-color: var(--bg);
   background-image:
+    radial-gradient(1100px 700px at 15% 0%, rgba(138,230,255,.16), transparent 60%),
+    radial-gradient(900px 650px at 85% 12%, rgba(182,140,255,.14), transparent 55%),
+    radial-gradient(900px 650px at 20% 60%, rgba(255,180,120,.10), transparent 60%),
+    radial-gradient(1100px 800px at 80% 75%, rgba(120,255,190,.08), transparent 60%),
     linear-gradient(180deg,
-      rgba(255,255,255,1) 0%,
-      rgba(255,236,246,1) 10%,
-      rgba(255,244,224,1) 22%,
-      rgba(255,251,220,1) 34%,
-      rgba(232,255,233,1) 48%,
-      rgba(220,252,255,1) 62%,
-      rgba(226,232,255,1) 76%,
-      rgba(244,232,255,1) 90%,
-      rgba(255,255,255,1) 100%
+      #0e1226 0%,
+      #0a0e1d 35%,
+      #070913 70%,
+      #050610 100%
     );
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-attachment:fixed;
 }
+
+/* =========================================================
+   TOPBAR
+========================================================= */
 .topbar{
-  background: rgba(255,255,255,.62);
-  border-bottom: 1px solid rgba(0,0,0,.08);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(9,12,24,.65);
+  border-bottom: 1px solid rgba(255,255,255,.10);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
 
-.dock{
-  background: rgba(255,255,255,.62);
-  border: 1px solid rgba(0,0,0,.10);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 18px 60px rgba(0,0,0,.18);
+.brand{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  text-decoration:none;
+  color:var(--text);
 }
-
-.dockTitle{ color: rgba(0,0,0,.88); }
-.dockSub{ color: rgba(0,0,0,.58); }
-.dockTime{ color: rgba(0,0,0,.55); }
-.brand{ display:flex; gap:10px; align-items:center; text-decoration:none; color:var(--text); }
 .brandMark{
-  width:30px; height:30px; border-radius:10px;
+  width:30px;
+  height:30px;
+  border-radius:10px;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 10px 30px rgba(138,230,255,.20);
+  box-shadow: 0 10px 30px rgba(138,230,255,.25);
 }
-.brandText{ font-weight:700; letter-spacing:.2px; }
-.topnav{ display:flex; gap:10px; align-items:center; }
+.brandText{ font-weight:700; }
+
+.topnav{ display:flex; gap:10px; }
 .navlink{
   color:var(--muted);
   text-decoration:none;
-  padding:8px 10px;
+  padding:8px 12px;
   border-radius:12px;
-  border:1px solid transparent;
 }
 .navlink.active{
   color:var(--text);
-  border-color: var(--line);
-  background: rgba(255,255,255,.05);
-}
-.app{
-  padding: 18px 16px 30px;
-  max-width: 1100px;
-  margin:0 auto;
-
-  /* Hueco real para que el final del scroll quede por encima del reproductor */
-  padding-bottom: calc(30px + 160px + env(safe-area-inset-bottom, 0px));
-}
-
-.hero{
-  border-radius: calc(var(--r) + 8px);
-  overflow:hidden;
-  box-shadow: var(--shadow);
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.04);
-  position:relative;
-  min-height: 220px;
-}
-.heroBg{
-  position:absolute; inset:0;
-  background-size: cover;
-  background-position:center;
-  filter: saturate(1.1) contrast(1.05);
-  transform: scale(1.03);
-}
-.heroOverlay{
-  position:absolute; inset:0;
-  background: linear-gradient(90deg, rgba(7,9,19,.88), rgba(7,9,19,.45) 55%, rgba(7,9,19,.20));
-}
-.heroBody{ position:relative; padding: 20px; display:flex; gap:16px; align-items:flex-end; }
-.heroCover{
-  width: 110px; height:110px; border-radius: 18px;
   background: rgba(255,255,255,.08);
   border:1px solid var(--line);
-  background-size: cover; background-position:center;
-  flex: 0 0 auto;
 }
-.heroKicker{ color: var(--muted); font-size: 12px; letter-spacing:.14em; text-transform:uppercase; }
-.heroTitle{ font-size: 26px; font-weight: 800; margin:6px 0 4px; }
-.heroMeta{ color: var(--muted); font-size: 14px; }
-.heroBtns{ display:flex; gap:10px; margin-top: 14px; flex-wrap: wrap; }
 
-.section{ margin-top: 18px; }
-.sectionHead{ display:flex; align-items:end; justify-content:space-between; gap:14px; margin: 18px 0 12px; }
-.h2{ margin:0; font-size: 16px; letter-spacing:.02em; color: var(--text); }
-.small{ color: var(--muted); font-size: 13px; }
+/* =========================================================
+   APP CONTENIDO
+========================================================= */
+.app{
+  max-width:1100px;
+  margin:0 auto;
+  padding: 18px 16px;
+  padding-bottom: calc(180px + env(safe-area-inset-bottom, 0px));
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+.hero{
+  position:relative;
+  border-radius: calc(var(--r) + 8px);
+  overflow:hidden;
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.05);
+  box-shadow: var(--shadow);
+}
+.heroBg{
+  position:absolute;
+  inset:0;
+  background-size:cover;
+  background-position:center;
+  filter: saturate(1.05) contrast(1.05);
+}
+.heroOverlay{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(
+    90deg,
+    rgba(7,9,19,.90),
+    rgba(7,9,19,.55) 55%,
+    rgba(7,9,19,.20)
+  );
+}
+.heroBody{
+  position:relative;
+  padding:20px;
+  display:flex;
+  gap:16px;
+  align-items:flex-end;
+}
+.heroCover{
+  width:110px;
+  height:110px;
+  border-radius:18px;
+  background-size:cover;
+  background-position:center;
+  border:1px solid var(--line);
+}
+.heroTitle{
+  font-size:26px;
+  font-weight:800;
+}
+.heroMeta{
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* =========================================================
+   SECCIONES
+========================================================= */
+.section{ margin-top:22px; }
+.sectionHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:12px;
+}
+.h2{ font-size:16px; margin:0; }
+.small{ color:var(--muted); font-size:13px; }
+
+/* =========================================================
+   GRID + CARDS (BANNER ESTABLE)
+========================================================= */
 .grid{
   display:grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 12px;
+  gap:14px;
 }
+
 .card{
   grid-column: span 6;
   border-radius: var(--r);
-  overflow:hidden;
+  background: rgba(255,255,255,.05);
   border:1px solid var(--line);
-  background: rgba(255,255,255,.04);
-  box-shadow: 0 14px 45px rgba(0,0,0,.30);
-  cursor:pointer;
-  transition: transform .12s ease, background .12s ease, border-color .12s ease;
-  min-height: 92px;
+  box-shadow: var(--shadow);
+  transition: transform .12s ease, background .12s ease;
 }
-.card:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.14); }
+.card:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.07);
+}
+
 .cardInner{
-  display: grid;
-  grid-template-columns: var(--coverSize) 1fr auto;
-  align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  display:grid;
+  grid-template-columns: var(--coverSize) minmax(0,1fr) auto;
+  gap:14px;
+  align-items:center;
+  padding:14px 16px;
 }
-/* Carátula SIEMPRE igual */
+
 .cardCover{
   width: var(--coverSize);
   height: var(--coverSize);
-  aspect-ratio: 1 / 1;
   border-radius: var(--coverRadius);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  flex-shrink: 0;           /* por si algún estilo viejo la trataba como flex-item */
-  overflow: hidden;
+  background-size:cover;
+  background-position:center;
+  flex-shrink:0;
 }
-/* Texto: no empuja ni rompe la estructura */
+
 .cardTitle{
-  min-width: 0;             /* CLAVE para que el grid recorte bien */
-  font-weight: 800;
-  line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 .cardSub{
-  min-width: 0;
-  opacity: .8;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-/* Cards claras y legibles sobre fondo arcoíris */
-.card{
-  background: var(--panel);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-}
-.card:hover{
-  background: rgba(255,255,255,.80);
-  border-color: rgba(0,0,0,.12);
+  color:var(--muted);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
-/* Botones en modo claro */
-.btn{
-  border: 1px solid var(--line);
-  background: rgba(255,255,255,.55);
-  color: var(--text);
-}
-.btn:hover{ background: rgba(255,255,255,.72); }
-
-/* Navegación en claro */
-.navlink{ color: var(--muted); }
-.navlink.active{
-  color: var(--text);
-  border-color: var(--line);
-  background: rgba(255,255,255,.55);
-}
-.brand{ color: var(--text); }
-/* Badge siempre en su columna, sin afectar a portada/texto */
 .badge{
-  justify-self: end;
-  white-space: nowrap;
-}
-.badge.good{ border-color: rgba(71,255,184,.35); background: rgba(71,255,184,.08); }
-.btn{
-  appearance:none; -webkit-appearance:none;
+  white-space:nowrap;
+  padding:6px 10px;
+  border-radius:999px;
   border:1px solid var(--line);
-  background: rgba(255,255,255,.06);
-  color: var(--text);
-  padding: 10px 12px;
-  border-radius: 14px;
-  font-weight: 650;
-  text-decoration:none;
-  display:inline-flex; align-items:center; gap:8px;
 }
-.btn:hover{ background: rgba(255,255,255,.09); }
-.btn.primary{
-  border-color: rgba(138,230,255,.40);
-  background: linear-gradient(135deg, rgba(138,230,255,.22), rgba(182,140,255,.14));
+
+/* =========================================================
+   DOCK / REPRODUCTOR — OSCURO, SIEMPRE VISIBLE
+========================================================= */
+.dock{
+  position:fixed;
+  left:10px;
+  right:10px;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  max-width:1100px;
+  margin:0 auto;
+  z-index:9999;
+
+  background: rgba(9,12,24,.78);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius: calc(var(--r) + 8px);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+
+  display:flex;
+  gap:12px;
+  padding:12px;
+  align-items:center;
 }
-.btn.ghost{ background: transparent; }
-.btn.icon{ padding: 10px 10px; }
 
 .dockCover{
-  width:64px; height:64px; border-radius: 16px;
-  background: rgba(255,255,255,.08);
+  width:64px;
+  height:64px;
+  border-radius:16px;
+  background-size:cover;
+  background-position:center;
   border:1px solid var(--line);
-  background-size: cover; background-position:center;
 }
-.dockMeta{ flex:1; min-width: 0; }
-.dockTitle{ font-weight: 800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.dockSub{ color: var(--muted); font-size: 13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.dockControls{ display:flex; gap:8px; align-items:center; margin-top: 8px; flex-wrap: wrap;}
-.dockBar{ display:flex; gap:10px; align-items:center; margin-top: 10px; }
-#seek{ width: 100%; }
-.dockTime{ display:flex; justify-content:space-between; min-width: 92px; color: var(--muted); font-size: 12px; }
-@media (min-width: 740px){
+
+.dockMeta{ flex:1; min-width:0; }
+.dockTitle{
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.dockSub{
+  color:var(--muted);
+  font-size:13px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (min-width:740px){
   .card{ grid-column: span 4; }
-  .heroBody{ padding: 22px; }
-  .heroTitle{ font-size: 32px; }
 }
-@media (min-width: 980px){
+@media (min-width:980px){
   .card{ grid-column: span 3; }
 }
-/* Reservar hueco inferior solo cuando el dock está visible */
-body:has(#playerDock:not([hidden])){
-  padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
-}
-/* =========================
-   Brand buttons: Spotify / YTM
-   (sin cambiar tamaño del dock)
-========================= */
 
-#btnSpotify, #btnYTM{
-  /* mantiene el mismo tamaño visual del resto */
-  font-weight: 800;
-  letter-spacing: .2px;
-  border-color: rgba(255,255,255,.12);
-}
-
-/* --- Spotify (solo icono) --- */
-#btnSpotify{
-  background: rgba(29,185,84,.18);
-  border-color: rgba(29,185,84,.35);
-}
-#btnSpotify:hover{
-  background: rgba(29,185,84,.26);
-}
-#btnSpotify::before{
-  content:"";
-  width: 22px;
-  height: 22px;
-  display:block;
-  border-radius: 50%;
-  background-color:#1DB954;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='%23000000' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M6.5 10.3c3.8-1.2 7.9-.9 11.3 1.1'/%3E%3Cpath d='M7.2 14c3.1-1 6.5-.7 9.3.9'/%3E%3Cpath d='M7.9 17.4c2.4-.7 5.1-.5 7.2.7'/%3E%3C/g%3E%3C/svg%3E");
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size: 16px 16px;
-}
-
-/* --- YouTube Music (solo icono) --- */
-#btnYTM{
-  background: rgba(255,0,0,.14);
-  border-color: rgba(255,0,0,.28);
-}
-#btnYTM:hover{
-  background: rgba(255,0,0,.22);
-}
-#btnYTM::before{
-  content:"";
-  width: 22px;
-  height: 22px;
-  display:block;
-  border-radius: 50%;
-  background-color:#FF0000;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M10 8.7v6.6c0 .6.6.9 1.1.6l6-3.3c.6-.3.6-1.1 0-1.4l-6-3.3c-.5-.3-1.1 0-1.1.6z'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size: 12px 12px;
-}
-/* =========================================================
-   📱 MÓVIL (iPhone vertical): tarjetas tipo BANNER SIEMPRE
-   - 1 columna
-   - carátula fija (no cambia por el texto)
-   - texto al lado, no debajo
-   ========================================================= */
-@media (max-width: 600px){
-
-  /* 1 columna */
-  .grid{
-    grid-template-columns: 1fr !important;
-    gap: 14px;
-  }
-
-  /* Asegura layout de banner (3 columnas: cover | texto | badge) */
+/* iPhone vertical: banners 1 columna */
+@media (max-width:600px){
+  .grid{ grid-template-columns:1fr; }
   .cardInner{
-    display: grid !important;
-    grid-template-columns: 140px minmax(0,1fr) auto !important;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 16px;
+    grid-template-columns: 140px minmax(0,1fr) auto;
   }
-
-  /* Carátula fija SIEMPRE igual (rectángulo banner) */
   .cardCover{
-    width: 140px !important;
-    height: 80px !important;
-    aspect-ratio: auto !important;   /* mata el 1/1 */
-    flex: 0 0 140px !important;
-    border-radius: 16px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    overflow: hidden;
-  }
-
-  /* Bloque de texto: no empuja ni rompe */
-  .cardInner > div{
-    min-width: 0 !important;
-  }
-
-  .cardTitle{
-    min-width: 0 !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .cardSub{
-    min-width: 0 !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* Badge estable */
-  .badge{
-    justify-self: end;
-    white-space: nowrap;
-    min-width: 92px;
-    text-align: center;
+    width:140px;
+    height:80px;
+    border-radius:16px;
   }
 }
