@@ -944,3 +944,181 @@ body{
   #btnPrev.btnSide, #btnNext.btnSide{ width: 78px; height: 52px; }
   #btnSpotify.btnBrand, #btnYTM.btnBrand{ width: 52px; height: 52px; }
 }
+/* =========================
+   PLAYERDOCK — RESCATE ORDENADO (sin absolute)
+   Pegar AL FINAL del CSS
+========================= */
+#playerDock.dock{
+  position: fixed;
+  left: 12px; right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  max-width: 900px;
+  margin: 0 auto;
+  z-index: 9999;
+
+  /* Look "hardware" */
+  border-radius: 34px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: radial-gradient(120% 140% at 50% 0%,
+              rgba(255,255,255,.12) 0%,
+              rgba(255,255,255,.06) 35%,
+              rgba(0,0,0,.55) 100%),
+              rgba(9,12,24,.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 26px 70px rgba(0,0,0,.45);
+
+  /* Estructura clara */
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 14px;
+  row-gap: 10px;
+  padding: 14px 16px;
+  align-items: center;
+}
+
+/* Portada */
+#playerDock .dockCover{
+  grid-row: 1 / span 2;
+  width: 84px; height: 84px;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25),
+              0 16px 40px rgba(0,0,0,.35);
+}
+
+/* Meta */
+#playerDock .dockMeta{
+  min-width: 0;
+}
+
+#playerDock .dockTitle{
+  font-weight: 850;
+  letter-spacing: .2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+#playerDock .dockSub{
+  opacity: .75;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Controles: ordenados, play grande */
+#playerDock .dockControls{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+  margin-top: 10px;
+}
+
+/* Botones tipo “hardware” */
+#playerDock .btn{
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25);
+}
+
+#playerDock .btn.icon{
+  width: 52px;
+  height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Play gigante central */
+#playerDock #btnPlay{
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  font-weight: 800;
+  background: radial-gradient(120% 120% at 40% 30%,
+              rgba(255,255,255,.20) 0%,
+              rgba(255,255,255,.08) 35%,
+              rgba(0,0,0,.35) 100%);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 18px 40px rgba(0,0,0,.35),
+              inset 0 0 0 1px rgba(0,0,0,.25);
+}
+
+/* Spotify / YTM como “botones redondos” compactos */
+#playerDock #btnSpotify,
+#playerDock #btnYTM{
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0; /* ocultamos texto si lo hubiera */
+}
+
+/* Barra */
+#playerDock .dockBar{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+#playerDock #seek{
+  width: 100%;
+}
+
+/* Tiempos */
+#playerDock .dockTime{
+  min-width: 94px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  opacity: .75;
+}
+
+/* Cerrar: esquina */
+#playerDock #btnCloseDock{
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+}
+
+/* Móvil: que no se coma la pantalla */
+@media (max-width: 520px){
+  #playerDock.dock{
+    grid-template-columns: 72px 1fr;
+    border-radius: 28px;
+    padding: 12px;
+  }
+  #playerDock .dockCover{
+    width: 72px; height: 72px;
+    border-radius: 20px;
+  }
+  #playerDock #btnPlay{
+    width: 78px;
+    height: 78px;
+  }
+  #playerDock .btn.icon,
+  #playerDock #btnSpotify,
+  #playerDock #btnYTM{
+    width: 48px;
+    height: 48px;
+  }
+}
