@@ -404,11 +404,38 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
 }
 
 .ps-time{
-  display: flex;
-  justify-content: space-between;
+  position: absolute;
+  left: 33.5%;
+  top: 40.5%;
+  width: 56%;
+  height: 0;
+  pointer-events: none;
+  color: rgba(242,245,255,.72);
   font-size: 12px;
-  color: rgba(242,245,255,.66);
-  padding: 0 8px;
+  text-shadow: 0 1px 10px rgba(0,0,0,.55);
+}
+
+.ps-time #tCur,
+.ps-time #tMax{
+  position: absolute;
+  top: 0;
+  line-height: 1;
+}
+
+/* Tiempo actual: a la IZQUIERDA del círculo izquierdo */
+.ps-time #tCur{
+  left: 8.5%;
+  transform: translateX(-100%);
+  padding-right: 10px;
+  text-align: right;
+}
+
+/* Tiempo total: a la DERECHA del círculo derecho */
+.ps-time #tMax{
+  right: 8.5%;
+  transform: translateX(100%);
+  padding-left: 10px;
+  text-align: left;
 }
 
 /* Botones (zonas clicables transparentes) */
@@ -443,7 +470,41 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   height: 16%;
   border-radius: 999px;
 }
+/* Botones SKIP 10s: se colocan sobre los dos círculos pequeños */
+.ps-skipback,
+.ps-skipfwd{
+  top: 42%;
+  width: 7.2%;
+  height: 16%;
+  border-radius: 999px;
+}
 
+/* Izquierda: círculo pequeño del lado izquierdo */
+.ps-skipback{
+  left: 34.8%;
+}
+
+/* Derecha: círculo pequeño del lado derecho */
+.ps-skipfwd{
+  left: 56.0%;
+}
+
+/* Iconos dentro de los círculos */
+.ps-skipback::before{
+  content: "↺";
+  font-size: clamp(18px, 2.2vw, 26px);
+  color: rgba(242,245,255,.82);
+  text-shadow: 0 1px 10px rgba(0,0,0,.55);
+  transform: translateY(1px);
+}
+
+.ps-skipfwd::before{
+  content: "↻";
+  font-size: clamp(18px, 2.2vw, 26px);
+  color: rgba(242,245,255,.82);
+  text-shadow: 0 1px 10px rgba(0,0,0,.55);
+  transform: translateY(1px);
+}
 /* Play: knob central grande */
 .ps-play{
   left: 41%;
