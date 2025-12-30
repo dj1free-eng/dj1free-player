@@ -523,14 +523,12 @@ async function playTrackById(trackId){
   }
 
   const limit = Number(track.durationSec || PREVIEW_FALLBACK_SEC);
-  seek.max = String(limit);
   tMax.textContent = fmtTime(limit);
 
   hardStopTimer = setTimeout(()=>{
     audio.pause();
     audio.currentTime = 0;
     btnPlay.textContent = "Play";
-    seek.value = "0";
     tCur.textContent = "0:00";
   }, limit * 1000);
 }
@@ -576,15 +574,9 @@ btnYTM.addEventListener("click", (e)=>{
     playTrackById(queue[queueIndex].id);
   });
 
-  seek.addEventListener("input", ()=>{
-    audio.currentTime = Number(seek.value);
-    tCur.textContent = fmtTime(Number(seek.value));
-  });
-
     audio.addEventListener("timeupdate", ()=>{
-    const limit = Number(seek.max || PREVIEW_FALLBACK_SEC);
+    const limit = PREVIEW_FALLBACK_SEC;
     const t = Math.min(audio.currentTime || 0, limit);
-    seek.value = String(t);
     tCur.textContent = fmtTime(t);
 
     // Progreso en lockscreen/Dynamic Island
