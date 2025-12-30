@@ -256,7 +256,7 @@ body{
   position: fixed;
   left: 10px;
   right: 10px;
-bottom: calc(26px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   margin: 0 auto;
 
   width: min(1100px, calc(100vw - 20px));
@@ -359,28 +359,34 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   text-overflow: ellipsis;
 }
 
-/* Tiempos en las cápsulas superiores (sin seek) */
-.ps-times{
+/* =========================================================
+   TIEMPOS SEPARADOS (sin banda)
+   - NO tocamos el JS: siguen siendo #tCur y #tMax
+   - Ajusta cada uno por separado con left/top
+========================================================= */
+#tCur, #tMax{
   position: absolute;
-  left: 25.5%;
-  top: 53%;
-  width: 56%;
-  height: 10%;
   pointer-events: none;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 
   color: rgba(242,245,255,.80);
   font-size: 15px;
   font-weight: 800;
   text-shadow: 0 1px 12px rgba(0,0,0,.65);
+  line-height: 1;
 }
 
-/* Ajuste fino: que el tiempo no “toque” los círculos */
-.ps-times #tCur{ padding-left: 14px; }
-.ps-times #tMax{ padding-right: 14px; }
+/* MUEVE SOLO ESTO para ajustar el tiempo actual */
+#tCur{
+  left: 25.5%;
+  top: 53%;
+}
+
+/* MUEVE SOLO ESTO para ajustar el tiempo total */
+#tMax{
+  left: 76.5%;
+  top: 53%;
+}
+
 /* Botones (zonas clicables transparentes) */
 .ps-btn{
   position: absolute;
@@ -390,14 +396,14 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 
-  /* clave: centrar texto dentro de la zona clicable */
+  /* clave: centrar texto/icono dentro de la zona clicable */
   display: grid;
   place-items: center;
   font-weight: 800;
   line-height: 1;
 }
 
-/* Prev / Next: cápsulas laterales (ajuste fino si quieres, pero funcional ya) */
+/* Prev / Next: (si ya no los usas, puedes borrarlos del HTML/JS, pero CSS no molesta) */
 .ps-prev{
   left: 26%;
   top: 42%;
@@ -405,7 +411,6 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   height: 16%;
   border-radius: 999px;
 }
-
 .ps-next{
   left: 58%;
   top: 42%;
@@ -413,6 +418,7 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   height: 16%;
   border-radius: 999px;
 }
+
 /* Botones SKIP 10s: se colocan sobre los dos círculos pequeños */
 .ps-skipback,
 .ps-skipfwd{
@@ -442,6 +448,7 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   text-shadow: 0 1px 10px rgba(0,0,0,.55);
   transform: translateY(1px);
 }
+
 /* Play: knob central grande */
 .ps-play{
   left: 41%;
@@ -464,6 +471,7 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   line-height: 1;
   transform: translateY(10px);
 }
+
 /* Spotify / YTM: exactamente sobre los iconos detectados */
 .ps-spotify{
   left: var(--ps-spotify-left);
@@ -497,45 +505,47 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   text-shadow: 0 1px 12px rgba(0,0,0,.70);
   transform: translateY(-1px);
 }
-/* Móvil: el skin escala solo, pero ajustamos tipografías y padding del main */
+
+/* =========================
+   MÓVIL (vertical)
+========================= */
 @media (max-width: 520px){
   .app{
     padding-bottom: calc(320px + env(safe-area-inset-bottom, 0px));
   }
 
-  .ps-time{
-    font-size: 11px;
+  /* Si quieres reducir SOLO en móvil: */
+  #tCur, #tMax{
+    font-size: 14px;
   }
-   /* =========================
+}
+
+/* =========================
    AJUSTE HORIZONTAL (landscape)
-   - Solo corrige offsets del overlay
+   - Ahora SÍ funciona: está fuera del media de móvil
 ========================= */
 @media (orientation: landscape){
   .playerSkin{
     bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* Tiempos: suele quedar un pelín bajo/alto en horizontal */
-  .ps-times{
-    top: 31%;   /* AJUSTA este número */
-    left: 25.5%;/* si también se desplaza lateral */
-    width: 56%;
-  }
+  /* Ajusta tiempos independiente en horizontal */
+  #tCur{ top: 31%; }
+  #tMax{ top: 31%; }
 
   /* Botones redondos ↺ ↻: micro ajuste vertical */
   .ps-skipback,
   .ps-skipfwd{
-    top: 41.5%; /* AJUSTA este número */
+    top: 41.5%;
   }
 
   /* Play: a veces queda “alto” por el reescalado */
   .ps-play{
-    top: 36.5%; /* AJUSTA este número */
+    top: 36.5%;
   }
 
   /* Icono play dentro del knob */
   .ps-play::before{
-    transform: translateY(9px); /* AJUSTA este número */
+    transform: translateY(9px);
   }
-}
 }
