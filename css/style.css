@@ -9,6 +9,8 @@
   --good:#47ffb8;
   --shadow: 0 10px 40px rgba(0,0,0,.45);
   --r:16px;
+  --coverSize: 88px;   /* tamaño por defecto (iPad/horizontal se ve muy bien) */
+  --coverRadius: 18px;
 }
 *{ box-sizing:border-box; }
 html,body{ height:100%; }
@@ -114,24 +116,45 @@ body{
   min-height: 92px;
 }
 .card:hover{ transform: translateY(-1px); background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.14); }
-.cardInner{ display:flex; gap:12px; padding: 12px; align-items:center; }
-.cardCover{
-  width:64px; height:64px; border-radius: 14px;
-  background: rgba(255,255,255,.08);
-  border:1px solid var(--line);
-  background-size: cover; background-position:center;
-  flex:0 0 auto;
+.cardInner{
+  display: grid;
+  grid-template-columns: var(--coverSize) 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
 }
-.cardTitle{ font-weight: 760; margin:0; }
-.cardSub{ color: var(--muted); font-size: 13px; margin-top: 3px; }
+/* Carátula SIEMPRE igual */
+.cardCover{
+  width: var(--coverSize);
+  height: var(--coverSize);
+  aspect-ratio: 1 / 1;
+  border-radius: var(--coverRadius);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  flex-shrink: 0;           /* por si algún estilo viejo la trataba como flex-item */
+  overflow: hidden;
+}
+/* Texto: no empuja ni rompe la estructura */
+.cardTitle{
+  min-width: 0;             /* CLAVE para que el grid recorte bien */
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cardSub{
+  min-width: 0;
+  opacity: .8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Badge siempre en su columna, sin afectar a portada/texto */
 .badge{
-  margin-left:auto;
-  font-size: 12px;
-  color: rgba(242,245,255,.90);
-  padding: 6px 10px;
-  border-radius: 999px;
-  border:1px solid var(--line);
-  background: rgba(255,255,255,.04);
+  justify-self: end;
+  white-space: nowrap;
 }
 .badge.good{ border-color: rgba(71,255,184,.35); background: rgba(71,255,184,.08); }
 .btn{
@@ -311,47 +334,23 @@ body:has(#playerDock:not([hidden])){
     opacity: .92;
   }
 }
-/* 📱 iPhone en vertical: 1 columna + carátula SIEMPRE igual */
-@media (max-width: 600px) {
-  .grid {
+/* 📱 iPhone vertical: 1 columna, tarjeta a ancho completo, portada grande y fija */
+@media (max-width: 600px){
+  :root{
+    --coverSize: 110px;     /* aquí está la magia: grande en vertical */
+    --coverRadius: 20px;
+  }
+
+  .grid{
     grid-template-columns: 1fr;
   }
 
+  .card{
+    width: 100%;
+  }
+
   .cardInner{
-    display: flex;          /* por si no lo era */
-    align-items: center;
-    gap: 14px;
     padding: 14px 16px;
-  }
-
-  /* Carátula: tamaño fijo + NO se encoge jamás */
-  .cardCover{
-    width: 140px;
-    height: 80px;
-    flex: 0 0 140px;        /* clave: bloquea el ancho */
-    border-radius: 16px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-
-  /* Bloque de texto: que se ajuste y no empuje a la carátula */
-  .cardInner > div{
-    flex: 1 1 auto;
-    min-width: 0;           /* clave para elipsis/wrap correcto */
-  }
-
-  /* Badge: ancho fijo para que nunca reestructure la tarjeta */
-  .badge{
-    flex: 0 0 110px;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  /* Opcional: si quieres que el título no “rompa” el layout */
-  .cardTitle{
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    gap: 14px;
   }
 }
