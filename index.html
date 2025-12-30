@@ -39,42 +39,38 @@
        PLAYER: PNG SKIN + OVERLAY
        Mantiene los IDs que ya usa tu JS
   ========================== -->
-  <div id="playerDock" class="playerSkin" hidden aria-label="Reproductor">
-    <!-- “Skin” como fondo (CSS). Esta capa solo contiene la UI clicable/visible -->
-    <div class="ps-ui" aria-hidden="false">
+<div id="playerDock" class="playerSkin" hidden aria-label="Reproductor">
+  <div class="ps-ui" aria-hidden="false">
 
-      <!-- Portada -->
-      <div id="dockCover" class="ps-cover" role="img" aria-label="Portada"></div>
+    <!-- Portada -->
+    <div id="dockCover" class="ps-cover" role="img" aria-label="Portada"></div>
 
-      <!-- Textos -->
-      <div class="ps-text">
-        <div class="ps-title" id="dockTitle">—</div>
-        <div class="ps-artist" id="dockSub">—</div>
-      </div>
-
-      <!-- Barra progreso (visual) -->
-      <div class="ps-progress" aria-label="Progreso">
-        <input id="seek" class="ps-seek" type="range" min="0" max="30" value="0" step="0.25" aria-label="Posición"/>
-        <div class="ps-time">
-          <span id="tCur">0:00</span>
-          <span id="tMax">0:30</span>
-        </div>
-      </div>
-
-      <!-- Botones “zonas clicables” encima del PNG -->
-      <button id="btnPrev" class="ps-btn ps-prev" type="button" aria-label="Anterior"></button>
-      <button id="btnPlay" class="ps-btn ps-play" type="button" aria-label="Play/Pause"></button>
-      <button id="btnNext" class="ps-btn ps-next" type="button" aria-label="Siguiente"></button>
-      <button id="btnRew10" class="ps-btn ps-skipback" type="button" aria-label="Retroceder 10 segundos"></button>
-      <button id="btnFwd10" class="ps-btn ps-skipfwd" type="button" aria-label="Avanzar 10 segundos"></button>
-  
-      <a id="btnSpotify" class="ps-btn ps-spotify" target="_blank" rel="noreferrer noopener" aria-label="Abrir en Spotify"></a>
-      <a id="btnYTM" class="ps-btn ps-ytm" target="_blank" rel="noreferrer noopener" aria-label="Abrir en YouTube Music"></a>
-
-      <!-- Cerrar (lo he “mapeado” al engranaje del PNG) -->
-      <button id="btnCloseDock" class="ps-btn ps-close" type="button" aria-label="Cerrar"></button>
+    <!-- Textos -->
+    <div class="ps-text">
+      <div class="ps-title" id="dockTitle">—</div>
+      <div class="ps-artist" id="dockSub">—</div>
     </div>
+
+    <!-- SOLO TIEMPOS (sin seek/slider) -->
+    <div class="ps-times" aria-label="Tiempos">
+      <span id="tCur">0:00</span>
+      <span id="tMax">0:30</span>
+    </div>
+
+    <!-- Botones redondos: -10 / Play / +10 -->
+    <button id="btnRew10" class="ps-btn ps-skipback" type="button" aria-label="Retroceder 10 segundos"></button>
+    <button id="btnPlay" class="ps-btn ps-play" type="button" aria-label="Play/Pause"></button>
+    <button id="btnFwd10" class="ps-btn ps-skipfwd" type="button" aria-label="Avanzar 10 segundos"></button>
+
+    <!-- Enlaces -->
+    <a id="btnSpotify" class="ps-btn ps-spotify" target="_blank" rel="noreferrer noopener" aria-label="Abrir en Spotify"></a>
+    <a id="btnYTM" class="ps-btn ps-ytm" target="_blank" rel="noreferrer noopener" aria-label="Abrir en YouTube Music"></a>
+
+    <!-- Cerrar: el botón físico del skin -->
+    <button id="btnCloseDock" class="ps-btn ps-close" type="button" aria-label="Cerrar"></button>
+
   </div>
+</div>
 
   <audio id="audio" preload="none" playsinline></audio>
 
