@@ -29,28 +29,49 @@
 
   <main id="app" class="app"></main>
 
-  <div id="playerDock" class="dock" hidden>
+<div id="playerDock" class="dock" hidden>
+
+  <!-- “Pantalla” superior -->
+  <div class="dockScreen">
     <div class="dockCover" id="dockCover" role="img" aria-label="Portada"></div>
+
     <div class="dockMeta">
+      <div class="dockKicker">Now Playing</div>
       <div class="dockTitle" id="dockTitle">—</div>
       <div class="dockSub" id="dockSub">—</div>
-      <div class="dockControls">
-        <button id="btnPrev" class="btn icon" type="button" aria-label="Anterior">⟨⟨</button>
-        <button id="btnPlay" class="btn primary" type="button" aria-label="Play/Pause">Play</button>
-        <button id="btnNext" class="btn icon" type="button" aria-label="Siguiente">⟩⟩</button>
-        <a id="btnSpotify" class="btn icon" target="_blank" rel="noreferrer noopener" aria-label="Abrir en Spotify">Spotify</a>
-        <a id="btnYTM" class="btn icon" target="_blank" rel="noreferrer noopener" aria-label="Abrir en YouTube Music">YTM</a>
-      </div>
-      <div class="dockBar">
-        <input id="seek" type="range" min="0" max="30" value="0" step="0.25" aria-label="Posición"/>
-        <div class="dockTime">
-          <span id="tCur">0:00</span>
-          <span id="tMax">0:30</span>
-        </div>
+
+      <!-- mini barra (decorativa o sincronizable por JS) -->
+      <div class="miniBar" aria-hidden="true">
+        <div class="miniFill"></div>
       </div>
     </div>
-    <button id="btnCloseDock" class="btn ghost" type="button" aria-label="Cerrar">✕</button>
+
+    <button id="btnCloseDock" class="btnClose" type="button" aria-label="Cerrar">✕</button>
   </div>
+
+  <!-- Botonera “gadget” -->
+  <div class="dockControls">
+    <button id="btnPrev" class="btnSide" type="button" aria-label="Anterior"></button>
+
+    <!-- mismo id, pero ahora será redondo y con icono -->
+    <button id="btnPlay" class="btnMain" type="button" aria-label="Play/Pause"></button>
+
+    <button id="btnNext" class="btnSide" type="button" aria-label="Siguiente"></button>
+
+    <a id="btnSpotify" class="btnBrand" target="_blank" rel="noreferrer noopener" aria-label="Abrir en Spotify"></a>
+    <a id="btnYTM" class="btnBrand" target="_blank" rel="noreferrer noopener" aria-label="Abrir en YouTube Music"></a>
+  </div>
+
+  <!-- Barra inferior -->
+  <div class="dockBottom">
+    <div class="dockTimeSingle"><span id="tCur">0:00</span></div>
+
+    <input id="seek" type="range" min="0" max="30" value="0" step="0.25" aria-label="Posición"/>
+
+    <div class="dockTimeSingle"><span id="tMax">0:30</span></div>
+  </div>
+
+</div>
 
   <audio id="audio" preload="none" playsinline></audio>
 
