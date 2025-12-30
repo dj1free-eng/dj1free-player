@@ -506,4 +506,36 @@ bottom: calc(26px + env(safe-area-inset-bottom, 0px));
   .ps-time{
     font-size: 11px;
   }
+   /* =========================
+   AJUSTE HORIZONTAL (landscape)
+   - Solo corrige offsets del overlay
+========================= */
+@media (orientation: landscape){
+  .playerSkin{
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Tiempos: suele quedar un pelín bajo/alto en horizontal */
+  .ps-times{
+    top: 31%;   /* AJUSTA este número */
+    left: 25.5%;/* si también se desplaza lateral */
+    width: 56%;
+  }
+
+  /* Botones redondos ↺ ↻: micro ajuste vertical */
+  .ps-skipback,
+  .ps-skipfwd{
+    top: 41.5%; /* AJUSTA este número */
+  }
+
+  /* Play: a veces queda “alto” por el reescalado */
+  .ps-play{
+    top: 36.5%; /* AJUSTA este número */
+  }
+
+  /* Icono play dentro del knob */
+  .ps-play::before{
+    transform: translateY(9px); /* AJUSTA este número */
+  }
+}
 }
