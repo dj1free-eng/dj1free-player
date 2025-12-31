@@ -334,12 +334,12 @@ body{
   --v-dock-bottom: 26px; /* + = sube, - = baja */
 
   /* Tiempo actual (tCur) */
-  --v-tcur-left: 23.3%;  /* + derecha | - izquierda */
-  --v-tcur-top:  53.8%;    /* + abajo   | - arriba */
+  --v-tcur-left: 23.8%;  /* + derecha | - izquierda */
+  --v-tcur-top:  54.1%;    /* + abajo   | - arriba */
 
   /* Tiempo total (tMax) */
-  --v-tmax-left: 68.3%;
-  --v-tmax-top:  53.8%;
+  --v-tmax-left: 68.8%;
+  --v-tmax-top:  54.1%;
 
   /* Tamaño texto tiempos */
   --v-time-font: 12px;
