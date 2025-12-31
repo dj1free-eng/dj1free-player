@@ -58,22 +58,44 @@ function toYouTubeMusicAppUrl(url){
  * Intenta abrir app vía esquema. Si falla (no instalada), vuelve al web.
  * En iOS: usamos navegación directa (no window.open) para maximizar compatibilidad.
  */
+let appFallbackTimer = null;
+
 function openAppOrWeb(appUrl, webUrl){
   const app = safeUrl(appUrl);
   const web = safeUrl(webUrl);
   if(!web) return;
 
+  // Limpia cualquier intento anterior
+  if(appFallbackTimer){
+    clearTimeout(appFallbackTimer);
+    appFallbackTimer = null;
+  }
+
+  // Si no hay app, abre web directamente
   if(!app){
     window.location.href = web;
     return;
   }
 
+  // Intentar abrir la app
   window.location.href = app;
 
-  setTimeout(() => {
-    window.location.href = web;
+  // Fallback SOLO si seguimos visibles (Spotify no se abrió)
+  appFallbackTimer = setTimeout(() => {
+    if(document.visibilityState === "visible"){
+      window.location.href = web;
+    }
+    appFallbackTimer = null;
   }, 900);
 }
+
+// Si la app se abre (Safari pasa a background), cancelamos el fallback
+document.addEventListener("visibilitychange", () => {
+  if(document.visibilityState === "hidden" && appFallbackTimer){
+    clearTimeout(appFallbackTimer);
+    appFallbackTimer = null;
+  }
+});
 
 function guessMimeFromUrl(url){
   const u = safeUrl(url).toLowerCase();
