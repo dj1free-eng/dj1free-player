@@ -335,14 +335,14 @@ body{
 
   /* Tiempo actual (tCur) */
   --v-tcur-left: 23%;  /* + derecha | - izquierda */
-  --v-tcur-top:  53%;    /* + abajo   | - arriba */
+  --v-tcur-top:  53.3%;    /* + abajo   | - arriba */
 
   /* Tiempo total (tMax) */
-  --v-tmax-left: 67.5%;
-  --v-tmax-top:  53%;
+  --v-tmax-left: 68%;
+  --v-tmax-top:  53.3%;
 
   /* Tamaño texto tiempos */
-  --v-time-font: 13px;
+  --v-time-font: 12px;
 
   /* Botón ↺ (rew 10s) */
   --v-rew-left: 32.5%;
