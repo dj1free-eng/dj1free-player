@@ -342,7 +342,7 @@ body{
   --v-tmax-top:  53%;
 
   /* Tamaño texto tiempos */
-  --v-time-font: 15px;
+  --v-time-font: 13px;
 
   /* Botón ↺ (rew 10s) */
   --v-rew-left: 32.5%;
@@ -374,7 +374,7 @@ body{
     --h-tmax-left: 70.5%;
     --h-tmax-top:  56%;
 
-    --h-time-font: 14px;
+    --h-time-font: 17px;
 
     --h-rew-left: 32.5%;
     --h-rew-top:  41.5%;
