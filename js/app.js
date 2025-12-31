@@ -48,10 +48,8 @@ function toSpotifyAppUrl(url){
 }
 
 function toYouTubeMusicAppUrl(url){
-  const u = safeUrl(url);
-  const m = u.match(/[?&]v=([^&]+)/);
-  if(!m) return "";
-  return `ytmusic://music.youtube.com/watch?v=${encodeURIComponent(m[1])}`;
+  // Devolvemos vacío para forzar SOLO web (evita "dirección no válida")
+  return "";
 }
 
 /**
@@ -65,38 +63,47 @@ function openAppOrWeb(appUrl, webUrl){
   const web = safeUrl(webUrl);
   if(!web) return;
 
-  // Limpia cualquier intento anterior
-  if(appFallbackTimer){
-    clearTimeout(appFallbackTimer);
-    appFallbackTimer = null;
-  }
-
-  // Si no hay app, abre web directamente
+  // Si no hay appUrl, tiramos directo a web
   if(!app){
     window.location.href = web;
     return;
   }
 
-  // Intentar abrir la app
+  // Cancelación segura del fallback si la app realmente se abre
+  let fallbackTimer = null;
+  let cancelled = false;
+
+  const cleanup = ()=>{
+    if(cancelled) return;
+    cancelled = true;
+    if(fallbackTimer) clearTimeout(fallbackTimer);
+    document.removeEventListener("visibilitychange", onVis, true);
+    window.removeEventListener("pagehide", onHide, true);
+    window.removeEventListener("blur", onBlur, true);
+  };
+
+  const onVis = ()=>{
+    // Si la página pasa a hidden, es que el sistema está cambiando a la app
+    if(document.visibilityState === "hidden") cleanup();
+  };
+  const onHide = ()=> cleanup();
+  const onBlur = ()=> cleanup();
+
+  document.addEventListener("visibilitychange", onVis, true);
+  window.addEventListener("pagehide", onHide, true);
+  window.addEventListener("blur", onBlur, true);
+
+  // Intento abrir app (esto dispara el modal de iOS)
   window.location.href = app;
 
-  // Fallback SOLO si seguimos visibles (Spotify no se abrió)
-  appFallbackTimer = setTimeout(() => {
-    if(document.visibilityState === "visible"){
+  // Fallback SOLO si NO se abrió la app (la página nunca se ocultó)
+  fallbackTimer = setTimeout(()=>{
+    if(!cancelled && document.visibilityState !== "hidden"){
+      cleanup();
       window.location.href = web;
     }
-    appFallbackTimer = null;
-  }, 900);
+  }, 1200);
 }
-
-// Si la app se abre (Safari pasa a background), cancelamos el fallback
-document.addEventListener("visibilitychange", () => {
-  if(document.visibilityState === "hidden" && appFallbackTimer){
-    clearTimeout(appFallbackTimer);
-    appFallbackTimer = null;
-  }
-});
-
 function guessMimeFromUrl(url){
   const u = safeUrl(url).toLowerCase();
   if(u.endsWith(".png")) return "image/png";
