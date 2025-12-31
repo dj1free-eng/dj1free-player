@@ -1,100 +1,397 @@
 /* =========================================================
-   🎛️ TORNILLOS DEL REPRODUCTOR — VERTICAL (POR DEFECTO)
-   👉 Ajusta SOLO estos valores
+   VARIABLES BASE
 ========================================================= */
 :root{
-
-  /* ---------- TIEMPOS ---------- */
-
-  /* Tiempo ACTUAL (00:05)
-     left: + → derecha | - → izquierda
-     top:  + → abajo   | - → arriba */
-  --v-tcur-left: 25.5%;
-  --v-tcur-top: 53%;
-
-  /* Tiempo TOTAL (00:30)
-     left: + → derecha | - → izquierda
-     top:  + → abajo   | - → arriba */
-  --v-tmax-left: 76.5%;
-  --v-tmax-top: 53%;
-
-  /* Tamaño del texto de los tiempos */
-  --v-time-font-size: 15px;
-
-
-  /* ---------- BOTONES SKIP ---------- */
-
-  /* Botón ↺ (retroceder 10s) */
-  --v-skipback-left: 32.5%;
-  --v-skipback-top: 50%;
-
-  /* Botón ↻ (avanzar 10s) */
-  --v-skipfwd-left: 60.0%;
-  --v-skipfwd-top: 50%;
-
-
-  /* ---------- BOTÓN PLAY ---------- */
-
-  /* Botón central ▶ */
-  --v-play-top: 37%;
-
-  /* Icono ▶ dentro del botón */
-  --v-play-icon-offset-y: 10px;
-
-
-  /* ---------- POSICIÓN DEL DOCK ---------- */
-
-  /* Separación del dock respecto al borde inferior */
-  --v-dock-bottom: 26px;
+  --bg:#070913;
+  --panel:rgba(255,255,255,.06);
+  --text:#f2f5ff;
+  --muted:rgba(242,245,255,.72);
+  --line:rgba(255,255,255,.10);
+  --accent:#8ae6ff;
+  --accent2:#b68cff;
+  --good:#47ffb8;
+  --shadow: 0 10px 40px rgba(0,0,0,.45);
+  --r:16px;
+  --coverSize: 88px;
+  --coverRadius: 18px;
 }
 
-
+*{ box-sizing:border-box; }
+html, body{ min-height:100%; }
 
 /* =========================================================
-   🎛️ TORNILLOS DEL REPRODUCTOR — HORIZONTAL
-   👉 Solo se aplican en landscape
+   FONDO GLOBAL — oscuro premium con profundidad (NO pastel)
 ========================================================= */
-@media (orientation: landscape){
-  :root{
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text);
 
-    /* ---------- TIEMPOS ---------- */
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(1100px 700px at 15% 0%, rgba(138,230,255,.16), transparent 60%),
+    radial-gradient(900px 650px at 85% 12%, rgba(182,140,255,.14), transparent 55%),
+    radial-gradient(900px 650px at 20% 60%, rgba(255,180,120,.10), transparent 60%),
+    radial-gradient(1100px 800px at 80% 75%, rgba(120,255,190,.08), transparent 60%),
+    linear-gradient(180deg,
+      #0e1226 0%,
+      #0a0e1d 35%,
+      #070913 70%,
+      #050610 100%
+    );
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-attachment:fixed;
+}
 
-    --h-tcur-left: 25.5%;
-    --h-tcur-top: 31%;
+/* =========================================================
+   TOPBAR
+========================================================= */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(9,12,24,.65);
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding: 12px 14px;
+}
 
-    --h-tmax-left: 76.5%;
-    --h-tmax-top: 31%;
+.brand{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  text-decoration:none;
+  color:var(--text);
+}
+.brandMark{
+  width:30px;
+  height:30px;
+  border-radius:10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 10px 30px rgba(138,230,255,.25);
+}
+.brandText{ font-weight:700; }
 
-    --h-time-font-size: 14px;
+.topnav{ display:flex; gap:10px; align-items:center; }
+.navlink{
+  color:var(--muted);
+  text-decoration:none;
+  padding:8px 12px;
+  border-radius:12px;
+}
+.navlink.active{
+  color:var(--text);
+  background: rgba(255,255,255,.08);
+  border:1px solid var(--line);
+}
 
+/* =========================================================
+   BOTONES (generales)
+========================================================= */
+.btn{
+  appearance:none;
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor:pointer;
+}
+.btn:hover{ background: rgba(255,255,255,.08); }
+.btn.primary{
+  background: linear-gradient(135deg, rgba(138,230,255,.22), rgba(182,140,255,.18));
+  border-color: rgba(255,255,255,.14);
+}
+.btn.ghost{
+  padding: 10px 10px;
+}
 
-    /* ---------- BOTONES SKIP ---------- */
+/* =========================================================
+   APP CONTENIDO
+========================================================= */
+.app{
+  max-width:1100px;
+  margin:0 auto;
+  padding: 18px 16px;
 
-    --h-skipback-left: 32.5%;
-    --h-skipback-top: 41.5%;
+  /* Reserva de espacio para el reproductor fijo */
+  padding-bottom: calc(380px + env(safe-area-inset-bottom, 0px));
+}
 
-    --h-skipfwd-left: 60.0%;
-    --h-skipfwd-top: 41.5%;
+/* =========================================================
+   HERO
+========================================================= */
+.hero{
+  position:relative;
+  border-radius: calc(var(--r) + 8px);
+  overflow:hidden;
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.05);
+  box-shadow: var(--shadow);
+}
+.heroBg{
+  position:absolute;
+  inset:0;
+  background-size:cover;
+  background-position:center;
+  filter: saturate(1.05) contrast(1.05);
+}
+.heroOverlay{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(
+    90deg,
+    rgba(7,9,19,.90),
+    rgba(7,9,19,.55) 55%,
+    rgba(7,9,19,.20)
+  );
+}
+.heroBody{
+  position:relative;
+  padding:20px;
+  display:flex;
+  gap:16px;
+  align-items:flex-end;
+}
+.heroCover{
+  width:110px;
+  height:110px;
+  border-radius:18px;
+  background-size:cover;
+  background-position:center;
+  border:1px solid var(--line);
+}
+.heroTitle{
+  font-size:26px;
+  font-weight:800;
+}
+.heroMeta{
+  color:var(--muted);
+  font-size:14px;
+}
+.heroKicker{
+  font-size: 12px;
+  color: rgba(242,245,255,.70);
+  margin-bottom: 6px;
+}
+.heroBtns{
+  margin-top: 12px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
 
+/* =========================================================
+   SECCIONES
+========================================================= */
+.section{ margin-top:22px; }
+.sectionHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:12px;
+}
+.h2{ font-size:16px; margin:0; }
+.small{ color:var(--muted); font-size:13px; }
 
-    /* ---------- BOTÓN PLAY ---------- */
+/* =========================================================
+   GRID + CARDS (BANNER ESTABLE)
+========================================================= */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap:14px;
+}
 
-    --h-play-top: 36.5%;
-    --h-play-icon-offset-y: 9px;
+.card{
+  grid-column: span 6;
+  border-radius: var(--r);
+  background: rgba(255,255,255,.05);
+  border:1px solid var(--line);
+  box-shadow: var(--shadow);
+  transition: transform .12s ease, background .12s ease;
+  cursor:pointer;
+}
+.card:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.07);
+}
 
+.cardInner{
+  display:grid;
+  grid-template-columns: var(--coverSize) minmax(0,1fr) auto;
+  gap:14px;
+  align-items:center;
+  padding:14px 16px;
+}
 
-    /* ---------- POSICIÓN DEL DOCK ---------- */
+.cardCover{
+  width: var(--coverSize);
+  height: var(--coverSize);
+  border-radius: var(--coverRadius);
+  background-size:cover;
+  background-position:center;
+  flex-shrink:0;
+}
 
-    --h-dock-bottom: 18px;
+.cardTitle{
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.cardSub{
+  color:var(--muted);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.badge{
+  white-space:nowrap;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+}
+.badge.good{
+  border-color: rgba(71,255,184,.35);
+  background: rgba(71,255,184,.08);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (min-width:740px){
+  .card{ grid-column: span 4; }
+}
+@media (min-width:980px){
+  .card{ grid-column: span 3; }
+}
+
+/* iPhone vertical: banners 1 columna */
+@media (max-width:600px){
+  .grid{ grid-template-columns:1fr; }
+  .cardInner{
+    grid-template-columns: 140px minmax(0,1fr) auto;
+  }
+  .cardCover{
+    width:140px;
+    height:80px;
+    border-radius:16px;
   }
 }
 
 
-
 /* =========================================================
-   PLAYER SKIN (NO TOCAR)
+   PLAYER SKIN (PNG como plantilla + overlay)
+   - Un único bloque
+   - Aislado
+   - Control por “tornillos” (variables) para VERTICAL y HORIZONTAL
 ========================================================= */
 
+/* =========================
+   ZONAS DEL PNG (NO TOCAR)
+   Medidas reales del PNG 1443x525 (en %)
+========================= */
+:root{
+  /* Portada */
+  --ps-cover-left: 9.4941%;
+  --ps-cover-top: 7.2381%;
+  --ps-cover-w: 21.6216%;
+  --ps-cover-h: 36.1905%;
+
+  /* Spotify / YouTube Music */
+  --ps-spotify-left: 90.5752%;
+  --ps-spotify-top: 57.7143%;
+  --ps-spotify-w: 4.6431%;
+  --ps-spotify-h: 12.1905%;
+
+  --ps-ytm-left: 85.7242%;
+  --ps-ytm-top: 68.1905%;
+  --ps-ytm-w: 4.3659%;
+  --ps-ytm-h: 11.6190%;
+
+  /* Botón “engranaje” del skin (lo usamos como cerrar) */
+  --ps-close-left: 5.2668%;
+  --ps-close-top: 70.6667%;
+  --ps-close-w: 7.1379%;
+  --ps-close-h: 10.2857%;
+}
+
+/* =========================
+   🎛️ TORNILLOS — VERTICAL (DEFAULT)
+   Ajusta SOLO estos valores
+========================= */
+:root{
+  /* Dock */
+  --v-dock-bottom: 26px; /* + = sube, - = baja */
+
+  /* Tiempo actual (tCur) */
+  --v-tcur-left: 25.5%;  /* + derecha | - izquierda */
+  --v-tcur-top:  53%;    /* + abajo   | - arriba */
+
+  /* Tiempo total (tMax) */
+  --v-tmax-left: 76.5%;
+  --v-tmax-top:  53%;
+
+  /* Tamaño texto tiempos */
+  --v-time-font: 15px;
+
+  /* Botón ↺ (rew 10s) */
+  --v-rew-left: 32.5%;
+  --v-rew-top:  50%;
+
+  /* Botón ↻ (fwd 10s) */
+  --v-fwd-left: 60.0%;
+  --v-fwd-top:  50%;
+
+  /* Botón Play (zona clic) */
+  --v-play-left: 41%;
+  --v-play-top:  37%;
+
+  /* Icono ▶ dentro del botón Play */
+  --v-play-icon-y: 10px; /* + baja icono | - sube icono */
+}
+
+/* =========================
+   🎛️ TORNILLOS — HORIZONTAL (LANDSCAPE)
+   Ajusta SOLO estos valores
+========================= */
+@media (orientation: landscape){
+  :root{
+    --h-dock-bottom: 18px;
+
+    --h-tcur-left: 25.5%;
+    --h-tcur-top:  31%;
+
+    --h-tmax-left: 76.5%;
+    --h-tmax-top:  31%;
+
+    --h-time-font: 14px;
+
+    --h-rew-left: 32.5%;
+    --h-rew-top:  41.5%;
+
+    --h-fwd-left: 60.0%;
+    --h-fwd-top:  41.5%;
+
+    --h-play-left: 41%;
+    --h-play-top:  36.5%;
+
+    --h-play-icon-y: 9px;
+  }
+}
+
+/* =========================
+   CONTENEDOR SKIN
+========================= */
 .playerSkin{
   position: fixed;
   left: 10px;
@@ -117,7 +414,7 @@
 
 @media (orientation: landscape){
   .playerSkin{
-    bottom: calc(var(--h-dock-bottom) + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--h-dock-bottom, var(--v-dock-bottom)) + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -128,12 +425,63 @@
   inset: 0;
 }
 
+/* =========================
+   PORTADA
+========================= */
+.ps-cover{
+  position: absolute;
+  left: var(--ps-cover-left);
+  top: var(--ps-cover-top);
+  width: var(--ps-cover-w);
+  height: var(--ps-cover-h);
 
+  border-radius: 18px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
 
-/* =========================================================
-   TIEMPOS (capas independientes)
-========================================================= */
+/* =========================
+   TEXTOS (título + artista)
+========================= */
+.ps-text{
+  position: absolute;
+  left: 33.5%;
+  top: 13%;
+  width: 54.5%;
+  height: 18%;
 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+
+  text-align: left;
+  pointer-events: none;
+}
+
+.ps-title{
+  font-weight: 850;
+  font-size: clamp(14px, 1.7vw, 20px);
+  line-height: 1.05;
+  color: rgba(242,245,255,.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ps-artist{
+  font-weight: 600;
+  font-size: clamp(12px, 1.1vw, 14px);
+  color: rgba(242,245,255,.68);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================
+   TIEMPOS (capas separadas)
+========================= */
 #tCur, #tMax{
   position: absolute;
   pointer-events: none;
@@ -143,7 +491,7 @@
   text-shadow: 0 1px 12px rgba(0,0,0,.65);
   line-height: 1;
 
-  font-size: var(--v-time-font-size);
+  font-size: var(--v-time-font);
 }
 
 #tCur{
@@ -158,65 +506,84 @@
 
 @media (orientation: landscape){
   #tCur{
-    left: var(--h-tcur-left);
-    top: var(--h-tcur-top);
-    font-size: var(--h-time-font-size);
+    left: var(--h-tcur-left, var(--v-tcur-left));
+    top: var(--h-tcur-top, var(--v-tcur-top));
+    font-size: var(--h-time-font, var(--v-time-font));
   }
   #tMax{
-    left: var(--h-tmax-left);
-    top: var(--h-tmax-top);
-    font-size: var(--h-time-font-size);
+    left: var(--h-tmax-left, var(--v-tmax-left));
+    top: var(--h-tmax-top, var(--v-tmax-top));
+    font-size: var(--h-time-font, var(--v-time-font));
   }
 }
 
+/* =========================
+   BOTONES (zonas clicables transparentes)
+========================= */
+.ps-btn{
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
 
-/* =========================================================
-   BOTONES SKIP ±10s
-========================================================= */
-
+/* ---------- SKIP 10s (círculos pequeños) ---------- */
 .ps-skipback,
 .ps-skipfwd{
-  position: absolute;
   width: 7.2%;
   height: 16%;
   border-radius: 999px;
 }
 
 .ps-skipback{
-  left: var(--v-skipback-left);
-  top: var(--v-skipback-top);
+  left: var(--v-rew-left);
+  top: var(--v-rew-top);
 }
 
 .ps-skipfwd{
-  left: var(--v-skipfwd-left);
-  top: var(--v-skipfwd-top);
+  left: var(--v-fwd-left);
+  top: var(--v-fwd-top);
+}
+
+.ps-skipback::before{
+  content: "↺";
+  font-size: clamp(18px, 2.2vw, 26px);
+  color: rgba(242,245,255,.82);
+  text-shadow: 0 1px 10px rgba(0,0,0,.55);
+}
+
+.ps-skipfwd::before{
+  content: "↻";
+  font-size: clamp(18px, 2.2vw, 26px);
+  color: rgba(242,245,255,.82);
+  text-shadow: 0 1px 10px rgba(0,0,0,.55);
 }
 
 @media (orientation: landscape){
   .ps-skipback{
-    left: var(--h-skipback-left);
-    top: var(--h-skipback-top);
+    left: var(--h-rew-left, var(--v-rew-left));
+    top: var(--h-rew-top, var(--v-rew-top));
   }
   .ps-skipfwd{
-    left: var(--h-skipfwd-left);
-    top: var(--h-skipfwd-top);
+    left: var(--h-fwd-left, var(--v-fwd-left));
+    top: var(--h-fwd-top, var(--v-fwd-top));
   }
 }
 
-
-
-/* =========================================================
-   BOTÓN PLAY
-========================================================= */
-
+/* ---------- PLAY (knob central) ---------- */
 .ps-play{
-  position: absolute;
-  left: 41%;
+  left: var(--v-play-left);
   top: var(--v-play-top);
   width: 18%;
   height: 26%;
   border-radius: 999px;
+  color: transparent;
 }
 
 .ps-play::before{
@@ -226,26 +593,38 @@
   text-shadow:
     0 2px 12px rgba(0,0,0,.6),
     0 0 18px rgba(138,230,255,.25);
-  transform: translateY(var(--v-play-icon-offset-y));
+  transform: translateY(var(--v-play-icon-y));
 }
 
 @media (orientation: landscape){
   .ps-play{
-    top: var(--h-play-top);
+    left: var(--h-play-left, var(--v-play-left));
+    top: var(--h-play-top, var(--v-play-top));
   }
   .ps-play::before{
-    transform: translateY(var(--h-play-icon-offset-y));
+    transform: translateY(var(--h-play-icon-y, var(--v-play-icon-y)));
   }
 }
 
+/* ---------- LINKS ---------- */
+.ps-spotify{
+  left: var(--ps-spotify-left);
+  top: var(--ps-spotify-top);
+  width: var(--ps-spotify-w);
+  height: var(--ps-spotify-h);
+  border-radius: 999px;
+}
 
+.ps-ytm{
+  left: var(--ps-ytm-left);
+  top: var(--ps-ytm-top);
+  width: var(--ps-ytm-w);
+  height: var(--ps-ytm-h);
+  border-radius: 999px;
+}
 
-/* =========================================================
-   BOTÓN CERRAR (X)
-========================================================= */
-
+/* ---------- CERRAR (X sobre el engranaje) ---------- */
 .ps-close{
-  position: absolute;
   left: var(--ps-close-left);
   top: var(--ps-close-top);
   width: var(--ps-close-w);
@@ -259,4 +638,13 @@
   font-weight: 900;
   color: rgba(242,245,255,.90);
   text-shadow: 0 1px 12px rgba(0,0,0,.70);
+}
+
+/* =========================
+   MÓVIL
+========================= */
+@media (max-width: 520px){
+  .app{
+    padding-bottom: calc(320px + env(safe-area-inset-bottom, 0px));
+  }
 }
