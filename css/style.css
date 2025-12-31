@@ -632,13 +632,13 @@ body{
   border-radius: 999px;
 }
 
-.ps-close::before{
+/*.ps-close::before{
   content: "✕";
   font-size: clamp(16px, 2.0vw, 22px);
   font-weight: 900;
   color: rgba(242,245,255,.90);
   text-shadow: 0 1px 12px rgba(0,0,0,.70);
-}
+}*/
 
 /* =========================
    MÓVIL
