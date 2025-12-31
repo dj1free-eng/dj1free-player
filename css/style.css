@@ -551,7 +551,7 @@ body{
   top: var(--v-fwd-top);
 }
 
-.ps-skipback::before{
+/*.ps-skipback::before{
   content: "↺";
   font-size: clamp(18px, 2.2vw, 26px);
   color: rgba(242,245,255,.82);
@@ -563,7 +563,7 @@ body{
   font-size: clamp(18px, 2.2vw, 26px);
   color: rgba(242,245,255,.82);
   text-shadow: 0 1px 10px rgba(0,0,0,.55);
-}
+}*/
 
 @media (orientation: landscape){
   .ps-skipback{
@@ -586,7 +586,7 @@ body{
   color: transparent;
 }
 
-.ps-play::before{
+/*.ps-play::before{
   content: "⏯";
   font-size: clamp(34px, 4.8vw, 56px);
   color: rgba(242,245,255,.85);
@@ -594,7 +594,7 @@ body{
     0 2px 12px rgba(0,0,0,.6),
     0 0 18px rgba(138,230,255,.25);
   transform: translateY(var(--v-play-icon-y));
-}
+}*/
 
 @media (orientation: landscape){
   .ps-play{
