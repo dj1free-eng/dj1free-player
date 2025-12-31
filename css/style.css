@@ -353,8 +353,8 @@ body{
   --v-fwd-top:  50%;
 
   /* Botón Play (zona clic) */
-  --v-play-left: 41%;
-  --v-play-top:  37%;
+  --v-play-left: 42%;
+  --v-play-top:  40%;
 
   /* Icono ▶ dentro del botón Play */
   --v-play-icon-y: 10px; /* + baja icono | - sube icono */
