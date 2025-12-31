@@ -368,11 +368,11 @@ body{
   :root{
     --h-dock-bottom: 18px;
 
-    --h-tcur-left: 25.5%;
-    --h-tcur-top:  56%;
+    --h-tcur-left: 24.5%;
+    --h-tcur-top:  55%;
 
-    --h-tmax-left: 70.5%;
-    --h-tmax-top:  56%;
+    --h-tmax-left: 69.5%;
+    --h-tmax-top:  55%;
 
     --h-time-font: 20px;
 
