@@ -334,7 +334,7 @@ body{
   --v-dock-bottom: 26px; /* + = sube, - = baja */
 
   /* Tiempo actual (tCur) */
-  --v-tcur-left: 25.5%;  /* + derecha | - izquierda */
+  --v-tcur-left: 23%;  /* + derecha | - izquierda */
   --v-tcur-top:  53%;    /* + abajo   | - arriba */
 
   /* Tiempo total (tMax) */
