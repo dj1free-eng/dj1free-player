@@ -648,3 +648,56 @@ body{
     padding-bottom: calc(320px + env(safe-area-inset-bottom, 0px));
   }
 }
+/* =========================================================
+   SPECTRUM VISUALIZER – 24 BARRAS
+========================================================= */
+
+/* Tornillos de posición (AJUSTA AQUÍ) */
+:root{
+  --viz-x: 17%;
+  --viz-y: 63%;
+  --viz-w: 66%;
+  --viz-h: 9%;
+}
+
+.viz24{
+  position: absolute;
+  left: var(--viz-x);
+  top: var(--viz-y);
+  width: var(--viz-w);
+  height: var(--viz-h);
+
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 3px;
+  align-items: end;
+
+  padding: 6px 8px;
+  border-radius: 14px;
+
+  background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.12));
+  border: 1px solid rgba(255,255,255,.08);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  pointer-events: none; /* no roba clicks */
+  z-index: 2;
+}
+
+.viz24 .bar{
+  height: 12%;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: .9;
+
+  transform-origin: bottom;
+  transform: scaleY(0.15);
+
+  will-change: transform;
+  box-shadow: 0 2px 10px rgba(0,0,0,.25);
+}
+
+/* Si tu player ya define un color de texto, esto lo hereda.
+   Si no, descomenta el color fijo: */
+/* .viz24{ color: rgba(255,255,255,.92); } */
