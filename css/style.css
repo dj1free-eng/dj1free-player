@@ -649,21 +649,51 @@ body{
   }
 }
 /* =========================================================
-   VISUALIZER FINAL (24 barras) — encajado en la ranura
+   VISUALIZER (24 barras) — posición + color pro
 ========================================================= */
 
-/* FIX: NO TOCAR el lienzo del skin (ps-ui debe ser absolute + inset:0) */
+/* NO tocar el lienzo del skin */
 .playerSkin .ps-ui{
   position: absolute;
   inset: 0;
 }
 
-/* Tornillos del visualizer */
+/* -------------------------
+   🎛️ TORNILLOS (VERTICAL)
+   Ajusta SOLO estos
+------------------------- */
 :root{
-  --viz-x: 18%;
-  --viz-y: 56%;
-  --viz-w: 64%;
-  --viz-h: 9%;
+  --viz-x: 22%;
+  --viz-y: 60.8%;
+  --viz-w: 56%;
+  --viz-h: 6.2%;
+
+  /* look */
+  --viz-gap: 3px;
+  --viz-pad-x: 10px;
+  --viz-pad-y: 2px;
+
+  --viz-bg: rgba(0,0,0,.10);
+  --viz-border: rgba(255,255,255,.06);
+
+  /* glow general */
+  --viz-glow: 0 2px 10px rgba(0,0,0,.25);
+
+  /* modo color: "neon" o "rainbow" */
+  --viz-mode: 1; /* 1 = neon, 0 = rainbow (ver abajo) */
+}
+
+/* -------------------------
+   🎛️ TORNILLOS (LANDSCAPE)
+------------------------- */
+@media (orientation: landscape){
+  :root{
+    --viz-x: 22%;
+    --viz-y: 62.0%;
+    --viz-w: 56%;
+    --viz-h: 7.0%;
+    --viz-gap: 4px;
+  }
 }
 
 /* contenedor */
@@ -676,34 +706,93 @@ body{
 
   display: grid;
   grid-template-columns: repeat(24, 1fr);
-  gap: 3px;
+  gap: var(--viz-gap);
   align-items: end;
 
-  padding: 2px 6px;
-
-  background: rgba(0,0,0,.10);
-  border: 1px solid rgba(255,255,255,.06);
+  padding: var(--viz-pad-y) var(--viz-pad-x);
   border-radius: 999px;
+
+  background: var(--viz-bg);
+  border: 1px solid var(--viz-border);
 
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 
   pointer-events: none;
-  z-index: 5;
-
-  color: rgba(242,245,255,.85);
+  z-index: 6;
 }
 
-/* barras */
+/* barras base */
 #viz24 .bar{
   height: 100%;
   border-radius: 999px;
-  background: currentColor;
-  opacity: .9;
 
   transform-origin: bottom;
   transform: scaleY(.15);
   will-change: transform;
 
-  box-shadow: 0 1px 6px rgba(0,0,0,.25);
+  box-shadow: var(--viz-glow);
+  opacity: .95;
 }
+
+/* =========================================================
+   COLORES
+   Opción A: NEON (cian->violeta), elegante y coherente con tu app
+========================================================= */
+#viz24 .bar{
+  background: linear-gradient(180deg,
+    rgba(138,230,255,.95),
+    rgba(182,140,255,.90)
+  );
+}
+
+/* Un poco de variación por barra para que no sea “tubo clonado” */
+#viz24 .bar:nth-child(3n){
+  background: linear-gradient(180deg, rgba(120,255,190,.95), rgba(138,230,255,.85));
+}
+#viz24 .bar:nth-child(4n){
+  background: linear-gradient(180deg, rgba(182,140,255,.95), rgba(138,230,255,.75));
+}
+
+/* Glow suave (si lo quieres más bestia, te digo cómo) */
+#viz24 .bar{
+  filter: drop-shadow(0 0 6px rgba(138,230,255,.20));
+}
+
+/* =========================================================
+   Opción B: RAINBOW (si prefieres multicolor real)
+   Para activarlo:
+   1) Cambia --viz-mode a 0 (arriba)
+   2) Deja este bloque tal cual
+========================================================= */
+:root[style*="--viz-mode: 0"] #viz24 .bar{
+  filter: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.65));
+}
+
+/* hues por barra */
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(1){  background: linear-gradient(180deg, #ff4d4d, #ffb3b3); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(2){  background: linear-gradient(180deg, #ff7a3d, #ffd1b8); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(3){  background: linear-gradient(180deg, #ffa63d, #ffe0b8); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(4){  background: linear-gradient(180deg, #ffd43d, #fff2b8); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(5){  background: linear-gradient(180deg, #c8ff3d, #f3ffb8); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(6){  background: linear-gradient(180deg, #66ff66, #c9ffc9); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(7){  background: linear-gradient(180deg, #3dffb2, #b8ffe6); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(8){  background: linear-gradient(180deg, #3dfff2, #b8fffb); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(9){  background: linear-gradient(180deg, #3dc8ff, #b8eaff); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(10){ background: linear-gradient(180deg, #3d7aff, #b8d1ff); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(11){ background: linear-gradient(180deg, #5a3dff, #cbb8ff); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(12){ background: linear-gradient(180deg, #8a3dff, #ddb8ff); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(13){ background: linear-gradient(180deg, #b63dff, #efb8ff); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(14){ background: linear-gradient(180deg, #ff3df2, #ffb8fb); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(15){ background: linear-gradient(180deg, #ff3dc8, #ffb8ea); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(16){ background: linear-gradient(180deg, #ff3d7a, #ffb8d1); }
+/* del 17 al 24 reciclamos la paleta (para 24 barras) */
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(17){ background: linear-gradient(180deg, #ff4d4d, #ffb3b3); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(18){ background: linear-gradient(180deg, #ff7a3d, #ffd1b8); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(19){ background: linear-gradient(180deg, #ffa63d, #ffe0b8); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(20){ background: linear-gradient(180deg, #ffd43d, #fff2b8); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(21){ background: linear-gradient(180deg, #c8ff3d, #f3ffb8); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(22){ background: linear-gradient(180deg, #66ff66, #c9ffc9); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(23){ background: linear-gradient(180deg, #3dc8ff, #b8eaff); }
+:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(24){ background: linear-gradient(180deg, #8a3dff, #ddb8ff); }
