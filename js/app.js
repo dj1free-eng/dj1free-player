@@ -582,12 +582,85 @@ async function playTrackById(trackId){
 }
 
 function wireDock(){
-  btnNow?.addEventListener("click", ()=>{
 
-  btnSkin?.addEventListener("click", cycleDockSkin);
+  // ✅ Skin: listener SIEMPRE activo (no dentro de btnNow)
+  btnSkin?.addEventListener("click", (e)=>{
+    e.preventDefault();
+    cycleDockSkin();
+
+    // feedback visible opcional
+    const cur = getSavedDockSkinId();
+    const skin = DOCK_SKINS.find(s => s.id === cur);
+    if(btnSkin && skin) btnSkin.textContent = `Skin: ${skin.name}`;
+  });
+
+  // ✅ Now: solo abre/reproduce
+  btnNow?.addEventListener("click", ()=>{
     const id = DATA?.featured?.trackId || DATA?.tracks?.[0]?.id;
     if(id) playTrackById(id);
   });
+
+  btnCloseDock?.addEventListener("click", ()=>{
+    dock.hidden = true;
+    stopPlayback();
+  });
+
+  btnSpotify?.addEventListener("click", (e)=>{
+    e.preventDefault();
+    openAppOrWeb(btnSpotify.dataset.app, btnSpotify.dataset.web);
+  });
+
+  btnYTM?.addEventListener("click", (e)=>{
+    e.preventDefault();
+    openAppOrWeb(btnYTM.dataset.app, btnYTM.dataset.web);
+  });
+
+  btnPlay?.addEventListener("click", async ()=>{
+    if(btnPlay.disabled) return;
+    if(audio.paused){
+      try{ await audio.play(); btnPlay.textContent = "Pausa"; }catch(e){ console.error(e); }
+    }else{
+      audio.pause();
+      btnPlay.textContent = "Play";
+    }
+  });
+
+  audio.addEventListener("timeupdate", ()=>{
+    const t = Math.min(audio.currentTime || 0, currentLimitSec);
+    tCur.textContent = fmtTime(t);
+    tMax.textContent = fmtTime(currentLimitSec);
+
+    if("mediaSession" in navigator && typeof navigator.mediaSession.setPositionState === "function"){
+      try{
+        navigator.mediaSession.setPositionState({
+          duration: currentLimitSec,
+          playbackRate: audio.playbackRate || 1,
+          position: t
+        });
+      }catch(_){}
+    }
+  });
+
+  audio.addEventListener("ended", ()=>{
+    btnPlay.textContent = "Play";
+  });
+
+  function clamp(v, min, max){
+    return Math.max(min, Math.min(max, v));
+  }
+
+  btnRew10?.addEventListener("click", ()=>{
+    const next = clamp((audio.currentTime || 0) - 10, 0, currentLimitSec);
+    audio.currentTime = next;
+    tCur.textContent = fmtTime(next);
+  });
+
+  btnFwd10?.addEventListener("click", ()=>{
+    const next = clamp((audio.currentTime || 0) + 10, 0, currentLimitSec);
+    audio.currentTime = next;
+    tCur.textContent = fmtTime(next);
+  });
+}
 
   btnCloseDock?.addEventListener("click", ()=>{
     dock.hidden = true;
@@ -658,7 +731,12 @@ async function init(){
   DATA = await loadCatalog();
   wireDock();
   applyDockSkinById(getSavedDockSkinId());
-  $("#app").addEventListener("click", onAppClick, { passive:true });
+   // etiqueta del botón para que se vea qué skin está activo
+  const cur = getSavedDockSkinId();
+  const skin = DOCK_SKINS.find(s => s.id === cur);
+  if(btnSkin && skin) btnSkin.textContent = `Skin: ${skin.name}`;
+   
+   $("#app").addEventListener("click", onAppClick, { passive:true });
 
   window.addEventListener("hashchange", route);
   route();
