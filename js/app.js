@@ -583,18 +583,18 @@ async function playTrackById(trackId){
 
 function wireDock(){
 
-  // ✅ Skin: listener SIEMPRE activo (no dentro de btnNow)
+  // Skin: listener SIEMPRE activo (no dentro de btnNow)
   btnSkin?.addEventListener("click", (e)=>{
     e.preventDefault();
     cycleDockSkin();
 
-    // feedback visible opcional
+    // feedback visible (opcional pero útil)
     const cur = getSavedDockSkinId();
     const skin = DOCK_SKINS.find(s => s.id === cur);
     if(btnSkin && skin) btnSkin.textContent = `Skin: ${skin.name}`;
   });
 
-  // ✅ Now: solo abre/reproduce
+  // Now: solo abre/reproduce
   btnNow?.addEventListener("click", ()=>{
     const id = DATA?.featured?.trackId || DATA?.tracks?.[0]?.id;
     if(id) playTrackById(id);
@@ -645,71 +645,7 @@ function wireDock(){
     btnPlay.textContent = "Play";
   });
 
-  function clamp(v, min, max){
-    return Math.max(min, Math.min(max, v));
-  }
-
-  btnRew10?.addEventListener("click", ()=>{
-    const next = clamp((audio.currentTime || 0) - 10, 0, currentLimitSec);
-    audio.currentTime = next;
-    tCur.textContent = fmtTime(next);
-  });
-
-  btnFwd10?.addEventListener("click", ()=>{
-    const next = clamp((audio.currentTime || 0) + 10, 0, currentLimitSec);
-    audio.currentTime = next;
-    tCur.textContent = fmtTime(next);
-  });
-}
-
-  btnCloseDock?.addEventListener("click", ()=>{
-    dock.hidden = true;
-    stopPlayback();
-  });
-
-  btnSpotify?.addEventListener("click", (e)=>{
-    e.preventDefault();
-    openAppOrWeb(btnSpotify.dataset.app, btnSpotify.dataset.web);
-  });
-
-  btnYTM?.addEventListener("click", (e)=>{
-    e.preventDefault();
-    openAppOrWeb(btnYTM.dataset.app, btnYTM.dataset.web);
-  });
-
-  btnPlay?.addEventListener("click", async ()=>{
-    if(btnPlay.disabled) return;
-    if(audio.paused){
-      try{ await audio.play(); btnPlay.textContent = "Pausa"; }catch(e){ console.error(e); }
-    }else{
-      audio.pause();
-      btnPlay.textContent = "Play";
-    }
-  });
-
-  audio.addEventListener("timeupdate", ()=>{
-    const t = Math.min(audio.currentTime || 0, currentLimitSec);
-    tCur.textContent = fmtTime(t);
-    tMax.textContent = fmtTime(currentLimitSec);
-
-    if("mediaSession" in navigator && typeof navigator.mediaSession.setPositionState === "function"){
-      try{
-        navigator.mediaSession.setPositionState({
-          duration: currentLimitSec,
-          playbackRate: audio.playbackRate || 1,
-          position: t
-        });
-      }catch(_){}
-    }
-  });
-
-  audio.addEventListener("ended", ()=>{
-    btnPlay.textContent = "Play";
-  });
-
-  // =========================
-  // SKIP ±10 segundos
-  // =========================
+  // SKIP ±10s
   function clamp(v, min, max){
     return Math.max(min, Math.min(max, v));
   }
@@ -741,7 +677,28 @@ async function init(){
   window.addEventListener("hashchange", route);
   route();
 }
-
+// Debug visible (iOS): si algo revienta, lo ves en pantalla
+window.addEventListener("error", (e)=>{
+  const msg = (e?.message || "Error JS") + (e?.filename ? `\n${e.filename}:${e.lineno}` : "");
+  let box = document.getElementById("debugErr");
+  if(!box){
+    box = document.createElement("pre");
+    box.id = "debugErr";
+    box.style.position = "fixed";
+    box.style.left = "10px";
+    box.style.right = "10px";
+    box.style.top = "70px";
+    box.style.zIndex = "999999";
+    box.style.padding = "10px";
+    box.style.borderRadius = "12px";
+    box.style.background = "rgba(0,0,0,.75)";
+    box.style.color = "#fff";
+    box.style.fontSize = "12px";
+    box.style.whiteSpace = "pre-wrap";
+    document.body.appendChild(box);
+  }
+  box.textContent = msg;
+});
 init().catch(err=>{
   console.error(err);
   alert("Error arrancando la app: " + (err?.message || String(err)));
