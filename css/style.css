@@ -652,10 +652,13 @@ body{
    VISUALIZER FINAL (24 barras) — encajado en la ranura
 ========================================================= */
 
-/* Asegura que los absolutos se calculan sobre el overlay del skin */
-.playerSkin .ps-ui{ position: relative; }
+/* FIX: NO TOCAR el lienzo del skin (ps-ui debe ser absolute + inset:0) */
+.playerSkin .ps-ui{
+  position: absolute;
+  inset: 0;
+}
 
-/* Tornillos (ajusta si hace falta, pero ya va muy cerca) */
+/* Tornillos del visualizer */
 :root{
   --viz-x: 18%;
   --viz-y: 56%;
@@ -676,10 +679,8 @@ body{
   gap: 3px;
   align-items: end;
 
-  /* MUY IMPORTANTE: sin padding gordo para que no “infle” */
   padding: 2px 6px;
 
-  /* discreto para que se integre con el PNG */
   background: rgba(0,0,0,.10);
   border: 1px solid rgba(255,255,255,.06);
   border-radius: 999px;
@@ -688,10 +689,9 @@ body{
   -webkit-backdrop-filter: blur(8px);
 
   pointer-events: none;
-  z-index: 2;
+  z-index: 5;
 
-  /* color de barras */
-  color: rgba(255,255,255,.85);
+  color: rgba(242,245,255,.85);
 }
 
 /* barras */
@@ -705,6 +705,5 @@ body{
   transform: scaleY(.15);
   will-change: transform;
 
-  /* suave, sin “pegote” */
   box-shadow: 0 1px 6px rgba(0,0,0,.25);
 }
