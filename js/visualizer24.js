@@ -1,8 +1,7 @@
 /* =========================================================
-   Visualizer Spectrum 24 barras – Web Audio API
+   Visualizer Spectrum 24 barras – Web Audio API (robusto)
 ========================================================= */
 (function(){
-
   function initSpectrum(audioEl, vizEl){
     if(!audioEl || !vizEl) return;
 
@@ -14,18 +13,25 @@
     let running = false;
 
     function setup(){
-      if(ctx) return;
+      if(ctx) return true;
 
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
-      analyser = ctx.createAnalyser();
-      analyser.fftSize = 2048;
-      analyser.smoothingTimeConstant = 0.8;
+      try{
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = ctx.createAnalyser();
+        analyser.fftSize = 2048;
+        analyser.smoothingTimeConstant = 0.8;
 
-      src = ctx.createMediaElementSource(audioEl);
-      src.connect(analyser);
-      analyser.connect(ctx.destination);
+        // Si alguien ya creó MediaElementSource con este <audio>, esto puede lanzar error
+        src = ctx.createMediaElementSource(audioEl);
+        src.connect(analyser);
+        analyser.connect(ctx.destination);
 
-      data = new Uint8Array(analyser.frequencyBinCount);
+        data = new Uint8Array(analyser.frequencyBinCount);
+        return true;
+      }catch(e){
+        console.warn("[viz24] No se pudo crear el grafo de audio:", e);
+        return false;
+      }
     }
 
     function freqIndex(i){
@@ -36,10 +42,8 @@
       const t = i / (BAR_COUNT - 1);
       const f = min * Math.pow(max / min, t);
 
-      return Math.min(
-        data.length - 1,
-        Math.max(0, Math.round((f / nyquist) * data.length))
-      );
+      const idx = Math.round((f / nyquist) * data.length);
+      return Math.min(data.length - 1, Math.max(0, idx));
     }
 
     function draw(){
@@ -59,10 +63,13 @@
     }
 
     async function start(){
-      setup();
-      if(ctx.state !== 'running'){
+      if(!setup()) return;
+
+      // iOS: resume suele requerir gesto. Si el play viene de botón, OK.
+      if(ctx.state !== "running"){
         try{ await ctx.resume(); }catch(e){}
       }
+
       if(running) return;
       running = true;
       draw();
@@ -71,21 +78,20 @@
     function stop(){
       running = false;
       if(raf) cancelAnimationFrame(raf);
-      bars.forEach(b => b.style.transform = 'scaleY(0.15)');
+      bars.forEach(b => b.style.transform = "scaleY(0.15)");
     }
 
-    audioEl.addEventListener('play', start);
-    audioEl.addEventListener('pause', stop);
-    audioEl.addEventListener('ended', stop);
+    audioEl.addEventListener("play", start);
+    audioEl.addEventListener("pause", stop);
+    audioEl.addEventListener("ended", stop);
 
     if(!audioEl.paused) start();
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     initSpectrum(
-      document.getElementById('audio') || document.querySelector('audio'),
-      document.getElementById('viz24')
+      document.getElementById("audio") || document.querySelector("audio"),
+      document.getElementById("viz24")
     );
   });
-
 })();
