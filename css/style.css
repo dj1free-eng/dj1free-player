@@ -696,7 +696,9 @@ body{
   }
 }
 
-/* contenedor */
+/* =========================
+   CONTENEDOR VISUALIZER
+========================= */
 #viz24.viz24{
   position: absolute;
   left: var(--viz-x);
@@ -722,54 +724,39 @@ body{
   z-index: 6;
 }
 
-/* barras base */
+/* =========================
+   BARRAS — FORMA + MOVIMIENTO
+========================= */
 #viz24 .bar{
   height: 100%;
-  border-radius: 4px;
+  border-radius: 4px;           /* menos redondeadas */
+  opacity: .95;
 
   transform-origin: bottom;
-  transform: scaleY(.15);
+  transform: scaleY(.08);       /* arrancan más bajas → más contraste */
   will-change: transform;
 
   box-shadow: var(--viz-glow);
-  opacity: .95;
-}
 
-/* =========================================================
-   COLORES
-   Opción A: NEON (cian->violeta), elegante y coherente con tu app
-========================================================= */
-#viz24 .bar{
-  background: linear-gradient(180deg,
-    rgba(138,230,255,.95),
-    rgba(182,140,255,.90)
+  /* TRICOLOR POR ALTURA REAL */
+  background: linear-gradient(
+    to top,
+    #38ff9c 0%,      /* verde base */
+    #38ff9c 45%,
+
+    #ffe45c 55%,     /* amarillo medio */
+    #ffe45c 72%,
+
+    #ff4d4d 88%,     /* rojo solo en picos */
+    #ff4d4d 100%
   );
-}
 
-/* Un poco de variación por barra para que no sea “tubo clonado” */
-#viz24 .bar:nth-child(3n){
-  background: linear-gradient(180deg, rgba(120,255,190,.95), rgba(138,230,255,.85));
+  /* glow progresivo (no exagerado) */
+  filter:
+    drop-shadow(0 0 4px rgba(56,255,156,.25))
+    drop-shadow(0 0 6px rgba(255,228,92,.18))
+    drop-shadow(0 0 8px rgba(255,77,77,.14));
 }
-#viz24 .bar:nth-child(4n){
-  background: linear-gradient(180deg, rgba(182,140,255,.95), rgba(138,230,255,.75));
-}
-
-/* Glow suave (si lo quieres más bestia, te digo cómo) */
-#viz24 .bar{
-  filter: drop-shadow(0 0 6px rgba(138,230,255,.20));
-}
-
-/* =========================================================
-   Opción B: RAINBOW (si prefieres multicolor real)
-   Para activarlo:
-   1) Cambia --viz-mode a 0 (arriba)
-   2) Deja este bloque tal cual
-========================================================= */
-:root[style*="--viz-mode: 0"] #viz24 .bar{
-  filter: none;
-  background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.65));
-}
-
 /* hues por barra */
 :root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(1){  background: linear-gradient(180deg, #ff4d4d, #ffb3b3); }
 :root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(2){  background: linear-gradient(180deg, #ff7a3d, #ffd1b8); }
