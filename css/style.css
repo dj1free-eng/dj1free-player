@@ -404,7 +404,7 @@ body{
 
   z-index: 9999;
 
-  background-image: url("../assets/dock-skin.png");
+background-image: url("../assets/skins/dock-skin.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-position: center;
