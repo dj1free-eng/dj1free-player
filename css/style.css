@@ -649,18 +649,22 @@ body{
   }
 }
 /* =========================================================
-   SPECTRUM VISUALIZER – 24 BARRAS
+   VISUALIZER FINAL (24 barras) — encajado en la ranura
 ========================================================= */
 
-/* Tornillos de posición (AJUSTA AQUÍ) */
+/* Asegura que los absolutos se calculan sobre el overlay del skin */
+.playerSkin .ps-ui{ position: relative; }
+
+/* Tornillos (ajusta si hace falta, pero ya va muy cerca) */
 :root{
-  --viz-x: 17%;
-  --viz-y: 63%;
-  --viz-w: 66%;
+  --viz-x: 18%;
+  --viz-y: 56%;
+  --viz-w: 64%;
   --viz-h: 9%;
 }
 
-.viz24{
+/* contenedor */
+#viz24.viz24{
   position: absolute;
   left: var(--viz-x);
   top: var(--viz-y);
@@ -672,62 +676,35 @@ body{
   gap: 3px;
   align-items: end;
 
-  padding: 6px 8px;
-  border-radius: 14px;
+  /* MUY IMPORTANTE: sin padding gordo para que no “infle” */
+  padding: 2px 6px;
 
-  background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.12));
-  border: 1px solid rgba(255,255,255,.08);
+  /* discreto para que se integre con el PNG */
+  background: rgba(0,0,0,.10);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 999px;
 
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
-  pointer-events: none; /* no roba clicks */
+  pointer-events: none;
   z-index: 2;
+
+  /* color de barras */
+  color: rgba(255,255,255,.85);
 }
 
-.viz24 .bar{
-  height: 12%;
+/* barras */
+#viz24 .bar{
+  height: 100%;
   border-radius: 999px;
   background: currentColor;
   opacity: .9;
 
   transform-origin: bottom;
-  transform: scaleY(0.15);
-
+  transform: scaleY(.15);
   will-change: transform;
-  box-shadow: 0 2px 10px rgba(0,0,0,.25);
-}
 
-/* Si tu player ya define un color de texto, esto lo hereda.
-   Si no, descomenta el color fijo: */
-/* .viz24{ color: rgba(255,255,255,.92); } */
-/* ===== VISUALIZER DEBUG (TEMPORAL) ===== */
-.playerSkin .ps-ui{ position: relative; } /* clave: referencia de absolutos */
-
-#viz24{
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
-  width: 100% !important;
-  height: 60px !important;
-  z-index: 9999 !important;
-
-  background: rgba(255,0,0,.18) !important;   /* para verlo seguro */
-  border: 2px solid rgba(255,0,0,.55) !important;
-  pointer-events: none !important;
-
-  display: grid !important;
-  grid-template-columns: repeat(24, 1fr) !important;
-  gap: 4px !important;
-  align-items: end !important;
-
-  color: rgba(255,255,255,.95) !important;
-}
-
-#viz24 .bar{
-  height: 100% !important;
-  background: currentColor !important;
-  border-radius: 999px !important;
-  transform-origin: bottom !important;
-  transform: scaleY(.15) !important;
+  /* suave, sin “pegote” */
+  box-shadow: 0 1px 6px rgba(0,0,0,.25);
 }
