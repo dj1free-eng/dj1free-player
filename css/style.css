@@ -742,9 +742,9 @@ body{
   background: linear-gradient(
     to top,
     #38ff9c 0%,      /* verde base */
-    #38ff9c 45%,
+    #38ff9c 38%,
 
-    #ffe45c 55%,     /* amarillo medio */
+    #ffe45c 40%,     /* amarillo medio */
     #ffe45c 72%,
 
     #ff4d4d 88%,     /* rojo solo en picos */
