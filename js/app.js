@@ -14,12 +14,48 @@ const dockSub = $("#dockSub");
 const btnPlay = $("#btnPlay");
 const btnNow = $("#btnNow");
 const btnCloseDock = $("#btnCloseDock");
+const btnSkin = $("#btnSkin");
 const btnSpotify = $("#btnSpotify");
 const btnYTM = $("#btnYTM");
 const tCur = $("#tCur");
 const tMax = $("#tMax");
 const btnRew10 = $("#btnRew10");
 const btnFwd10 = $("#btnFwd10");
+
+/* =========================
+   Skins del reproductor
+========================= */
+const DOCK_SKINS = [
+  { id:"basic",    name:"Básico",   url:"assets/skins/dock-skin.png" },
+  { id:"stranger", name:"Stranger", url:"assets/skins/dock-skin-stranger.png" }
+];
+
+const LS_DOCK_SKIN = "dj1free_dock_skin";
+
+function getSavedDockSkinId(){
+  try{ return localStorage.getItem(LS_DOCK_SKIN) || "basic"; }
+  catch(_){ return "basic"; }
+}
+
+function setSavedDockSkinId(id){
+  try{ localStorage.setItem(LS_DOCK_SKIN, id); }catch(_){}
+}
+
+function applyDockSkinById(id){
+  const skin = DOCK_SKINS.find(s => s.id === id) || DOCK_SKINS[0];
+  if(!dock) return;
+
+  // Aplicamos por inline style para sobreescribir el CSS sin romperlo
+  dock.style.backgroundImage = `url("${skin.url}")`;
+  setSavedDockSkinId(skin.id);
+}
+
+function cycleDockSkin(){
+  const currentId = getSavedDockSkinId();
+  const idx = DOCK_SKINS.findIndex(s => s.id === currentId);
+  const next = DOCK_SKINS[(idx + 1 + DOCK_SKINS.length) % DOCK_SKINS.length];
+  applyDockSkinById(next.id);
+}
 
 let queue = [];
 let queueIndex = -1;
@@ -547,6 +583,8 @@ async function playTrackById(trackId){
 
 function wireDock(){
   btnNow?.addEventListener("click", ()=>{
+
+  btnSkin?.addEventListener("click", cycleDockSkin);
     const id = DATA?.featured?.trackId || DATA?.tracks?.[0]?.id;
     if(id) playTrackById(id);
   });
@@ -619,7 +657,7 @@ function wireDock(){
 async function init(){
   DATA = await loadCatalog();
   wireDock();
-
+  applyDockSkinById(getSavedDockSkinId());
   $("#app").addEventListener("click", onAppClick, { passive:true });
 
   window.addEventListener("hashchange", route);
