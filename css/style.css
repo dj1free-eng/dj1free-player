@@ -701,3 +701,33 @@ body{
 /* Si tu player ya define un color de texto, esto lo hereda.
    Si no, descomenta el color fijo: */
 /* .viz24{ color: rgba(255,255,255,.92); } */
+/* ===== VISUALIZER DEBUG (TEMPORAL) ===== */
+.playerSkin .ps-ui{ position: relative; } /* clave: referencia de absolutos */
+
+#viz24{
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 60px !important;
+  z-index: 9999 !important;
+
+  background: rgba(255,0,0,.18) !important;   /* para verlo seguro */
+  border: 2px solid rgba(255,0,0,.55) !important;
+  pointer-events: none !important;
+
+  display: grid !important;
+  grid-template-columns: repeat(24, 1fr) !important;
+  gap: 4px !important;
+  align-items: end !important;
+
+  color: rgba(255,255,255,.95) !important;
+}
+
+#viz24 .bar{
+  height: 100% !important;
+  background: currentColor !important;
+  border-radius: 999px !important;
+  transform-origin: bottom !important;
+  transform: scaleY(.15) !important;
+}
