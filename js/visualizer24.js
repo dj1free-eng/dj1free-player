@@ -55,7 +55,7 @@
         const idx = freqIndex(i);
         const v = data[idx] / 255;
 
-const level = 0.06 + Math.pow(v, 0.45) * 1.10;
+const level = 0.04 + Math.pow(v, 0.40) * 1.30;
         bars[i].style.transform = `scaleY(${level})`;
       }
 
