@@ -689,7 +689,7 @@ body{
 @media (orientation: landscape){
   :root{
     --viz-x: 22%;
-    --viz-y: 52.0%;
+    --viz-y: 72.0%;
     --viz-w: 56%;
     --viz-h: 7.0%;
     --viz-gap: 4px;
