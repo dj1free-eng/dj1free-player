@@ -743,7 +743,23 @@ function wireDock(){
     tCur.textContent = fmtTime(next);
   });
 }
+function openMenu(){
+  if(!menuDrawer || !menuScrim || !btnMenu) return;
+  menuDrawer.hidden = false;
+  menuScrim.hidden = false;
+  requestAnimationFrame(()=> menuDrawer.classList.add("is-open"));
+  btnMenu.setAttribute("aria-expanded","true");
+}
 
+function closeMenu(){
+  if(!menuDrawer || !menuScrim || !btnMenu) return;
+  menuDrawer.classList.remove("is-open");
+  btnMenu.setAttribute("aria-expanded","false");
+  setTimeout(()=>{
+    menuDrawer.hidden = true;
+    menuScrim.hidden = true;
+  }, 220);
+}
 async function init(){
   DATA = await loadCatalog();
   wireDock();
