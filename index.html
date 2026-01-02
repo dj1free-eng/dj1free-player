@@ -16,21 +16,41 @@
 </head>
 
 <body>
-  <header class="topbar">
-    <a class="brand" href="#/">
-      <span class="brandMark"></span>
-      <span class="brandText">dJ1fRee Records</span>
-    </a>
+<header class="topbar">
+  <a class="brand" href="#/">
+    <span class="brandMark"></span>
+    <span class="brandText">dJ1fRee Records</span>
+  </a>
 
-    <nav class="topnav">
-      <a href="#/" class="navlink" data-route="/">Home</a>
-      <a href="#/albums" class="navlink" data-route="/albums">Álbumes</a>
-      <a href="#/singles" class="navlink" data-route="/singles">Singles</a>
-      <a href="#/artists" class="navlink" data-route="/artists">Artistas</a>
-      <button id="btnSkin" class="btn ghost" type="button" aria-label="Cambiar skin">Skin</button>
-      <button id="btnNow" class="btn ghost" type="button" aria-label="Abrir reproductor">▶</button>
-    </nav>
-  </header>
+  <div class="topActions">
+    <button id="btnNow" class="btn ghost" type="button" aria-label="Abrir reproductor">▶</button>
+
+    <button id="btnMenu" class="btn ghost" type="button" aria-label="Abrir menú" aria-expanded="false">
+      ☰
+    </button>
+  </div>
+</header>
+
+<!-- Drawer menú -->
+<div id="menuScrim" class="menuScrim" hidden></div>
+
+<aside id="menuDrawer" class="menuDrawer" hidden aria-label="Menú">
+  <div class="menuHead">
+    <div class="menuTitle">Menú</div>
+    <button id="btnMenuClose" class="btn ghost" type="button" aria-label="Cerrar menú">✕</button>
+  </div>
+
+  <nav class="menuNav">
+    <a href="#/" class="menuLink" data-route="/">Home</a>
+    <a href="#/albums" class="menuLink" data-route="/albums">Álbumes</a>
+    <a href="#/singles" class="menuLink" data-route="/singles">Singles</a>
+    <a href="#/artists" class="menuLink" data-route="/artists">Artistas</a>
+
+    <div class="menuDivider"></div>
+
+    <button id="btnSkin" class="btn" type="button">Cambiar skin</button>
+  </nav>
+</aside>
 
   <main id="app" class="app"></main>
 <!-- Scrim: oscurece el fondo cuando el dock está abierto -->
