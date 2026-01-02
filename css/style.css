@@ -885,3 +885,13 @@ html, body{
   background: rgba(255,255,255,.10);
   margin: 8px 0;
 }
+/* Botón menú (☰) más grande y sin “mini icono” */
+#btnMenu{
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: 22px;      /* tamaño del ☰ */
+  line-height: 1;
+}
