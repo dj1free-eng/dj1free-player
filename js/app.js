@@ -25,12 +25,25 @@ const btnMenu = $("#btnMenu");
 const btnMenuClose = $("#btnMenuClose");
 const menuDrawer = $("#menuDrawer");
 const menuScrim = $("#menuScrim");
+const btnSkinToggle = $("#btnSkinToggle");
+const skinListEl = $("#skinList");
+
 /* =========================
    Skins del reproductor
 ========================= */
 const DOCK_SKINS = [
-  { id:"basic",    name:"Básico",   url:"assets/skins/dock-skin.png" },
-  { id:"stranger", name:"Stranger", url:"assets/skins/dock-skin-stranger.png" }
+  {
+    id: "basic",
+    name: "Básico",
+    thumb: "assets/skins/thumb-basic.png",
+    url: "assets/skins/dock-skin.png"
+  },
+  {
+    id: "stranger",
+    name: "Stranger Things",
+    thumb: "assets/skins/thumb-stranger.png",
+    url: "assets/skins/dock-skin-stranger.png"
+  }
 ];
 
 const LS_DOCK_SKIN = "dj1free_dock_skin";
@@ -59,7 +72,32 @@ function cycleDockSkin(){
   const next = DOCK_SKINS[(idx + 1 + DOCK_SKINS.length) % DOCK_SKINS.length];
   applyDockSkinById(next.id);
 }
+function renderSkinList(){
+  const list = document.getElementById("skinList");
+  if(!list) return;
 
+  const currentId = getSavedDockSkinId();
+
+  list.innerHTML = DOCK_SKINS.map(s => `
+    <div class="skinItem ${s.id === currentId ? "is-active" : ""}" data-skin="${s.id}">
+      <div class="skinThumb" style="background-image:url('${s.thumb}')"></div>
+      <div class="skinMeta">
+        <div class="skinName">${s.name}</div>
+        <div class="skinHint">Toca para previsualizar</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function toggleSkinList(force){
+  const list = document.getElementById("skinList");
+  const btn  = document.getElementById("btnSkinToggle");
+  if(!list || !btn) return;
+
+  const willOpen = typeof force === "boolean" ? force : list.hidden;
+  list.hidden = !willOpen;
+  btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+}
 let queue = [];
 let queueIndex = -1;
 let hardStopTimer = null;
@@ -627,7 +665,33 @@ function wireDock(){
   window.addEventListener("keydown", (e)=>{
     if(e.key === "Escape") closeMenu();
   });
+  // =========================
+  // Skins: desplegable + lista
+  // =========================
+  btnSkinToggle?.addEventListener("click", ()=>{
+    // cada vez que abres, re-render para marcar activo
+    renderSkinList();
+    toggleSkinList();
+  });
 
+  skinListEl?.addEventListener("click", (e)=>{
+    const item = e.target.closest(".skinItem");
+    if(!item) return;
+
+    const id = item.dataset.skin;
+    if(!id) return;
+
+    // De momento: NO aplicar aquí. Solo “selección” (preparado para la modal).
+    // Para que veas que funciona, lo marcamos como activo visualmente:
+    document.querySelectorAll(".skinItem").forEach(el => el.classList.remove("is-active"));
+    item.classList.add("is-active");
+
+    // Guardamos el id seleccionado temporalmente en dataset (para la próxima fase)
+    skinListEl.dataset.selected = id;
+
+    // En la siguiente fase, aquí abriremos la modal con preview.
+    // Por ahora, dejamos el desplegable abierto para que lo veas.
+  });
   // =========================
   // Skin: listener SIEMPRE activo
   // =========================
@@ -764,6 +828,7 @@ async function init(){
   DATA = await loadCatalog();
   wireDock();
   applyDockSkinById(getSavedDockSkinId());
+  renderSkinList();
    // etiqueta del botón para que se vea qué skin está activo
   const cur = getSavedDockSkinId();
   const skin = DOCK_SKINS.find(s => s.id === cur);
