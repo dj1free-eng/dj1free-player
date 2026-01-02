@@ -791,3 +791,97 @@ background-image: url("../assets/skins/dock-skin.png");
 :root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(22){ background: linear-gradient(180deg, #66ff66, #c9ffc9); }
 :root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(23){ background: linear-gradient(180deg, #3dc8ff, #b8eaff); }
 :root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(24){ background: linear-gradient(180deg, #8a3dff, #ddb8ff); }
+/* Evitar scroll lateral global */
+html, body{
+  overflow-x: hidden;
+}
+
+/* Header actions */
+.topActions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+/* =========================
+   MENÚ HAMBURGUESA (DRAWER)
+========================= */
+.menuScrim{
+  position: fixed;
+  inset: 0;
+  background: rgba(5,7,12,.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 9000;
+}
+
+.menuDrawer{
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: min(320px, 88vw);
+  background: rgba(9,12,24,.92);
+  border-left: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  z-index: 9001;
+
+  padding: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
+
+  transform: translateX(100%);
+  transition: transform .22s ease;
+}
+
+/* Estado abierto */
+.menuDrawer.is-open{
+  transform: translateX(0);
+}
+
+.menuHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  margin-bottom: 12px;
+}
+
+.menuTitle{
+  font-weight: 800;
+  color: rgba(242,245,255,.92);
+}
+
+.menuNav{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.menuLink{
+  display:block;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: rgba(242,245,255,.82);
+  text-decoration:none;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.04);
+}
+
+.menuLink:hover{
+  background: rgba(255,255,255,.07);
+}
+
+.menuLink.active{
+  border-color: rgba(255,255,255,.14);
+  background: rgba(255,255,255,.10);
+  color: rgba(242,245,255,.95);
+}
+
+.menuDivider{
+  height:1px;
+  background: rgba(255,255,255,.10);
+  margin: 8px 0;
+}
