@@ -895,3 +895,80 @@ html, body{
   font-size: 22px;      /* tamaño del ☰ */
   line-height: 1;
 }
+/* =========================
+   SKINS — desplegable dentro del menú
+========================= */
+.menuSection{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.menuSkinBtn{
+  width:100%;
+  justify-content:center;
+}
+
+.skinList{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.skinItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  padding:10px;
+  border-radius: 12px;
+
+  background: rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.10);
+
+  cursor:pointer;
+  user-select:none;
+}
+
+.skinItem:hover{
+  background: rgba(255,255,255,.09);
+}
+
+.skinThumb{
+  width:52px;
+  height:52px;
+  border-radius:10px;
+  background-size:cover;
+  background-position:center;
+  flex-shrink:0;
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.skinMeta{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.skinName{
+  font-weight:800;
+  color: rgba(242,245,255,.92);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.skinHint{
+  font-size:12px;
+  color: rgba(242,245,255,.65);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* marca el skin activo */
+.skinItem.is-active{
+  background: rgba(138,230,255,.10);
+  border-color: rgba(138,230,255,.25);
+}
