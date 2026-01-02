@@ -497,7 +497,11 @@ function route(){
   notFound("Ruta desconocida");
 }
 
-function openDock(){ dock.hidden = false; }
+function openDock(){
+  dock.hidden = false;
+  const scrim = document.getElementById("dockScrim");
+  if(scrim) scrim.hidden = false;
+}
 
 function stopPlayback(){
   clearTimeout(hardStopTimer);
@@ -601,9 +605,13 @@ function wireDock(){
   });
 
   btnCloseDock?.addEventListener("click", ()=>{
-    dock.hidden = true;
-    stopPlayback();
-  });
+  dock.hidden = true;
+
+  const scrim = document.getElementById("dockScrim");
+  if(scrim) scrim.hidden = true;
+
+  stopPlayback();
+});
 
   btnSpotify?.addEventListener("click", (e)=>{
     e.preventDefault();
