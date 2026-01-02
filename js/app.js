@@ -609,7 +609,9 @@ function wireDock(){
 
   const scrim = document.getElementById("dockScrim");
   if(scrim) scrim.hidden = true;
-
+document.getElementById("dockScrim")?.addEventListener("click", ()=>{
+  dock.hidden = true;
+  document.getElementById("dockScrim").hidden = true;
   stopPlayback();
 });
 
@@ -653,6 +655,7 @@ function wireDock(){
     btnPlay.textContent = "Play";
   });
 
+});
   // SKIP ±10s
   function clamp(v, min, max){
     return Math.max(min, Math.min(max, v));
