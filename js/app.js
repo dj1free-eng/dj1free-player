@@ -21,7 +21,10 @@ const tCur = $("#tCur");
 const tMax = $("#tMax");
 const btnRew10 = $("#btnRew10");
 const btnFwd10 = $("#btnFwd10");
-
+const btnMenu = $("#btnMenu");
+const btnMenuClose = $("#btnMenuClose");
+const menuDrawer = $("#menuDrawer");
+const menuScrim = $("#menuScrim");
 /* =========================
    Skins del reproductor
 ========================= */
@@ -214,9 +217,30 @@ function escapeHtml(s){
 }
 
 function setNavActive(path){
+  // antiguos .navlink (ya no existen, pero no pasa nada si no están)
   $$(".navlink").forEach(a => a.classList.toggle("active", a.dataset.route === path));
+  // nuevos del drawer
+  $$(".menuLink").forEach(a => a.classList.toggle("active", a.dataset.route === path));
+}
+function openMenu(){
+  if(!menuDrawer || !menuScrim || !btnMenu) return;
+  menuDrawer.hidden = false;
+  menuScrim.hidden = false;
+  // animación
+  requestAnimationFrame(()=> menuDrawer.classList.add("is-open"));
+  btnMenu.setAttribute("aria-expanded","true");
 }
 
+function closeMenu(){
+  if(!menuDrawer || !menuScrim || !btnMenu) return;
+  menuDrawer.classList.remove("is-open");
+  btnMenu.setAttribute("aria-expanded","false");
+  // espera a la transición
+  setTimeout(()=>{
+    menuDrawer.hidden = true;
+    menuScrim.hidden = true;
+  }, 220);
+}
 function sectionReleases(title, releases){
   return `
     <section class="section">
@@ -586,35 +610,68 @@ async function playTrackById(trackId){
 }
 
 function wireDock(){
+  // =========================
+  // Menú hamburguesa
+  // =========================
+  btnMenu?.addEventListener("click", openMenu);
+  btnMenuClose?.addEventListener("click", closeMenu);
+  menuScrim?.addEventListener("click", closeMenu);
 
-  // Skin: listener SIEMPRE activo (no dentro de btnNow)
+  // Cierra menú al navegar
+  menuDrawer?.addEventListener("click", (e)=>{
+    const a = e.target.closest("a[href^='#/']");
+    if(a) closeMenu();
+  });
+
+  // Cierra menú con Escape (desktop)
+  window.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape") closeMenu();
+  });
+
+  // =========================
+  // Skin: listener SIEMPRE activo
+  // =========================
   btnSkin?.addEventListener("click", (e)=>{
     e.preventDefault();
     cycleDockSkin();
 
-    // feedback visible (opcional pero útil)
+    // feedback visible (opcional)
     const cur = getSavedDockSkinId();
     const skin = DOCK_SKINS.find(s => s.id === cur);
     if(btnSkin && skin) btnSkin.textContent = `Skin: ${skin.name}`;
   });
 
+  // =========================
   // Now: solo abre/reproduce
+  // =========================
   btnNow?.addEventListener("click", ()=>{
     const id = DATA?.featured?.trackId || DATA?.tracks?.[0]?.id;
     if(id) playTrackById(id);
   });
 
+  // =========================
+  // Scrim del dock: cerrar al tocar fuera
+  // (IMPORTANTE: listener fuera de btnCloseDock)
+  // =========================
+  const dockScrim = document.getElementById("dockScrim");
+  dockScrim?.addEventListener("click", ()=>{
+    dock.hidden = true;
+    dockScrim.hidden = true;
+    stopPlayback();
+  });
+
+  // =========================
+  // Cerrar dock (botón X)
+  // =========================
   btnCloseDock?.addEventListener("click", ()=>{
-  dock.hidden = true;
+    dock.hidden = true;
+    if(dockScrim) dockScrim.hidden = true;
+    stopPlayback();
+  });
 
-  const scrim = document.getElementById("dockScrim");
-  if(scrim) scrim.hidden = true;
-document.getElementById("dockScrim")?.addEventListener("click", ()=>{
-  dock.hidden = true;
-  document.getElementById("dockScrim").hidden = true;
-  stopPlayback();
-});
-
+  // =========================
+  // Enlaces
+  // =========================
   btnSpotify?.addEventListener("click", (e)=>{
     e.preventDefault();
     openAppOrWeb(btnSpotify.dataset.app, btnSpotify.dataset.web);
@@ -625,16 +682,28 @@ document.getElementById("dockScrim")?.addEventListener("click", ()=>{
     openAppOrWeb(btnYTM.dataset.app, btnYTM.dataset.web);
   });
 
+  // =========================
+  // Play/Pause
+  // =========================
   btnPlay?.addEventListener("click", async ()=>{
     if(btnPlay.disabled) return;
+
     if(audio.paused){
-      try{ await audio.play(); btnPlay.textContent = "Pausa"; }catch(e){ console.error(e); }
+      try{
+        await audio.play();
+        btnPlay.textContent = "Pausa";
+      }catch(e){
+        console.error(e);
+      }
     }else{
       audio.pause();
       btnPlay.textContent = "Play";
     }
   });
 
+  // =========================
+  // Timeupdate
+  // =========================
   audio.addEventListener("timeupdate", ()=>{
     const t = Math.min(audio.currentTime || 0, currentLimitSec);
     tCur.textContent = fmtTime(t);
@@ -655,8 +724,9 @@ document.getElementById("dockScrim")?.addEventListener("click", ()=>{
     btnPlay.textContent = "Play";
   });
 
-});
-  // SKIP ±10s
+  // =========================
+  // SKIP ±10 segundos
+  // =========================
   function clamp(v, min, max){
     return Math.max(min, Math.min(max, v));
   }
