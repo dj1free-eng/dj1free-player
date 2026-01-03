@@ -107,10 +107,21 @@ function openSkinModal(id){
   const skin = DOCK_SKINS.find(s => s.id === id);
   if(!skin || !skinModal || !skinModalScrim) return;
 
+  // guarda selección
   skinListEl.dataset.selected = id;
-  skinModalTitle.textContent = skin.name;
-  skinModalPreview.style.backgroundImage = `url("${skin.portrait}")`;
 
+  // texto
+  if(skinModalTitle) skinModalTitle.textContent = skin.name;
+
+  // PREVIEW (esto es lo que has perdido)
+  if(skinModalPreview){
+    skinModalPreview.style.backgroundImage = `url("${skin.portrait}")`;
+    skinModalPreview.style.backgroundSize = "cover";
+    skinModalPreview.style.backgroundPosition = "center";
+    skinModalPreview.style.backgroundRepeat = "no-repeat";
+  }
+
+  // abre modal
   skinModal.hidden = false;
   skinModalScrim.hidden = false;
 }
