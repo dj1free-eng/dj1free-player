@@ -123,10 +123,15 @@ function openSkinModal(id){
   skinModalScrim.hidden = false;
 }
 
-function closeSkinModal(){
+function closeSkinModal(reopenList = false){
   if(!skinModal || !skinModalScrim) return;
   skinModal.hidden = true;
   skinModalScrim.hidden = true;
+
+  // Si vienes de "Cancelar", reabre la lista desplegable
+  if(reopenList){
+    toggleSkinList(true);
+  }
 }
 let queue = [];
 let queueIndex = -1;
@@ -721,23 +726,34 @@ skinListEl?.addEventListener("click", (e)=>{
   openSkinModal(id);
 });
 // --- Modal: cerrar (X / cancelar / scrim) ---
-skinModalScrim?.addEventListener("click", closeSkinModal);
-btnSkinModalClose?.addEventListener("click", closeSkinModal);
-btnSkinCancel?.addEventListener("click", closeSkinModal);
+skinModalScrim?.addEventListener("click", ()=> closeSkinModal(true));
+btnSkinModalClose?.addEventListener("click", ()=> closeSkinModal(true));
+btnSkinCancel?.addEventListener("click", ()=> closeSkinModal(true));
 
 // --- Modal: aplicar ---
 btnSkinApply?.addEventListener("click", ()=>{
   const id = skinListEl?.dataset?.selected;
   if(!id) return;
 
+  // 1) Aplicar skin
   applyDockSkinById(id);
 
-  // Marca activo visual en el listado (si está renderizado)
+  // 2) Marcar activo en el listado
   document.querySelectorAll("#skinList .skinItem").forEach(el=>{
     el.classList.toggle("is-active", el.dataset.skin === id);
   });
 
-  closeSkinModal();
+  // 3) Cerrar modal (sin reabrir lista)
+  closeSkinModal(false);
+
+  // 4) Cerrar lista desplegable (por si estaba abierta)
+  toggleSkinList(false);
+
+  // 5) Cerrar menú hamburguesa completo
+  closeMenu();
+
+  // 6) Abrir el dock en pantalla
+  openDock();
 });
   // =========================
   // Now: solo abre/reproduce
