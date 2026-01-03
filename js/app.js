@@ -62,8 +62,10 @@ function applyDockSkinById(id){
   const skin = DOCK_SKINS.find(s => s.id === id) || DOCK_SKINS[0];
   if(!dock) return;
 
-  // Aplicamos por inline style para sobreescribir el CSS sin romperlo
-  dock.style.backgroundImage = `url("${skin.url}")`;
+  // Variables CSS que el CSS usará para el background
+  dock.style.setProperty("--dock-skin-portrait", `url("${skin.portrait}")`);
+  dock.style.setProperty("--dock-skin-landscape", `url("${skin.landscape || skin.portrait}")`);
+
   setSavedDockSkinId(skin.id);
 }
 
