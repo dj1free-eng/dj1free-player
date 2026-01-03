@@ -711,20 +711,34 @@ skinListEl?.addEventListener("click", (e)=>{
   const id = item.dataset.skin;
   if(!id) return;
 
-  // APLICA la skin al dock
-  applyDockSkinById(id);
-
-  // Marca activo visual
-  document.querySelectorAll("#skinList .skinItem").forEach(el => el.classList.remove("is-active"));
-  item.classList.add("is-active");
-
-  // Guarda selección (nos servirá para la modal luego)
+  // Guardamos selección para "Aplicar"
   skinListEl.dataset.selected = id;
 
-  // Cierra el desplegable al elegir (opcional, pero recomendable)
+  // Cierra el desplegable (para que no estorbe)
   toggleSkinList(false);
-});
 
+  // Abre modal con preview
+  openSkinModal(id);
+});
+// --- Modal: cerrar (X / cancelar / scrim) ---
+skinModalScrim?.addEventListener("click", closeSkinModal);
+btnSkinModalClose?.addEventListener("click", closeSkinModal);
+btnSkinCancel?.addEventListener("click", closeSkinModal);
+
+// --- Modal: aplicar ---
+btnSkinApply?.addEventListener("click", ()=>{
+  const id = skinListEl?.dataset?.selected;
+  if(!id) return;
+
+  applyDockSkinById(id);
+
+  // Marca activo visual en el listado (si está renderizado)
+  document.querySelectorAll("#skinList .skinItem").forEach(el=>{
+    el.classList.toggle("is-active", el.dataset.skin === id);
+  });
+
+  closeSkinModal();
+});
   // =========================
   // Now: solo abre/reproduce
   // =========================
