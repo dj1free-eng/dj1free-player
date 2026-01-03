@@ -976,3 +976,11 @@ html, body{
 [hidden]{
   display: none !important;
 }
+/* Skin list: por defecto cerrada */
+.skinList{
+  margin-top: 10px;
+}
+
+.skinList[hidden]{
+  display: none !important;
+}
