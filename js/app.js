@@ -40,14 +40,14 @@ const DOCK_SKINS = [
 {
   id: "basic",
   name: "Básico",
-  thumb: "./assets/skins/thumb-basic.png",
-  url: "./assets/skins/dock-skin.png"
+  thumb: "/dj1free-player/assets/skins/thumb-basic.png",
+portrait: "/dj1free-player/assets/skins/dock-skin.png",
 },
 {
   id: "stranger",
   name: "Stranger Things",
-  thumb: "./assets/skins/thumb-stranger.png",
-  url: "./assets/skins/dock-skin-stranger.png"
+  thumb: "/dj1free-player/assets/skins/thumb-stranger.png",
+  url: "/dj1free-player/assets/skins/dock-skin-stranger.png"
 }
 ];
 
