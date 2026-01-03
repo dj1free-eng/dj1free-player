@@ -972,3 +972,7 @@ html, body{
   background: rgba(138,230,255,.10);
   border-color: rgba(138,230,255,.25);
 }
+/* HARD RULE: lo que tenga [hidden] NO se ve nunca */
+[hidden]{
+  display: none !important;
+}
