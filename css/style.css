@@ -673,9 +673,9 @@ background-image: var(--dock-skin-portrait, url("../assets/skins/dock-skin.png")
 ------------------------- */
 :root{
   --viz-x: 32%;
-  --viz-y: 32.8%;
+  --viz-y: 34%;
   --viz-w: 56%;
-  --viz-h: 6.2%;
+  --viz-h: 9%;
 
   /* look */
   --viz-gap: 3px;
