@@ -49,6 +49,12 @@ portrait: "/dj1free-player/assets/skins/dock-skin.png",
   thumb: "/dj1free-player/assets/skins/thumb-stranger.png",
   url: "/dj1free-player/assets/skins/dock-skin-stranger.png"
 }
+   {
+  id: "neon",
+  name: "Neon",
+  thumb: "/dj1free-player/assets/skins/thumb-neon.png",
+  url: "/dj1free-player/assets/skins/dock-skin-neon.png"
+}
 ];
 
 const LS_DOCK_SKIN = "dj1free_dock_skin";
