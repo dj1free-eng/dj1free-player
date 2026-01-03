@@ -14,7 +14,6 @@ const dockSub = $("#dockSub");
 const btnPlay = $("#btnPlay");
 const btnNow = $("#btnNow");
 const btnCloseDock = $("#btnCloseDock");
-const btnSkin = $("#btnSkin");
 const btnSpotify = $("#btnSpotify");
 const btnYTM = $("#btnYTM");
 const tCur = $("#tCur");
@@ -692,18 +691,6 @@ function wireDock(){
     // En la siguiente fase, aquí abriremos la modal con preview.
     // Por ahora, dejamos el desplegable abierto para que lo veas.
   });
-  // =========================
-  // Skin: listener SIEMPRE activo
-  // =========================
-  btnSkin?.addEventListener("click", (e)=>{
-    e.preventDefault();
-    cycleDockSkin();
-
-    // feedback visible (opcional)
-    const cur = getSavedDockSkinId();
-    const skin = DOCK_SKINS.find(s => s.id === cur);
-    if(btnSkin && skin) btnSkin.textContent = `Skin: ${skin.name}`;
-  });
 
   // =========================
   // Now: solo abre/reproduce
@@ -807,35 +794,24 @@ function wireDock(){
     tCur.textContent = fmtTime(next);
   });
 }
-function openMenu(){
-  if(!menuDrawer || !menuScrim || !btnMenu) return;
-  menuDrawer.hidden = false;
-  menuScrim.hidden = false;
-  requestAnimationFrame(()=> menuDrawer.classList.add("is-open"));
-  btnMenu.setAttribute("aria-expanded","true");
-}
 
-function closeMenu(){
-  if(!menuDrawer || !menuScrim || !btnMenu) return;
-  menuDrawer.classList.remove("is-open");
-  btnMenu.setAttribute("aria-expanded","false");
-  setTimeout(()=>{
-    menuDrawer.hidden = true;
-    menuScrim.hidden = true;
-  }, 220);
-}
 async function init(){
   DATA = await loadCatalog();
-  wireDock();
-  applyDockSkinById(getSavedDockSkinId());
-  renderSkinList();
-   // etiqueta del botón para que se vea qué skin está activo
-  const cur = getSavedDockSkinId();
-  const skin = DOCK_SKINS.find(s => s.id === cur);
-  if(btnSkin && skin) btnSkin.textContent = `Skin: ${skin.name}`;
-   
-   $("#app").addEventListener("click", onAppClick, { passive:true });
 
+  // listeners
+  wireDock();
+
+  // aplica la skin guardada al dock
+  applyDockSkinById(getSavedDockSkinId());
+
+  // rellena lista de skins, pero arranca cerrada siempre
+  renderSkinList();
+  toggleSkinList(false); // <-- CLAVE: que no salga desplegada
+
+  // clicks en el contenido
+  $("#app").addEventListener("click", onAppClick, { passive:true });
+
+  // router
   window.addEventListener("hashchange", route);
   route();
 }
