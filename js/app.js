@@ -115,11 +115,17 @@ function openSkinModal(id){
 
   // PREVIEW (esto es lo que has perdido)
   if(skinModalPreview){
-    skinModalPreview.style.backgroundImage = `url("${skin.portrait}")`;
-    skinModalPreview.style.backgroundSize = "cover";
-    skinModalPreview.style.backgroundPosition = "center";
-    skinModalPreview.style.backgroundRepeat = "no-repeat";
-  }
+  // Forzamos preview con <img> (más fiable que background-image)
+  const src = encodeURI(skin.portrait);
+
+  skinModalPreview.innerHTML = `
+    <img
+      src="${src}"
+      alt="Preview skin"
+      style="width:100%; height:100%; display:block; object-fit:cover; border-radius:12px;"
+    >
+  `;
+}
 
   // abre modal
   skinModal.hidden = false;
