@@ -68,11 +68,10 @@ function applyDockSkinById(id){
   const skin = DOCK_SKINS.find(s => s.id === id) || DOCK_SKINS[0];
   if(!dock) return;
 
-  // Aplicación directa (NO depende del CSS)
-  const isLandscape = window.matchMedia && window.matchMedia("(orientation: landscape)").matches;
-  const img = isLandscape ? (skin.landscape || skin.portrait) : skin.portrait;
+  dock.style.setProperty("--dock-skin-portrait", `url("${skin.portrait}")`);
+  dock.style.setProperty("--dock-skin-landscape", `url("${skin.landscape || skin.portrait}")`);
 
-  dock.style.backgroundImage = `url("${img}")`;
+  // 🔒 RESET anti-zoom / anti-crop al rotar
   dock.style.backgroundRepeat = "no-repeat";
   dock.style.backgroundPosition = "center";
   dock.style.backgroundSize = "100% 100%";
