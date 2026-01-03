@@ -673,24 +673,26 @@ function wireDock(){
     toggleSkinList();
   });
 
-  skinListEl?.addEventListener("click", (e)=>{
-    const item = e.target.closest(".skinItem");
-    if(!item) return;
+skinListEl?.addEventListener("click", (e)=>{
+  const item = e.target.closest(".skinItem");
+  if(!item) return;
 
-    const id = item.dataset.skin;
-    if(!id) return;
+  const id = item.dataset.skin;
+  if(!id) return;
 
-    // De momento: NO aplicar aquí. Solo “selección” (preparado para la modal).
-    // Para que veas que funciona, lo marcamos como activo visualmente:
-    document.querySelectorAll(".skinItem").forEach(el => el.classList.remove("is-active"));
-    item.classList.add("is-active");
+  // APLICA la skin al dock
+  applyDockSkinById(id);
 
-    // Guardamos el id seleccionado temporalmente en dataset (para la próxima fase)
-    skinListEl.dataset.selected = id;
+  // Marca activo visual
+  document.querySelectorAll("#skinList .skinItem").forEach(el => el.classList.remove("is-active"));
+  item.classList.add("is-active");
 
-    // En la siguiente fase, aquí abriremos la modal con preview.
-    // Por ahora, dejamos el desplegable abierto para que lo veas.
-  });
+  // Guarda selección (nos servirá para la modal luego)
+  skinListEl.dataset.selected = id;
+
+  // Cierra el desplegable al elegir (opcional, pero recomendable)
+  toggleSkinList(false);
+});
 
   // =========================
   // Now: solo abre/reproduce
