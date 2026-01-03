@@ -35,13 +35,15 @@ const DOCK_SKINS = [
     id: "basic",
     name: "Básico",
     thumb: "assets/skins/thumb-basic.png",
-    url: "assets/skins/dock-skin.png"
+    portrait: "assets/skins/dock-skin.png",
+    landscape: "assets/skins/dock-skin.png" // si no tienes, pon el mismo
   },
   {
     id: "stranger",
     name: "Stranger Things",
     thumb: "assets/skins/thumb-stranger.png",
-    url: "assets/skins/dock-skin-stranger.png"
+    portrait: "assets/skins/dock-skin-stranger.png",
+    landscape: "assets/skins/dock-skin-stranger.png"
   }
 ];
 
