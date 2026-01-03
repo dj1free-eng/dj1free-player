@@ -404,7 +404,7 @@ body{
 
   z-index: 9999;
 
-background-image: url("../assets/skins/dock-skin.png");
+background-image: var(--dock-skin-portrait, url("../assets/skins/dock-skin.png"));
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-position: center;
@@ -415,6 +415,7 @@ background-image: url("../assets/skins/dock-skin.png");
 @media (orientation: landscape){
   .playerSkin{
     bottom: calc(var(--h-dock-bottom, var(--v-dock-bottom)) + env(safe-area-inset-bottom, 0px));
+    background-image: var(--dock-skin-landscape, var(--dock-skin-portrait, url("../assets/skins/dock-skin.png")));
   }
 }
 
