@@ -37,20 +37,18 @@ const btnSkinCancel = $("#btnSkinCancel");
    Skins del reproductor
 ========================= */
 const DOCK_SKINS = [
-  {
-    id: "basic",
-    name: "Básico",
-    thumb: "assets/skins/thumb-basic.png",
-    portrait: "assets/skins/dock-skin.png",
-    landscape: "assets/skins/dock-skin.png" // si no tienes, pon el mismo
-  },
-  {
-    id: "stranger",
-    name: "Stranger Things",
-    thumb: "assets/skins/thumb-stranger.png",
-    portrait: "assets/skins/dock-skin-stranger.png",
-    landscape: "assets/skins/dock-skin-stranger.png"
-  }
+{
+  id: "basic",
+  name: "Básico",
+  thumb: "assets/skins/thumb-basic.png",
+  url: "assets/skins/dock-skin.png"
+},
+{
+  id: "stranger",
+  name: "Stranger Things",
+  thumb: "assets/skins/thumb-stranger.png",
+  url: "assets/skins/dock-skin-stranger.png"
+}
 ];
 
 const LS_DOCK_SKIN = "dj1free_dock_skin";
@@ -68,13 +66,8 @@ function applyDockSkinById(id){
   const skin = DOCK_SKINS.find(s => s.id === id) || DOCK_SKINS[0];
   if(!dock) return;
 
-  dock.style.setProperty("--dock-skin-portrait", `url("${skin.portrait}")`);
-  dock.style.setProperty("--dock-skin-landscape", `url("${skin.landscape || skin.portrait}")`);
-
-  // 🔒 RESET anti-zoom / anti-crop al rotar
-  dock.style.backgroundRepeat = "no-repeat";
-  dock.style.backgroundPosition = "center";
-  dock.style.backgroundSize = "100% 100%";
+  // Una sola imagen siempre (sin landscape)
+  dock.style.backgroundImage = `url("${skin.url}")`;
 
   setSavedDockSkinId(skin.id);
 }
