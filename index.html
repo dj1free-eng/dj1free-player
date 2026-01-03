@@ -111,5 +111,21 @@
 
   <script src="js/app.js?v=1" defer></script>
   <script src="js/visualizer24.js" defer></script>
+<!-- Modal preview skin -->
+<div id="skinModalScrim" class="menuScrim" hidden></div>
+
+<div id="skinModal" class="skinModal" hidden role="dialog" aria-modal="true" aria-label="Previsualizar skin">
+  <div class="skinModalHead">
+    <div id="skinModalTitle" class="skinModalTitle">Previsualización</div>
+    <button id="btnSkinModalClose" class="btn ghost" type="button" aria-label="Cerrar">✕</button>
+  </div>
+
+  <div id="skinModalPreview" class="skinModalPreview" aria-hidden="true"></div>
+
+  <div class="skinModalActions">
+    <button id="btnSkinApply" class="btn primary" type="button">Aplicar</button>
+    <button id="btnSkinCancel" class="btn ghost" type="button">Cancelar</button>
+  </div>
+</div>
 </body>
 </html>
