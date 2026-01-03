@@ -404,7 +404,7 @@ body{
 
   z-index: 9999;
 
-background-image: var(--dock-skin-portrait, url("../assets/skins/dock-skin.png"));
+  /* IMPORTANTE: el JS pone la imagen */
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-position: center;
@@ -412,14 +412,16 @@ background-image: var(--dock-skin-portrait, url("../assets/skins/dock-skin.png")
   border-radius: 28px;
 }
 
+/* ❌ NO background-image aquí */
 @media (orientation: landscape){
   .playerSkin{
     bottom: calc(var(--h-dock-bottom, var(--v-dock-bottom)) + env(safe-area-inset-bottom, 0px));
-    background-image: var(--dock-skin-landscape, var(--dock-skin-portrait, url("../assets/skins/dock-skin.png")));
   }
 }
 
-.playerSkin[hidden]{ display:none !important; }
+.playerSkin[hidden]{
+  display: none !important;
+}
 
 .playerSkin .ps-ui{
   position: absolute;
