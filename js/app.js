@@ -68,13 +68,17 @@ function applyDockSkinById(id){
   const skin = DOCK_SKINS.find(s => s.id === id) || DOCK_SKINS[0];
   if(!dock) return;
 
-  // Variables CSS que el CSS usará para el background
-  dock.style.setProperty("--dock-skin-portrait", `url("${skin.portrait}")`);
-  dock.style.setProperty("--dock-skin-landscape", `url("${skin.landscape || skin.portrait}")`);
+  // Aplicación directa (NO depende del CSS)
+  const isLandscape = window.matchMedia && window.matchMedia("(orientation: landscape)").matches;
+  const img = isLandscape ? (skin.landscape || skin.portrait) : skin.portrait;
+
+  dock.style.backgroundImage = `url("${img}")`;
+  dock.style.backgroundRepeat = "no-repeat";
+  dock.style.backgroundPosition = "center";
+  dock.style.backgroundSize = "100% 100%";
 
   setSavedDockSkinId(skin.id);
 }
-
 function cycleDockSkin(){
   const currentId = getSavedDockSkinId();
   const idx = DOCK_SKINS.findIndex(s => s.id === currentId);
