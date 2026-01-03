@@ -985,3 +985,49 @@ html, body{
 .skinList[hidden]{
   display: none !important;
 }
+.skinModal{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: min(520px, calc(100vw - 24px));
+  background: rgba(9,12,24,.96);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 18px;
+  padding: 14px;
+  z-index: 9002; /* por encima del drawer */
+  box-shadow: 0 25px 80px rgba(0,0,0,.65);
+}
+
+.skinModalHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  margin-bottom: 12px;
+}
+
+.skinModalTitle{
+  font-weight: 900;
+  color: rgba(242,245,255,.92);
+}
+
+.skinModalPreview{
+  width: 100%;
+  aspect-ratio: 1443 / 525;
+  border-radius: 14px;
+  background-size: 100% 100%;
+  background-repeat:no-repeat;
+  background-position:center;
+  border: 1px solid rgba(255,255,255,.10);
+  background-color: rgba(255,255,255,.03);
+}
+
+.skinModalActions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  margin-top: 12px;
+}
