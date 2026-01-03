@@ -26,7 +26,13 @@ const menuDrawer = $("#menuDrawer");
 const menuScrim = $("#menuScrim");
 const btnSkinToggle = $("#btnSkinToggle");
 const skinListEl = $("#skinList");
-
+const skinModalScrim = $("#skinModalScrim");
+const skinModal = $("#skinModal");
+const skinModalTitle = $("#skinModalTitle");
+const skinModalPreview = $("#skinModalPreview");
+const btnSkinModalClose = $("#btnSkinModalClose");
+const btnSkinApply = $("#btnSkinApply");
+const btnSkinCancel = $("#btnSkinCancel");
 /* =========================
    Skins del reproductor
 ========================= */
@@ -100,6 +106,23 @@ function toggleSkinList(force){
   const willOpen = typeof force === "boolean" ? force : list.hidden;
   list.hidden = !willOpen;
   btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+}
+function openSkinModal(id){
+  const skin = DOCK_SKINS.find(s => s.id === id);
+  if(!skin || !skinModal || !skinModalScrim) return;
+
+  skinListEl.dataset.selected = id;
+  skinModalTitle.textContent = skin.name;
+  skinModalPreview.style.backgroundImage = `url("${skin.portrait}")`;
+
+  skinModal.hidden = false;
+  skinModalScrim.hidden = false;
+}
+
+function closeSkinModal(){
+  if(!skinModal || !skinModalScrim) return;
+  skinModal.hidden = true;
+  skinModalScrim.hidden = true;
 }
 let queue = [];
 let queueIndex = -1;
