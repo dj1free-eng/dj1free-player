@@ -57,7 +57,7 @@ const DOCK_SKINS = [
     thumb: "assets/skins/thumb-neon.png",
     url: "assets/skins/dock-skin-neon.png",
     portrait: "assets/skins/dock-skin-neon.png"
-  }
+  },
      {
     id: "ufc",
     name: "UFC",
