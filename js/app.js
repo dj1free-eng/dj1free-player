@@ -58,6 +58,13 @@ const DOCK_SKINS = [
     url: "assets/skins/dock-skin-neon.png",
     portrait: "assets/skins/dock-skin-neon.png"
   }
+     {
+    id: "ufc",
+    name: "UFC",
+    thumb: "assets/skins/thumb-ufc.png",
+    url: "assets/skins/dock-skin-ufc.png",
+    portrait: "assets/skins/dock-skin-ufc.png"
+  }
 ];
 
 const LS_DOCK_SKIN = "dj1free_dock_skin";
