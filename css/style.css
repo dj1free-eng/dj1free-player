@@ -51,15 +51,22 @@ body{
   position: sticky;
   top: 0;
   z-index: 50;
+
   background: rgba(9,12,24,.65);
   border-bottom: 1px solid rgba(255,255,255,.10);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:12px;
-  padding: 12px 14px;
+
+  /* ✅ SAFE AREA iOS (notch / reloj) */
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
+  padding-right: calc(14px + env(safe-area-inset-right, 0px));
+  padding-bottom: 12px;
+  padding-left: calc(14px + env(safe-area-inset-left, 0px));
 }
 
 .brand{
@@ -820,9 +827,9 @@ html, body{
 
 .menuDrawer{
   position: fixed;
-  top: 0;
+  top: env(safe-area-inset-top, 0px);
   right: 0;
-  height: 100vh;
+  height: calc(100vh - env(safe-area-inset-top, 0px));
   width: min(320px, 88vw);
   background: rgba(9,12,24,.92);
   border-left: 1px solid rgba(255,255,255,.10);
@@ -830,7 +837,7 @@ html, body{
   -webkit-backdrop-filter: blur(18px);
   z-index: 9001;
 
-  padding: 14px;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) 14px 14px 14px;
   box-shadow: 0 20px 60px rgba(0,0,0,.55);
 
   transform: translateX(100%);
@@ -1032,4 +1039,12 @@ html, body{
   gap:10px;
   justify-content:flex-end;
   margin-top: 12px;
+}
+html, body{
+  height: 100%;
+}
+
+body{
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 }
