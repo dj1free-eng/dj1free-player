@@ -751,6 +751,11 @@ function openDock(){
   dock.hidden = false;
   const scrim = document.getElementById("dockScrim");
   if(scrim) scrim.hidden = false;
+
+  // Si no hay audio cargado, intentamos restaurar el último estado pausado
+  if((!audio.src || !currentTrackId) && DATA){
+    restorePausedState();
+  }
 }
 
 function stopPlayback(){
@@ -793,7 +798,7 @@ function setQueueFromTrack(trackId){
 async function playTrackById(trackId){
   const track = byId(DATA.tracks, trackId);
   if(!track) return;
-
+  currentTrackId = track.id;
   setQueueFromTrack(trackId);
   openDock();
   updateDockUI(track);
@@ -922,19 +927,19 @@ btnSkinApply?.addEventListener("click", ()=>{
   // =========================
   const dockScrim = document.getElementById("dockScrim");
   dockScrim?.addEventListener("click", ()=>{
-    dock.hidden = true;
-    dockScrim.hidden = true;
-    stopPlayback();
-  });
+  dock.hidden = true;
+  dockScrim.hidden = true;
+  pauseAndPersist();
+});
 
   // =========================
   // Cerrar dock (botón X)
   // =========================
-  btnCloseDock?.addEventListener("click", ()=>{
-    dock.hidden = true;
-    if(dockScrim) dockScrim.hidden = true;
-    stopPlayback();
-  });
+ btnCloseDock?.addEventListener("click", ()=>{
+  dock.hidden = true;
+  if(dockScrim) dockScrim.hidden = true;
+  pauseAndPersist();
+});
 
   // =========================
   // Enlaces
@@ -956,16 +961,19 @@ btnSkinApply?.addEventListener("click", ()=>{
     if(btnPlay.disabled) return;
 
     if(audio.paused){
-      try{
-        await audio.play();
-        btnPlay.textContent = "Pausa";
-      }catch(e){
-        console.error(e);
-      }
-    }else{
-      audio.pause();
-      btnPlay.textContent = "Play";
-    }
+  try{
+    await audio.play();
+    btnPlay.textContent = "Pausa";
+    scheduleHardStop(); // <-- clave al reanudar
+  }catch(e){
+    console.error(e);
+  }
+}else{
+  audio.pause();
+  btnPlay.textContent = "Play";
+  // guardamos la pausa (por si cambias skin / cierras luego)
+  if(currentTrackId && audio.src) pauseAndPersist();
+}
   });
 
   // =========================
