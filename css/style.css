@@ -1048,3 +1048,93 @@ body{
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
 }
+/* =========================================================
+   HOME: tarjetas "Explorar" con look premium
+   (sin tocar el HTML actual)
+========================================================= */
+
+/* 1) Más aire y jerarquía */
+.sectionHead{
+  align-items:center;
+}
+
+/* 2) Card: efecto glass + borde con luz + hover más fino */
+.card{
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,.07),
+    rgba(255,255,255,.04)
+  );
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 18px 55px rgba(0,0,0,.35);
+  overflow: hidden;
+  position: relative;
+}
+
+/* brillo sutil en esquina (da “premium”) */
+.card::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  background:
+    radial-gradient(500px 220px at 20% 0%, rgba(138,230,255,.14), transparent 60%),
+    radial-gradient(420px 220px at 85% 20%, rgba(182,140,255,.12), transparent 60%);
+  pointer-events:none;
+  opacity:.9;
+}
+
+/* 3) Interior: más alto, más “tile”, menos formulario */
+.cardInner{
+  position: relative;
+  z-index: 1;
+  padding: 16px 16px;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 14px;
+}
+
+/* OJO: en tus cards de "Explorar" no hay .cardCover,
+   así que el layout de 3 columnas sobra. Este ajuste lo arregla
+   sin afectar a las cards con portada, porque esas sí tienen .cardCover */
+.cardInner:has(.cardCover){
+  grid-template-columns: var(--coverSize) minmax(0,1fr) auto;
+}
+
+/* 4) Títulos más “headline” */
+.cardTitle{
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: .2px;
+}
+
+/* 5) Subtexto más legible */
+.cardSub{
+  opacity: .85;
+}
+
+/* 6) Badge "Abrir" -> estilo CTA pill con flecha */
+.badge{
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-weight: 900;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.badge::after{
+  content:" →";
+  opacity:.9;
+}
+
+/* 7) Hover */
+.card:hover{
+  transform: translateY(-2px);
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,.09),
+    rgba(255,255,255,.05)
+  );
+  border-color: rgba(255,255,255,.14);
+}
