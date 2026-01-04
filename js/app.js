@@ -68,7 +68,135 @@ const DOCK_SKINS = [
 ];
 
 const LS_DOCK_SKIN = "dj1free_dock_skin";
+// =========================
+// Estado persistente del player (pausa + posición)
+// =========================
+const LS_PLAYER_STATE = "dj1free_player_state_v1";
 
+// Track actual (para saber qué guardar/restaurar)
+let currentTrackId = null;
+
+function getSavedPlayerState(){
+  try{
+    const raw = localStorage.getItem(LS_PLAYER_STATE);
+    if(!raw) return null;
+    const s = JSON.parse(raw);
+    if(!s || !s.trackId) return null;
+    return s;
+  }catch(_){
+    return null;
+  }
+}
+
+function setSavedPlayerState(state){
+  try{
+    localStorage.setItem(LS_PLAYER_STATE, JSON.stringify(state));
+  }catch(_){}
+}
+
+function clearSavedPlayerState(){
+  try{ localStorage.removeItem(LS_PLAYER_STATE); }catch(_){}
+}
+
+// Programa el hard-stop para respetar el límite del preview
+function scheduleHardStop(){
+  clearTimeout(hardStopTimer);
+  hardStopTimer = null;
+
+  const remaining = Math.max(0, (currentLimitSec || PREVIEW_FALLBACK_SEC) - (audio.currentTime || 0));
+  if(remaining <= 0) return;
+
+  hardStopTimer = setTimeout(()=>{
+    audio.pause();
+    audio.currentTime = 0;
+    btnPlay.textContent = "Play";
+    tCur.textContent = "0:00";
+    // Guardamos también el estado reseteado
+    if(currentTrackId){
+      setSavedPlayerState({
+        trackId: currentTrackId,
+        time: 0,
+        limitSec: currentLimitSec || PREVIEW_FALLBACK_SEC,
+        paused: true
+      });
+    }
+  }, remaining * 1000);
+}
+
+// Pausa, NO borra src, y persiste posición + track
+function pauseAndPersist(){
+  clearTimeout(hardStopTimer);
+  hardStopTimer = null;
+
+  // Si no hay nada cargado, no guardamos basura
+  if(!currentTrackId || !audio.src){
+    audio.pause();
+    btnPlay.textContent = "Play";
+    return;
+  }
+
+  audio.pause();
+  btnPlay.textContent = "Play";
+
+  const time = Math.max(0, Math.min(audio.currentTime || 0, currentLimitSec || PREVIEW_FALLBACK_SEC));
+
+  setSavedPlayerState({
+    trackId: currentTrackId,
+    time,
+    limitSec: currentLimitSec || PREVIEW_FALLBACK_SEC,
+    paused: true
+  });
+
+  // UI inmediata
+  tCur.textContent = fmtTime(time);
+  tMax.textContent = fmtTime(currentLimitSec || PREVIEW_FALLBACK_SEC);
+}
+
+// Restaura el último track y lo deja en pausa donde estaba
+function restorePausedState(){
+  const s = getSavedPlayerState();
+  if(!s || !s.trackId) return false;
+
+  const track = byId(DATA?.tracks, s.trackId);
+  if(!track) return false;
+
+  // Monta UI y audio sin reproducir
+  setQueueFromTrack(track.id);
+  updateDockUI(track);
+  setMediaSession(track);
+
+  const url = safeUrl(track.previewUrl);
+  if(!url){
+    // No hay preview, no hay nada que restaurar de audio
+    btnPlay.textContent = "Sin preview";
+    btnPlay.disabled = true;
+    return false;
+  }
+
+  btnPlay.disabled = false;
+
+  // Carga audio si no está cargado o si es otro track
+  if(!audio.src || audio.src !== url){
+    audio.pause();
+    audio.src = url;
+    audio.load();
+  }
+
+  currentTrackId = track.id;
+  currentLimitSec = Number(track.durationSec || s.limitSec || PREVIEW_FALLBACK_SEC);
+  tMax.textContent = fmtTime(currentLimitSec);
+
+  const time = Math.max(0, Math.min(Number(s.time || 0), currentLimitSec));
+  audio.currentTime = time;
+  tCur.textContent = fmtTime(time);
+
+  // Queda en pausa
+  btnPlay.textContent = "Play";
+  clearTimeout(hardStopTimer);
+  hardStopTimer = null;
+
+  return true;
+}
 function getSavedDockSkinId(){
   try{ return localStorage.getItem(LS_DOCK_SKIN) || "basic"; }
   catch(_){ return "basic"; }
