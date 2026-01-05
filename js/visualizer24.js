@@ -19,8 +19,9 @@
         ctx = new (window.AudioContext || window.webkitAudioContext)();
         analyser = ctx.createAnalyser();
         analyser.fftSize = 2048;
-        analyser.smoothingTimeConstant = 0.8;
-
+        analyser.smoothingTimeConstant = 0.55;
+        analyser.minDecibels = -90;
+        analyser.maxDecibels = -20;
         // Si alguien ya creó MediaElementSource con este <audio>, esto puede lanzar error
         src = ctx.createMediaElementSource(audioEl);
         src.connect(analyser);
@@ -53,10 +54,22 @@
 
       for(let i=0;i<BAR_COUNT;i++){
         const idx = freqIndex(i);
-        const v = data[idx] / 255;
+const v = data[idx] / 255;
 
-const level = 0.04 + Math.pow(v, 0.40) * 1.30;
-        bars[i].style.transform = `scaleY(${level})`;
+// 1) Noise gate: si hay poco, lo consideramos casi cero (baja mucho)
+const gate = 0.10;
+const vg = v < gate ? 0 : (v - gate) / (1 - gate);
+
+// 2) Curva gamma (>1) para que en bajos niveles caiga MUCHO
+const gamma = 2.2;
+const shaped = Math.pow(vg, gamma);
+
+// 3) Escala final: suelo muy bajo + rango amplio hasta picos rojos
+const floor = 0.02;     // mínimo real (muy abajo)
+const gain  = 1.60;     // amplitud de subida (picos altos)
+const level = floor + shaped * gain;
+
+bars[i].style.transform = `scaleY(${level})`;
       }
 
       raf = requestAnimationFrame(draw);
@@ -78,7 +91,7 @@ const level = 0.04 + Math.pow(v, 0.40) * 1.30;
     function stop(){
       running = false;
       if(raf) cancelAnimationFrame(raf);
-      bars.forEach(b => b.style.transform = "scaleY(0.15)");
+bars.forEach(b => b.style.transform = "scaleY(0.02)");
     }
 
     audioEl.addEventListener("play", start);
