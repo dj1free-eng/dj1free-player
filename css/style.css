@@ -1,4 +1,11 @@
 /* =========================================================
+   dJ1fRee Player — style.css (LIMPIO)
+   - Sin duplicados
+   - Sin overrides globales que rompan el grid de cards
+   - Estilo premium consistente
+========================================================= */
+
+/* =========================================================
    VARIABLES BASE
 ========================================================= */
 :root{
@@ -14,14 +21,67 @@
   --r:16px;
   --coverSize: 88px;
   --coverRadius: 18px;
+
+  /* =========================
+     PLAYER SKIN — ZONAS PNG (NO TOCAR)
+     Medidas reales del PNG 1443x525 (en %)
+  ========================= */
+  --ps-cover-left: 9.4941%;
+  --ps-cover-top: 7.2381%;
+  --ps-cover-w: 21.6216%;
+  --ps-cover-h: 36.1905%;
+
+  --ps-spotify-left: 90.5752%;
+  --ps-spotify-top: 57.7143%;
+  --ps-spotify-w: 4.6431%;
+  --ps-spotify-h: 12.1905%;
+
+  --ps-ytm-left: 85.7242%;
+  --ps-ytm-top: 68.1905%;
+  --ps-ytm-w: 4.3659%;
+  --ps-ytm-h: 11.6190%;
+
+  --ps-close-left: 5.2668%;
+  --ps-close-top: 70.6667%;
+  --ps-close-w: 7.1379%;
+  --ps-close-h: 10.2857%;
+
+  /* =========================
+     PLAYER SKIN — TORNILLOS (VERTICAL)
+  ========================= */
+  --v-dock-bottom: 26px; /* + = sube, - = baja */
+  --v-tcur-left: 23.8%;
+  --v-tcur-top:  54.1%;
+  --v-tmax-left: 68.8%;
+  --v-tmax-top:  54.1%;
+  --v-time-font: 12px;
+  --v-rew-left: 32.5%;
+  --v-rew-top:  50%;
+  --v-fwd-left: 60.0%;
+  --v-fwd-top:  50%;
+  --v-play-left: 42%;
+  --v-play-top:  40%;
+  --v-play-icon-y: 10px;
+
+  /* =========================
+     VISUALIZER (VERTICAL)
+  ========================= */
+  --viz-x: 32%;
+  --viz-y: 34%;
+  --viz-w: 56%;
+  --viz-h: 9%;
+  --viz-gap: 3px;
+  --viz-pad-x: 10px;
+  --viz-pad-y: 2px;
+  --viz-bg: rgba(0,0,0,.10);
+  --viz-border: rgba(255,255,255,.06);
+  --viz-glow: 0 2px 10px rgba(0,0,0,.25);
+  --viz-mode: 1;
 }
 
 *{ box-sizing:border-box; }
-html, body{ min-height:100%; }
+html, body{ min-height:100%; height:100%; overflow-x:hidden; }
 
-/* =========================================================
-   FONDO GLOBAL — oscuro premium con profundidad (NO pastel)
-========================================================= */
 body{
   margin:0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -42,10 +102,13 @@ body{
   background-repeat:no-repeat;
   background-size:cover;
   background-attachment:fixed;
+
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* =========================================================
-   TOPBAR
+   TOPBAR (FIX: safe-area para iOS notch/reloj)
 ========================================================= */
 .topbar{
   position: sticky;
@@ -62,7 +125,6 @@ body{
   justify-content:space-between;
   gap:12px;
 
-  /* ✅ SAFE AREA iOS (notch / reloj) */
   padding-top: calc(12px + env(safe-area-inset-top, 0px));
   padding-right: calc(14px + env(safe-area-inset-right, 0px));
   padding-bottom: 12px;
@@ -85,17 +147,10 @@ body{
 }
 .brandText{ font-weight:700; }
 
-.topnav{ display:flex; gap:10px; align-items:center; }
-.navlink{
-  color:var(--muted);
-  text-decoration:none;
-  padding:8px 12px;
-  border-radius:12px;
-}
-.navlink.active{
-  color:var(--text);
-  background: rgba(255,255,255,.08);
-  border:1px solid var(--line);
+.topActions{
+  display:flex;
+  gap:10px;
+  align-items:center;
 }
 
 /* =========================================================
@@ -116,8 +171,17 @@ body{
   background: linear-gradient(135deg, rgba(138,230,255,.22), rgba(182,140,255,.18));
   border-color: rgba(255,255,255,.14);
 }
-.btn.ghost{
-  padding: 10px 10px;
+.btn.ghost{ padding: 10px 10px; }
+
+/* Botón menú (☰) más grande */
+#btnMenu{
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  line-height: 1;
 }
 
 /* =========================================================
@@ -127,9 +191,10 @@ body{
   max-width:1100px;
   margin:0 auto;
   padding: 18px 16px;
-
-  /* Reserva de espacio para el reproductor fijo */
   padding-bottom: calc(380px + env(safe-area-inset-bottom, 0px));
+}
+@media (max-width: 520px){
+  .app{ padding-bottom: calc(320px + env(safe-area-inset-bottom, 0px)); }
 }
 
 /* =========================================================
@@ -175,19 +240,9 @@ body{
   background-position:center;
   border:1px solid var(--line);
 }
-.heroTitle{
-  font-size:26px;
-  font-weight:800;
-}
-.heroMeta{
-  color:var(--muted);
-  font-size:14px;
-}
-.heroKicker{
-  font-size: 12px;
-  color: rgba(242,245,255,.70);
-  margin-bottom: 6px;
-}
+.heroTitle{ font-size:26px; font-weight:800; }
+.heroMeta{ color:var(--muted); font-size:14px; }
+.heroKicker{ font-size: 12px; color: rgba(242,245,255,.70); margin-bottom: 6px; }
 .heroBtns{
   margin-top: 12px;
   display:flex;
@@ -209,7 +264,8 @@ body{
 .small{ color:var(--muted); font-size:13px; }
 
 /* =========================================================
-   GRID + CARDS (BANNER ESTABLE)
+   GRID + CARDS (BASE ESTABLE)
+   (Esto arregla el “se movieron los textos”)
 ========================================================= */
 .grid{
   display:grid;
@@ -272,9 +328,7 @@ body{
   background: rgba(71,255,184,.08);
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+/* RESPONSIVE cards */
 @media (min-width:740px){
   .card{ grid-column: span 4; }
 }
@@ -282,12 +336,10 @@ body{
   .card{ grid-column: span 3; }
 }
 
-/* iPhone vertical: banners 1 columna */
+/* iPhone vertical: 1 columna */
 @media (max-width:600px){
   .grid{ grid-template-columns:1fr; }
-  .cardInner{
-    grid-template-columns: 140px minmax(0,1fr) auto;
-  }
+  .cardInner{ grid-template-columns: 140px minmax(0,1fr) auto; }
   .cardCover{
     width:140px;
     height:80px;
@@ -295,110 +347,230 @@ body{
   }
 }
 
+/* =========================================================
+   HOME: “Explorar” (3 cards) — que no sea soso, pero sin romper nada
+   Selector seguro: la primera section después del hero
+========================================================= */
+.hero + .section .card{
+  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+  border-color: rgba(255,255,255,.10);
+  box-shadow: 0 18px 55px rgba(0,0,0,.35);
+  overflow:hidden;
+  position:relative;
+}
+.hero + .section .card::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  background:
+    radial-gradient(500px 220px at 20% 0%, rgba(138,230,255,.14), transparent 60%),
+    radial-gradient(420px 220px at 85% 20%, rgba(182,140,255,.12), transparent 60%);
+  pointer-events:none;
+  opacity:.9;
+}
+.hero + .section .card:hover{
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+  border-color: rgba(255,255,255,.14);
+}
+
+/* En “Explorar” no hay portada: quitamos esa columna SOLO ahí */
+.hero + .section .cardInner{
+  position:relative;
+  z-index:1;
+  grid-template-columns: minmax(0,1fr) auto;
+  padding: 16px 16px;
+}
+
+/* CTA pill más pro SOLO en “Explorar” */
+.hero + .section .badge{
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-weight: 900;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+}
+.hero + .section .badge::after{
+  content:" →";
+  opacity:.9;
+}
 
 /* =========================================================
-   PLAYER SKIN (PNG como plantilla + overlay)
-   - Un único bloque
-   - Aislado
-   - Control por “tornillos” (variables) para VERTICAL y HORIZONTAL
+   MENÚ HAMBURGUESA (DRAWER)
 ========================================================= */
-
-/* =========================
-   ZONAS DEL PNG (NO TOCAR)
-   Medidas reales del PNG 1443x525 (en %)
-========================= */
-:root{
-  /* Portada */
-  --ps-cover-left: 9.4941%;
-  --ps-cover-top: 7.2381%;
-  --ps-cover-w: 21.6216%;
-  --ps-cover-h: 36.1905%;
-
-  /* Spotify / YouTube Music */
-  --ps-spotify-left: 90.5752%;
-  --ps-spotify-top: 57.7143%;
-  --ps-spotify-w: 4.6431%;
-  --ps-spotify-h: 12.1905%;
-
-  --ps-ytm-left: 85.7242%;
-  --ps-ytm-top: 68.1905%;
-  --ps-ytm-w: 4.3659%;
-  --ps-ytm-h: 11.6190%;
-
-  /* Botón “engranaje” del skin (lo usamos como cerrar) */
-  --ps-close-left: 5.2668%;
-  --ps-close-top: 70.6667%;
-  --ps-close-w: 7.1379%;
-  --ps-close-h: 10.2857%;
+.menuScrim{
+  position: fixed;
+  inset: 0;
+  background: rgba(5,7,12,.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 9000;
 }
 
-/* =========================
-   🎛️ TORNILLOS — VERTICAL (DEFAULT)
-   Ajusta SOLO estos valores
-========================= */
-:root{
-  /* Dock */
-  --v-dock-bottom: 26px; /* + = sube, - = baja */
+.menuDrawer{
+  position: fixed;
+  top: env(safe-area-inset-top, 0px);
+  right: 0;
+  height: calc(100vh - env(safe-area-inset-top, 0px));
+  width: min(320px, 88vw);
+  background: rgba(9,12,24,.92);
+  border-left: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  z-index: 9001;
 
-  /* Tiempo actual (tCur) */
-  --v-tcur-left: 23.8%;  /* + derecha | - izquierda */
-  --v-tcur-top:  54.1%;    /* + abajo   | - arriba */
+  padding: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
 
-  /* Tiempo total (tMax) */
-  --v-tmax-left: 68.8%;
-  --v-tmax-top:  54.1%;
+  transform: translateX(100%);
+  transition: transform .22s ease;
+}
+.menuDrawer.is-open{ transform: translateX(0); }
 
-  /* Tamaño texto tiempos */
-  --v-time-font: 12px;
+.menuHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  margin-bottom: 12px;
+}
+.menuTitle{ font-weight: 800; color: rgba(242,245,255,.92); }
 
-  /* Botón ↺ (rew 10s) */
-  --v-rew-left: 32.5%;
-  --v-rew-top:  50%;
-
-  /* Botón ↻ (fwd 10s) */
-  --v-fwd-left: 60.0%;
-  --v-fwd-top:  50%;
-
-  /* Botón Play (zona clic) */
-  --v-play-left: 42%;
-  --v-play-top:  40%;
-
-  /* Icono ▶ dentro del botón Play */
-  --v-play-icon-y: 10px; /* + baja icono | - sube icono */
+.menuNav{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
-/* =========================
-   🎛️ TORNILLOS — HORIZONTAL (LANDSCAPE)
-   Ajusta SOLO estos valores
-========================= */
-@media (orientation: landscape){
-  :root{
-    --h-dock-bottom: 18px;
-
-    --h-tcur-left: 24.5%;
-    --h-tcur-top:  55%;
-
-    --h-tmax-left: 69.5%;
-    --h-tmax-top:  55%;
-
-    --h-time-font: 20px;
-
-    --h-rew-left: 32.5%;
-    --h-rew-top:  41.5%;
-
-    --h-fwd-left: 60.0%;
-    --h-fwd-top:  41.5%;
-
-    --h-play-left: 41%;
-    --h-play-top:  36.5%;
-
-    --h-play-icon-y: 9px;
-  }
+.menuLink{
+  display:block;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: rgba(242,245,255,.82);
+  text-decoration:none;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.04);
+}
+.menuLink:hover{ background: rgba(255,255,255,.07); }
+.menuLink.active{
+  border-color: rgba(255,255,255,.14);
+  background: rgba(255,255,255,.10);
+  color: rgba(242,245,255,.95);
 }
 
-/* =========================
-   CONTENEDOR SKIN
-========================= */
+.menuDivider{
+  height:1px;
+  background: rgba(255,255,255,.10);
+  margin: 8px 0;
+}
+
+/* =========================================================
+   SKINS — lista + modal preview
+========================================================= */
+.menuSection{ display:flex; flex-direction:column; gap:10px; }
+.menuSkinBtn{ width:100%; justify-content:center; }
+
+.skinList{
+  margin-top: 10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.skinList[hidden]{ display:none !important; }
+
+.skinItem{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.10);
+  cursor:pointer;
+  user-select:none;
+}
+.skinItem:hover{ background: rgba(255,255,255,.09); }
+
+.skinThumb{
+  width:52px;
+  height:52px;
+  border-radius:10px;
+  background-size:cover;
+  background-position:center;
+  flex-shrink:0;
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.skinMeta{ min-width:0; display:flex; flex-direction:column; gap:2px; }
+.skinName{
+  font-weight:800;
+  color: rgba(242,245,255,.92);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.skinHint{
+  font-size:12px;
+  color: rgba(242,245,255,.65);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.skinItem.is-active{
+  background: rgba(138,230,255,.10);
+  border-color: rgba(138,230,255,.25);
+}
+
+[hidden]{ display:none !important; }
+
+.skinModal{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  width: min(520px, calc(100vw - 24px));
+  background: rgba(9,12,24,.96);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 18px;
+  padding: 14px;
+  z-index: 9002;
+  box-shadow: 0 25px 80px rgba(0,0,0,.65);
+}
+
+.skinModalHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  margin-bottom: 12px;
+}
+.skinModalTitle{ font-weight: 900; color: rgba(242,245,255,.92); }
+
+.skinModalPreview{
+  width: 100%;
+  aspect-ratio: 1443 / 525;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.10);
+  background-color: rgba(255,255,255,.03);
+}
+
+.skinModalActions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  margin-top: 12px;
+}
+
+/* =========================================================
+   PLAYER SKIN
+========================================================= */
 .playerSkin{
   position: fixed;
   left: 10px;
@@ -411,7 +583,6 @@ body{
 
   z-index: 9999;
 
-  /* IMPORTANTE: el JS pone la imagen */
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-position: center;
@@ -419,65 +590,72 @@ body{
   border-radius: 28px;
 }
 
-/* ❌ NO background-image aquí */
+#dockScrim{
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 12, 0.65);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 9998;
+}
+
+.playerSkin[hidden]{ display:none !important; }
+.playerSkin .ps-ui{ position:absolute; inset:0; }
+
 @media (orientation: landscape){
+  :root{
+    --h-dock-bottom: 18px;
+    --h-tcur-left: 24.5%;
+    --h-tcur-top:  55%;
+    --h-tmax-left: 69.5%;
+    --h-tmax-top:  55%;
+    --h-time-font: 20px;
+    --h-rew-left: 32.5%;
+    --h-rew-top:  41.5%;
+    --h-fwd-left: 60.0%;
+    --h-fwd-top:  41.5%;
+    --h-play-left: 41%;
+    --h-play-top:  36.5%;
+    --h-play-icon-y: 9px;
+
+    --viz-x: 32%;
+    --viz-y: 32.0%;
+    --viz-w: 56%;
+    --viz-h: 7.0%;
+    --viz-gap: 4px;
+  }
   .playerSkin{
     bottom: calc(var(--h-dock-bottom, var(--v-dock-bottom)) + env(safe-area-inset-bottom, 0px));
   }
 }
 
-.playerSkin[hidden]{
-  display: none !important;
-}
-
-.playerSkin .ps-ui{
-  position: absolute;
-  inset: 0;
-}
-/* Scrim oscuro detrás del reproductor */
-#dockScrim{
-  position: fixed;
-  inset: 0;                 /* top:0; right:0; bottom:0; left:0 */
-  background: rgba(5, 7, 12, 0.65);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  z-index: 9998;            /* debe ser menor que el player */
-}
-/* =========================
-   PORTADA
-========================= */
+/* Portada */
 .ps-cover{
   position: absolute;
   left: var(--ps-cover-left);
   top: var(--ps-cover-top);
   width: var(--ps-cover-w);
   height: var(--ps-cover-h);
-
   border-radius: 18px;
   background-size: cover;
   background-position: center;
   overflow: hidden;
 }
 
-/* =========================
-   TEXTOS (título + artista)
-========================= */
+/* Textos */
 .ps-text{
   position: absolute;
   left: 33.5%;
   top: 10%;
   width: 54.5%;
   height: 21%;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 6px;
-
   text-align: left;
   pointer-events: none;
 }
-
 .ps-title{
   font-weight: 850;
   font-size: clamp(14px, 1.7vw, 20px);
@@ -487,7 +665,6 @@ body{
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .ps-artist{
   font-weight: 600;
   font-size: clamp(12px, 1.1vw, 14px);
@@ -497,30 +674,18 @@ body{
   text-overflow: ellipsis;
 }
 
-/* =========================
-   TIEMPOS (capas separadas)
-========================= */
+/* Tiempos */
 #tCur, #tMax{
   position: absolute;
   pointer-events: none;
-
   color: rgba(242,245,255,.80);
   font-weight: 800;
   text-shadow: 0 1px 12px rgba(0,0,0,.65);
   line-height: 1;
-
   font-size: var(--v-time-font);
 }
-
-#tCur{
-  left: var(--v-tcur-left);
-  top: var(--v-tcur-top);
-}
-
-#tMax{
-  left: var(--v-tmax-left);
-  top: var(--v-tmax-top);
-}
+#tCur{ left: var(--v-tcur-left); top: var(--v-tcur-top); }
+#tMax{ left: var(--v-tmax-left); top: var(--v-tmax-top); }
 
 @media (orientation: landscape){
   #tCur{
@@ -535,9 +700,7 @@ body{
   }
 }
 
-/* =========================
-   BOTONES (zonas clicables transparentes)
-========================= */
+/* Botones transparentes */
 .ps-btn{
   position: absolute;
   padding: 0;
@@ -545,56 +708,26 @@ body{
   background: transparent;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-
   display: grid;
   place-items: center;
   line-height: 1;
 }
 
-/* ---------- SKIP 10s (círculos pequeños) ---------- */
-.ps-skipback,
-.ps-skipfwd{
+/* Skip 10s */
+.ps-skipback, .ps-skipfwd{
   width: 7.2%;
   height: 16%;
   border-radius: 999px;
 }
-
-.ps-skipback{
-  left: var(--v-rew-left);
-  top: var(--v-rew-top);
-}
-
-.ps-skipfwd{
-  left: var(--v-fwd-left);
-  top: var(--v-fwd-top);
-}
-
-/*.ps-skipback::before{
-  content: "↺";
-  font-size: clamp(18px, 2.2vw, 26px);
-  color: rgba(242,245,255,.82);
-  text-shadow: 0 1px 10px rgba(0,0,0,.55);
-}
-
-.ps-skipfwd::before{
-  content: "↻";
-  font-size: clamp(18px, 2.2vw, 26px);
-  color: rgba(242,245,255,.82);
-  text-shadow: 0 1px 10px rgba(0,0,0,.55);
-}*/
+.ps-skipback{ left: var(--v-rew-left); top: var(--v-rew-top); }
+.ps-skipfwd{ left: var(--v-fwd-left); top: var(--v-fwd-top); }
 
 @media (orientation: landscape){
-  .ps-skipback{
-    left: var(--h-rew-left, var(--v-rew-left));
-    top: var(--h-rew-top, var(--v-rew-top));
-  }
-  .ps-skipfwd{
-    left: var(--h-fwd-left, var(--v-fwd-left));
-    top: var(--h-fwd-top, var(--v-fwd-top));
-  }
+  .ps-skipback{ left: var(--h-rew-left, var(--v-rew-left)); top: var(--h-rew-top, var(--v-rew-top)); }
+  .ps-skipfwd{ left: var(--h-fwd-left, var(--v-fwd-left)); top: var(--h-fwd-top, var(--v-fwd-top)); }
 }
 
-/* ---------- PLAY (knob central) ---------- */
+/* Play */
 .ps-play{
   left: var(--v-play-left);
   top: var(--v-play-top);
@@ -603,28 +736,11 @@ body{
   border-radius: 999px;
   color: transparent;
 }
-
-/*.ps-play::before{
-  content: "⏯";
-  font-size: clamp(34px, 4.8vw, 56px);
-  color: rgba(242,245,255,.85);
-  text-shadow:
-    0 2px 12px rgba(0,0,0,.6),
-    0 0 18px rgba(138,230,255,.25);
-  transform: translateY(var(--v-play-icon-y));
-}*/
-
 @media (orientation: landscape){
-  .ps-play{
-    left: var(--h-play-left, var(--v-play-left));
-    top: var(--h-play-top, var(--v-play-top));
-  }
-  .ps-play::before{
-    transform: translateY(var(--h-play-icon-y, var(--v-play-icon-y)));
-  }
+  .ps-play{ left: var(--h-play-left, var(--v-play-left)); top: var(--h-play-top, var(--v-play-top)); }
 }
 
-/* ---------- LINKS ---------- */
+/* Links */
 .ps-spotify{
   left: var(--ps-spotify-left);
   top: var(--ps-spotify-top);
@@ -632,7 +748,6 @@ body{
   height: var(--ps-spotify-h);
   border-radius: 999px;
 }
-
 .ps-ytm{
   left: var(--ps-ytm-left);
   top: var(--ps-ytm-top);
@@ -641,7 +756,7 @@ body{
   border-radius: 999px;
 }
 
-/* ---------- CERRAR (X sobre el engranaje) ---------- */
+/* Cerrar */
 .ps-close{
   left: var(--ps-close-left);
   top: var(--ps-close-top);
@@ -650,73 +765,9 @@ body{
   border-radius: 999px;
 }
 
-/*.ps-close::before{
-  content: "✕";
-  font-size: clamp(16px, 2.0vw, 22px);
-  font-weight: 900;
-  color: rgba(242,245,255,.90);
-  text-shadow: 0 1px 12px rgba(0,0,0,.70);
-}*/
-
-/* =========================
-   MÓVIL
-========================= */
-@media (max-width: 520px){
-  .app{
-    padding-bottom: calc(320px + env(safe-area-inset-bottom, 0px));
-  }
-}
 /* =========================================================
-   VISUALIZER (24 barras) — posición + color pro
+   VISUALIZER
 ========================================================= */
-
-/* NO tocar el lienzo del skin */
-.playerSkin .ps-ui{
-  position: absolute;
-  inset: 0;
-}
-
-/* -------------------------
-   🎛️ TORNILLOS (VERTICAL)
-   Ajusta SOLO estos
-------------------------- */
-:root{
-  --viz-x: 32%;
-  --viz-y: 34%;
-  --viz-w: 56%;
-  --viz-h: 9%;
-
-  /* look */
-  --viz-gap: 3px;
-  --viz-pad-x: 10px;
-  --viz-pad-y: 2px;
-
-  --viz-bg: rgba(0,0,0,.10);
-  --viz-border: rgba(255,255,255,.06);
-
-  /* glow general */
-  --viz-glow: 0 2px 10px rgba(0,0,0,.25);
-
-  /* modo color: "neon" o "rainbow" */
-  --viz-mode: 1; /* 1 = neon, 0 = rainbow (ver abajo) */
-}
-
-/* -------------------------
-   🎛️ TORNILLOS (LANDSCAPE)
-------------------------- */
-@media (orientation: landscape){
-  :root{
-    --viz-x: 32%;
-    --viz-y: 32.0%;
-    --viz-w: 56%;
-    --viz-h: 7.0%;
-    --viz-gap: 4px;
-  }
-}
-
-/* =========================
-   CONTENEDOR VISUALIZER
-========================= */
 #viz24.viz24{
   position: absolute;
   left: var(--viz-x);
@@ -742,440 +793,29 @@ body{
   z-index: 6;
 }
 
-/* =========================
-   BARRAS — FORMA + MOVIMIENTO
-========================= */
 #viz24 .bar{
   height: 100%;
-  border-radius: 4px;           /* menos redondeadas */
+  border-radius: 4px;
   opacity: .95;
 
   transform-origin: bottom;
-  transform: scaleY(.08);       /* arrancan más bajas → más contraste */
+  transform: scaleY(.08);
   will-change: transform;
 
   box-shadow: var(--viz-glow);
 
-  /* TRICOLOR POR ALTURA REAL */
   background: linear-gradient(
     to top,
-    #38ff9c 0%,      /* verde base */
+    #38ff9c 0%,
     #38ff9c 38%,
-
-    #ffe45c 40%,     /* amarillo medio */
+    #ffe45c 40%,
     #ffe45c 72%,
-
-    #ff4d4d 88%,     /* rojo solo en picos */
+    #ff4d4d 88%,
     #ff4d4d 100%
   );
 
-  /* glow progresivo (no exagerado) */
   filter:
     drop-shadow(0 0 4px rgba(56,255,156,.25))
     drop-shadow(0 0 6px rgba(255,228,92,.18))
     drop-shadow(0 0 8px rgba(255,77,77,.14));
-}
-/* hues por barra */
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(1){  background: linear-gradient(180deg, #ff4d4d, #ffb3b3); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(2){  background: linear-gradient(180deg, #ff7a3d, #ffd1b8); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(3){  background: linear-gradient(180deg, #ffa63d, #ffe0b8); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(4){  background: linear-gradient(180deg, #ffd43d, #fff2b8); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(5){  background: linear-gradient(180deg, #c8ff3d, #f3ffb8); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(6){  background: linear-gradient(180deg, #66ff66, #c9ffc9); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(7){  background: linear-gradient(180deg, #3dffb2, #b8ffe6); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(8){  background: linear-gradient(180deg, #3dfff2, #b8fffb); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(9){  background: linear-gradient(180deg, #3dc8ff, #b8eaff); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(10){ background: linear-gradient(180deg, #3d7aff, #b8d1ff); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(11){ background: linear-gradient(180deg, #5a3dff, #cbb8ff); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(12){ background: linear-gradient(180deg, #8a3dff, #ddb8ff); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(13){ background: linear-gradient(180deg, #b63dff, #efb8ff); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(14){ background: linear-gradient(180deg, #ff3df2, #ffb8fb); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(15){ background: linear-gradient(180deg, #ff3dc8, #ffb8ea); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(16){ background: linear-gradient(180deg, #ff3d7a, #ffb8d1); }
-/* del 17 al 24 reciclamos la paleta (para 24 barras) */
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(17){ background: linear-gradient(180deg, #ff4d4d, #ffb3b3); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(18){ background: linear-gradient(180deg, #ff7a3d, #ffd1b8); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(19){ background: linear-gradient(180deg, #ffa63d, #ffe0b8); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(20){ background: linear-gradient(180deg, #ffd43d, #fff2b8); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(21){ background: linear-gradient(180deg, #c8ff3d, #f3ffb8); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(22){ background: linear-gradient(180deg, #66ff66, #c9ffc9); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(23){ background: linear-gradient(180deg, #3dc8ff, #b8eaff); }
-:root[style*="--viz-mode: 0"] #viz24 .bar:nth-child(24){ background: linear-gradient(180deg, #8a3dff, #ddb8ff); }
-/* Evitar scroll lateral global */
-html, body{
-  overflow-x: hidden;
-}
-
-/* Header actions */
-.topActions{
-  display:flex;
-  gap:10px;
-  align-items:center;
-}
-
-/* =========================
-   MENÚ HAMBURGUESA (DRAWER)
-========================= */
-.menuScrim{
-  position: fixed;
-  inset: 0;
-  background: rgba(5,7,12,.55);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  z-index: 9000;
-}
-
-.menuDrawer{
-  position: fixed;
-  top: env(safe-area-inset-top, 0px);
-  right: 0;
-  height: calc(100vh - env(safe-area-inset-top, 0px));
-  width: min(320px, 88vw);
-  background: rgba(9,12,24,.92);
-  border-left: 1px solid rgba(255,255,255,.10);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  z-index: 9001;
-
-  padding: calc(14px + env(safe-area-inset-top, 0px)) 14px 14px 14px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.55);
-
-  transform: translateX(100%);
-  transition: transform .22s ease;
-}
-
-/* Estado abierto */
-.menuDrawer.is-open{
-  transform: translateX(0);
-}
-
-.menuHead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255,255,255,.10);
-  margin-bottom: 12px;
-}
-
-.menuTitle{
-  font-weight: 800;
-  color: rgba(242,245,255,.92);
-}
-
-.menuNav{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.menuLink{
-  display:block;
-  padding: 10px 12px;
-  border-radius: 12px;
-  color: rgba(242,245,255,.82);
-  text-decoration:none;
-  border: 1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.04);
-}
-
-.menuLink:hover{
-  background: rgba(255,255,255,.07);
-}
-
-.menuLink.active{
-  border-color: rgba(255,255,255,.14);
-  background: rgba(255,255,255,.10);
-  color: rgba(242,245,255,.95);
-}
-
-.menuDivider{
-  height:1px;
-  background: rgba(255,255,255,.10);
-  margin: 8px 0;
-}
-/* Botón menú (☰) más grande y sin “mini icono” */
-#btnMenu{
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  font-size: 22px;      /* tamaño del ☰ */
-  line-height: 1;
-}
-/* =========================
-   SKINS — desplegable dentro del menú
-========================= */
-.menuSection{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.menuSkinBtn{
-  width:100%;
-  justify-content:center;
-}
-
-.skinList{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.skinItem{
-  display:flex;
-  align-items:center;
-  gap:12px;
-
-  padding:10px;
-  border-radius: 12px;
-
-  background: rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.10);
-
-  cursor:pointer;
-  user-select:none;
-}
-
-.skinItem:hover{
-  background: rgba(255,255,255,.09);
-}
-
-.skinThumb{
-  width:52px;
-  height:52px;
-  border-radius:10px;
-  background-size:cover;
-  background-position:center;
-  flex-shrink:0;
-  border: 1px solid rgba(255,255,255,.10);
-}
-
-.skinMeta{
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-}
-
-.skinName{
-  font-weight:800;
-  color: rgba(242,245,255,.92);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.skinHint{
-  font-size:12px;
-  color: rgba(242,245,255,.65);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-/* marca el skin activo */
-.skinItem.is-active{
-  background: rgba(138,230,255,.10);
-  border-color: rgba(138,230,255,.25);
-}
-/* HARD RULE: lo que tenga [hidden] NO se ve nunca */
-[hidden]{
-  display: none !important;
-}
-/* Skin list: por defecto cerrada */
-.skinList{
-  margin-top: 10px;
-}
-
-.skinList[hidden]{
-  display: none !important;
-}
-.skinModal{
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%,-50%);
-  width: min(520px, calc(100vw - 24px));
-  background: rgba(9,12,24,.96);
-  border: 1px solid rgba(255,255,255,.10);
-  border-radius: 18px;
-  padding: 14px;
-  z-index: 9002; /* por encima del drawer */
-  box-shadow: 0 25px 80px rgba(0,0,0,.65);
-}
-
-.skinModalHead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255,255,255,.10);
-  margin-bottom: 12px;
-}
-
-.skinModalTitle{
-  font-weight: 900;
-  color: rgba(242,245,255,.92);
-}
-
-.skinModalPreview{
-  width: 100%;
-  aspect-ratio: 1443 / 525;
-  border-radius: 14px;
-  background-size: 100% 100%;
-  background-repeat:no-repeat;
-  background-position:center;
-  border: 1px solid rgba(255,255,255,.10);
-  background-color: rgba(255,255,255,.03);
-}
-
-.skinModalActions{
-  display:flex;
-  gap:10px;
-  justify-content:flex-end;
-  margin-top: 12px;
-}
-html, body{
-  height: 100%;
-}
-
-body{
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
-}
-/* =========================================================
-   HOME: tarjetas "Explorar" con look premium
-   (sin tocar el HTML actual)
-========================================================= */
-
-/* 1) Más aire y jerarquía */
-.sectionHead{
-  align-items:center;
-}
-
-/* 2) Card: efecto glass + borde con luz + hover más fino */
-.card{
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,.07),
-    rgba(255,255,255,.04)
-  );
-  border: 1px solid rgba(255,255,255,.10);
-  box-shadow: 0 18px 55px rgba(0,0,0,.35);
-  overflow: hidden;
-  position: relative;
-}
-
-/* brillo sutil en esquina (da “premium”) */
-.card::before{
-  content:"";
-  position:absolute;
-  inset:-1px;
-  background:
-    radial-gradient(500px 220px at 20% 0%, rgba(138,230,255,.14), transparent 60%),
-    radial-gradient(420px 220px at 85% 20%, rgba(182,140,255,.12), transparent 60%);
-  pointer-events:none;
-  opacity:.9;
-}
-
-/* 3) Interior: más alto, más “tile”, menos formulario */
-.cardInner{
-  position: relative;
-  z-index: 1;
-  padding: 16px 16px;
-  grid-template-columns: minmax(0,1fr) auto;
-  gap: 14px;
-}
-
-/* OJO: en tus cards de "Explorar" no hay .cardCover,
-   así que el layout de 3 columnas sobra. Este ajuste lo arregla
-   sin afectar a las cards con portada, porque esas sí tienen .cardCover */
-.cardInner:has(.cardCover){
-  grid-template-columns: var(--coverSize) minmax(0,1fr) auto;
-}
-
-/* 4) Títulos más “headline” */
-.cardTitle{
-  font-size: 18px;
-  font-weight: 900;
-  letter-spacing: .2px;
-}
-
-/* 5) Subtexto más legible */
-.cardSub{
-  opacity: .85;
-}
-
-/* 6) Badge "Abrir" -> estilo CTA pill con flecha */
-.badge{
-  border-radius: 999px;
-  padding: 9px 14px;
-  font-weight: 900;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(0,0,0,.18);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  position: relative;
-}
-
-.badge::after{
-  content:" →";
-  opacity:.9;
-}
-
-/* 7) Hover */
-.card:hover{
-  transform: translateY(-2px);
-  background: linear-gradient(
-    180deg,
-    rgba(255,255,255,.09),
-    rgba(255,255,255,.05)
-  );
-  border-color: rgba(255,255,255,.14);
-}
-/* =========================================================
-   FIX: restaurar layout de cards con portada (álbumes/singles/tracks)
-   y aplicar estilo especial SOLO a "Explorar" en Home
-========================================================= */
-
-/* ✅ 1) Layout global correcto para cards normales (con portada) */
-.cardInner{
-  display:grid;
-  grid-template-columns: var(--coverSize) minmax(0,1fr) auto;
-  gap:14px;
-  align-items:center;
-  padding:14px 16px;
-}
-
-/* móvil: respeta tu layout original */
-@media (max-width:600px){
-  .cardInner{
-    grid-template-columns: 140px minmax(0,1fr) auto;
-  }
-}
-
-/* ✅ 2) SOLO “Explorar” del Home: es la sección justo después del hero */
-.hero + .section .cardInner{
-  grid-template-columns: minmax(0,1fr) auto;
-}
-
-/* Título más potente solo en “Explorar” */
-.hero + .section .cardTitle{
-  font-size: 18px;
-  font-weight: 900;
-}
-
-/* Badge del Home como CTA más fino (solo “Explorar”) */
-.hero + .section .badge{
-  border-radius: 999px;
-  padding: 9px 14px;
-  font-weight: 900;
-}
-.hero + .section .badge::after{
-  content:" →";
 }
