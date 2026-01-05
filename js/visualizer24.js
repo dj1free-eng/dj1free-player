@@ -48,41 +48,45 @@
     }
 
     function draw(){
-      if(!running) return;
+  if(!running) return;
 
-      analyser.getByteFrequencyData(data);
+  analyser.getByteFrequencyData(data);
 
-      for(let i=0;i<BAR_COUNT;i++){
-        const half = BAR_COUNT / 2; // 12
-const j = i < half ? i : i - half;
+  const half = BAR_COUNT / 2; // 12
 
-// Base (zona correspondiente)
-const idxA = freqIndex(j);
+  for(let i = 0; i < BAR_COUNT; i++){
+    const j = i < half ? i : i - half;
 
-// Complemento (mezcla espejo suave)
-const idxB = freqIndex((half - 1) - j);
+    // Base (zona correspondiente)
+    const idxA = freqIndex(j);
 
-const vA = data[idxA] / 255;
-const vB = data[idxB] / 255;
+    // Complemento (mezcla espejo suave)
+    const idxB = freqIndex((half - 1) - j);
 
-// Mezcla: mantiene vida al final sin falsear del todo
-const v = (vA * 0.75) + (vB * 0.25);
+    const vA = data[idxA] / 255;
+    const vB = data[idxB] / 255;
 
-// 1) Noise gate: si hay poco, lo consideramos casi cero (baja mucho)
-const gate = 0.10;
-const vg = v < gate ? 0 : (v - gate) / (1 - gate);
+    // Mezcla equilibrada
+    const v = (vA * 0.75) + (vB * 0.25);
 
-// 2) Curva gamma (>1) para que en bajos niveles caiga MUCHO
-const gamma = 2.2;
-const shaped = Math.pow(vg, gamma);
+    // Noise gate
+    const gate = 0.10;
+    const vg = v < gate ? 0 : (v - gate) / (1 - gate);
 
-// 3) Escala final: suelo muy bajo + rango amplio hasta picos rojos
-const floor = 0.02;     // mínimo real (muy abajo)
-const gain  = 1.60;     // amplitud de subida (picos altos)
-const level = floor + shaped * gain;
+    // Curva gamma
+    const gamma = 2.2;
+    const shaped = Math.pow(vg, gamma);
 
-bars[i].style.transform = `scaleY(${level})`;
+    // Escala final
+    const floor = 0.02;
+    const gain  = 1.60;
+    const level = floor + shaped * gain;
 
+    bars[i].style.transform = `scaleY(${level})`;
+  }
+
+  raf = requestAnimationFrame(draw);
+}
     async function start(){
       if(!setup()) return;
 
