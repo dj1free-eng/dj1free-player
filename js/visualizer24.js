@@ -53,8 +53,20 @@
       analyser.getByteFrequencyData(data);
 
       for(let i=0;i<BAR_COUNT;i++){
-        const idx = freqIndex(i);
-const v = data[idx] / 255;
+        const half = BAR_COUNT / 2; // 12
+const j = i < half ? i : i - half;
+
+// Base (zona correspondiente)
+const idxA = freqIndex(j);
+
+// Complemento (mezcla espejo suave)
+const idxB = freqIndex((half - 1) - j);
+
+const vA = data[idxA] / 255;
+const vB = data[idxB] / 255;
+
+// Mezcla: mantiene vida al final sin falsear del todo
+const v = (vA * 0.75) + (vB * 0.25);
 
 // 1) Noise gate: si hay poco, lo consideramos casi cero (baja mucho)
 const gate = 0.10;
@@ -70,10 +82,6 @@ const gain  = 1.60;     // amplitud de subida (picos altos)
 const level = floor + shaped * gain;
 
 bars[i].style.transform = `scaleY(${level})`;
-      }
-
-      raf = requestAnimationFrame(draw);
-    }
 
     async function start(){
       if(!setup()) return;
