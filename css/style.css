@@ -138,12 +138,11 @@ body{
   text-decoration:none;
   color:var(--text);
 }
-.brandMark{
-  width:30px;
-  height:30px;
-  border-radius:10px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  box-shadow: 0 10px 30px rgba(138,230,255,.25);
+.brandLogo{
+  height: 30px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
 .brandText{ font-weight:700; }
 
