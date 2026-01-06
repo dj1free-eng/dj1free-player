@@ -36,43 +36,81 @@ const btnSkinCancel = $("#btnSkinCancel");
 /* =========================
    Skins del reproductor
 ========================= */
-const DOCK_SKINS = [
-  {
-    id: "basic",
-    name: "Básico",
-    thumb: "assets/skins/thumb-basic.png",
-    url: "assets/skins/dock-skin.png",
-    portrait: "assets/skins/dock-skin.png"
-  },
-  {
-    id: "stranger",
-    name: "Stranger Things",
-    thumb: "assets/skins/thumb-stranger.png",
-    url: "assets/skins/dock-skin-stranger.png",
-    portrait: "assets/skins/dock-skin-stranger.png"
-  },
-  {
-    id: "neon",
-    name: "Neon",
-    thumb: "assets/skins/thumb-neon.png",
-    url: "assets/skins/dock-skin-neon.png",
-    portrait: "assets/skins/dock-skin-neon.png"
-  },
-     {
-    id: "space",
-    name: "Space",
-    thumb: "assets/skins/thumb-space.png",
-    url: "assets/skins/dock-skin-space.png",
-    portrait: "assets/skins/dock-skin-space.png"
-  },
-     {
-    id: "ufc",
-    name: "UFC",
-    thumb: "assets/skins/thumb-ufc.png",
-    url: "assets/skins/dock-skin-ufc.png",
-    portrait: "assets/skins/dock-skin-ufc.png"
+const SKINS_URL = "assets/skins/skins.json";
+
+// DOCK_SKINS se carga desde JSON (para que añadir skins no pueda petar la app por una coma en JS)
+let DOCK_SKINS = [];
+
+/**
+ * Fallback seguro (por si falla el fetch del JSON)
+ * IMPORTANTE: mantenerlo mínimo. La fuente de verdad es skins.json.
+ */
+function defaultDockSkins(){
+  return [
+    {
+      id: "basic",
+      name: "Básico",
+      thumb: "assets/skins/thumb-basic.png",
+      url: "assets/skins/dock-skin.png",
+      portrait: "assets/skins/dock-skin.png"
+    }
+  ];
+}
+
+function normalizeSkin(raw){
+  if(!raw || typeof raw !== "object") return null;
+
+  const id = String(raw.id || "").trim();
+  const name = String(raw.name || "").trim() || id;
+
+  const thumb = safeUrl(raw.thumb);
+  const url = safeUrl(raw.url);
+  const portrait = safeUrl(raw.portrait || raw.url);
+
+  if(!id || !thumb || !url) return null;
+
+  return { id, name, thumb, url, portrait };
+}
+
+function validateDockSkins(list){
+  const out = [];
+  const seen = new Set();
+
+  for(const item of (Array.isArray(list) ? list : [])){
+    const s = normalizeSkin(item);
+    if(!s) continue;
+    if(seen.has(s.id)) continue;
+    seen.add(s.id);
+    out.push(s);
   }
-];
+
+  return out;
+}
+
+async function loadDockSkins(){
+  try{
+    const res = await fetch(SKINS_URL + "?v=" + Date.now(), { cache: "no-store" });
+    if(!res.ok) throw new Error(`No se pudo cargar ${SKINS_URL} (HTTP ${res.status})`);
+    const json = await res.json();
+
+    // Acepta dos formatos: { skins:[...] } o [...]
+    const skinsRaw = Array.isArray(json) ? json : (json && Array.isArray(json.skins) ? json.skins : []);
+    const skins = validateDockSkins(skinsRaw);
+
+    DOCK_SKINS = skins.length ? skins : defaultDockSkins();
+    return DOCK_SKINS;
+  }catch(err){
+    console.warn("[skins] Fallback:", err);
+    DOCK_SKINS = defaultDockSkins();
+    return DOCK_SKINS;
+  }
+}
+
+function ensureDockSkins(){
+  if(!Array.isArray(DOCK_SKINS) || DOCK_SKINS.length === 0){
+    DOCK_SKINS = defaultDockSkins();
+  }
+}
 
 const LS_DOCK_SKIN = "dj1free_dock_skin";
 // =========================
@@ -214,6 +252,7 @@ function setSavedDockSkinId(id){
 }
 
 function applyDockSkinById(id){
+  ensureDockSkins();
   const skin = DOCK_SKINS.find(s => s.id === id) || DOCK_SKINS[0];
   if(!dock) return;
 
@@ -223,12 +262,14 @@ function applyDockSkinById(id){
   setSavedDockSkinId(skin.id);
 }
 function cycleDockSkin(){
+  ensureDockSkins();
   const currentId = getSavedDockSkinId();
   const idx = DOCK_SKINS.findIndex(s => s.id === currentId);
   const next = DOCK_SKINS[(idx + 1 + DOCK_SKINS.length) % DOCK_SKINS.length];
   applyDockSkinById(next.id);
 }
 function renderSkinList(){
+  ensureDockSkins();
   const list = document.getElementById("skinList");
   if(!list) return;
 
@@ -255,6 +296,7 @@ function toggleSkinList(force){
   btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
 }
 function openSkinModal(id){
+  ensureDockSkins();
   const skin = DOCK_SKINS.find(s => s.id === id);
   if(!skin || !skinModal || !skinModalScrim) return;
 
@@ -1028,6 +1070,9 @@ btnSkinApply?.addEventListener("click", ()=>{
 
 async function init(){
   DATA = await loadCatalog();
+
+  // skins (cargados desde JSON, con fallback seguro)
+  await loadDockSkins();
 
   // listeners
   wireDock();
