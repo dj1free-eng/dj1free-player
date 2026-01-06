@@ -353,7 +353,15 @@ function safeUrl(u){
   if(!u || typeof u !== "string") return "";
   return u.trim();
 }
-
+function absUrl(u){
+  const s = safeUrl(u);
+  if(!s) return "";
+  try{
+    return new URL(s, window.location.href).href;
+  }catch(_){
+    return s;
+  }
+}
 function toSpotifyAppUrl(url){
   const u = safeUrl(url);
   const m = u.match(/open\.spotify\.com\/(track|album|artist|playlist)\/([A-Za-z0-9]+)/);
@@ -527,7 +535,7 @@ function sectionReleases(title, releases){
         ${releases.map(r => `
           <article class="card" data-action="openRelease" data-release="${r.id}">
             <div class="cardInner">
-              <div class="cardCover" style="background-image:url('${encodeURI(safeUrl(r.cover))}')"></div>
+<div class="cardCover" style="background-image:url('${encodeURI(absUrl(r.cover))}')"></div>
               <div>
                 <div class="cardTitle">${escapeHtml(r.title)}</div>
                 <div class="cardSub">${escapeHtml(artistName(r.artistId))} · ${r.year || "—"}</div>
@@ -554,7 +562,7 @@ function sectionTracks(title, tracks){
           return `
             <article class="card" data-action="play" data-track="${t.id}">
               <div class="cardInner">
-                <div class="cardCover" style="background-image:url('${encodeURI(coverForTrack(t))}')"></div>
+<div class="cardCover" style="background-image:url('${encodeURI(absUrl(coverForTrack(t)))}')"></div>
                 <div>
                   <div class="cardTitle">${escapeHtml(t.title)}</div>
                   <div class="cardSub">${escapeHtml(artistName(t.artistId))}</div>
@@ -596,7 +604,7 @@ function onAppClick(e){
   // 2) Calcula featured para el panel "Destacado"
   const featured = byId(DATA.tracks, DATA.featured?.trackId) || DATA.tracks[0];
   const rel = featured ? releaseById(featured.releaseId) : null;
-  const heroBg = coverForTrack(featured);
+const heroBg = absUrl(coverForTrack(featured));
 
   // 3) Secciones del carrusel (menú principal)
   const sections = getHomeSections();
@@ -1191,7 +1199,7 @@ function stopPlayback(){
 
 function updateDockUI(track){
   const rel = releaseById(track.releaseId);
-  dockCover.style.backgroundImage = `url("${encodeURI(coverForTrack(track))}")`;
+dockCover.style.backgroundImage = `url("${encodeURI(absUrl(coverForTrack(track)))}")`;
   dockTitle.textContent = track.title || "—";
   dockSub.textContent = `${artistName(track.artistId)}${rel?.title ? " · " + rel.title : ""}`;
 
