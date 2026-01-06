@@ -621,16 +621,19 @@ function onAppClick(e){
 
         <div class="homeCarousel" id="homeCarousel" role="tablist" aria-label="Secciones">
           ${sections.map(s => `
-            <button
-              type="button"
-              class="homeChip ${s.id === active ? "is-active" : ""}"
-              data-home-section="${s.id}"
-              role="tab"
-              aria-selected="${s.id === active ? "true" : "false"}"
-            >
-              <span class="homeChipIcon" aria-hidden="true">${s.icon}</span>
-              <span class="homeChipLabel">${escapeHtml(s.label)}</span>
-            </button>
+<button
+  type="button"
+  class="homeTile ${s.id === active ? "is-active" : ""}"
+  data-home-section="${s.id}"
+  role="tab"
+  aria-selected="${s.id === active ? "true" : "false"}"
+>
+  <span class="homeTileLeft">
+    <span class="homeTileTitle">${escapeHtml(s.label)}</span>
+    <span class="homeTileSub">${escapeHtml(s.hint || "")}</span>
+  </span>
+  <span class="homeTileIcon" aria-hidden="true">${s.icon}</span>
+</button>
           `).join("")}
         </div>
       </section>
@@ -648,11 +651,11 @@ const LS_HOME_SECTION = "dj1free_home_section";
 
 function getHomeSections(){
   return [
-    { id:"featured", label:"Destacado", icon:"▶" },
-    { id:"albums",   label:"Álbumes",   icon:"▦" },
-    { id:"singles",  label:"Singles",   icon:"◉" },
-    { id:"artists",  label:"Artistas",  icon:"✦" }
-  ];
+  { id:"featured", label:"Destacado", icon:"▶", hint:"Reproducir ahora" },
+  { id:"albums",   label:"Álbumes",   icon:"▦", hint:"Colecciones completas" },
+  { id:"singles",  label:"Singles",   icon:"◉", hint:"Últimos lanzamientos" },
+  { id:"artists",  label:"Artistas",  icon:"✦", hint:"Discografías" }
+];
 }
 
 function getSavedHomeSectionId(sections){
@@ -885,139 +888,130 @@ function ensureHomeMenuStyles(){
   const style = document.createElement("style");
   style.id = "homeMenuStyles";
   style.textContent = `
-    .homeShell{ display:block; }
+  /* ===== Home layout ===== */
+  .homeShell{ display:block; }
+  .homePanel{ margin-top: 10px; }
 
-    /* Panel arriba */
-    .homePanel{ margin-top: 10px; }
-    .homePanelCard{
-      position: relative;
-      border-radius: 22px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      box-shadow: var(--shadow);
-      min-height: 170px;
-    }
-    .homePanelBg{ position:absolute; inset:0; background-size:cover; background-position:center; filter: saturate(1.05) contrast(1.05); }
-    .homePanelOverlay{ position:absolute; inset:0; background: linear-gradient(90deg, rgba(7,9,19,.92), rgba(7,9,19,.60) 55%, rgba(7,9,19,.22)); }
-    .homePanelBody{ position:relative; display:flex; gap:14px; padding:16px; align-items:center; }
-    .homePanelCover{
-      width:92px; height:92px; border-radius:18px;
-      background-size:cover; background-position:center;
-      border:1px solid rgba(255,255,255,.10);
-      flex: 0 0 auto;
-    }
-    .homePanelText{ min-width:0; }
-    .homePanelKicker{ font-size:12px; color: rgba(242,245,255,.70); margin-bottom:6px; }
-    .homePanelTitle{ font-size:20px; font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .homePanelMeta{ margin-top:4px; font-size:13px; color: rgba(242,245,255,.72); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .homePanelBtns{ margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; }
+  /* Panel fijo para que no “baile” */
+  .homePanel{
+    height: clamp(220px, 26vh, 300px);
+  }
+  .homePanelInner{
+    height: 100%;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.05);
+    box-shadow: var(--shadow);
+    position: relative;
+  }
 
-    /* Panel mini (listas) */
-    .homePanelMini{
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      box-shadow: var(--shadow);
-      padding: 14px;
-    }
-    .homePanelMiniHead{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      margin-bottom: 10px;
-    }
-    .homePanelMiniTitle{ font-weight: 900; font-size: 16px; }
-    .homePanelMiniList{ display:flex; flex-direction:column; gap:10px; }
+  /* Transición suave entre paneles */
+  .homePanelSwap{
+    height: 100%;
+    position: relative;
+  }
+  .homePanelView{
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .18s ease, transform .18s ease;
+    pointer-events: none;
+  }
+  .homePanelView.is-active{
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
 
-    .homeMiniRow{
-      width:100%;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      border-radius: 16px;
-      padding: 10px;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      cursor:pointer;
-      color: inherit;
-    }
-    .homeMiniRow:hover{ background: rgba(255,255,255,.07); }
-    .homeMiniCover{
-      width:72px; height:48px; border-radius: 12px;
-      background-size:cover; background-position:center;
-      border:1px solid rgba(255,255,255,.10);
-      flex:0 0 auto;
-    }
-    .homeMiniText{ min-width:0; display:flex; flex-direction:column; gap:2px; text-align:left; }
-    .homeMiniName{ font-weight: 900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .homeMiniSub{ font-size:12px; color: rgba(242,245,255,.70); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .homeMiniGo{ margin-left:auto; font-size:22px; opacity:.7; }
+  /* Contenido dentro del panel: si sobra, scroll interno (sin mover la página) */
+  .homePanelScroll{
+    height: 100%;
+    overflow: auto;
+    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+  }
 
-    /* Sticky menú */
-    .homeMenuSticky{
-      position: sticky;
-      top: calc(var(--homeStickyTop, 0px) + env(safe-area-inset-top, 0px));
-      z-index: 60;
-      margin-top: 12px;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      background: rgba(7,9,19,.55);
-      border-top: 1px solid rgba(255,255,255,.06);
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px;
-    }
-    .homeMenuTitleRow{
-      display:flex;
-      align-items:end;
-      justify-content:space-between;
-      padding: 0 12px 8px 12px;
-      gap:12px;
-    }
-    .homeMenuTitle{ font-weight: 900; }
-    .homeMenuHint{ font-size: 12px; color: rgba(242,245,255,.65); }
+  /* ===== Sticky menu ===== */
+  .homeMenuSticky{
+    position: sticky;
+    top: calc(var(--homeStickyTop, 0px) + env(safe-area-inset-top, 0px));
+    z-index: 60;
+    margin-top: 12px;
+    padding: 12px 0;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: rgba(7,9,19,.62);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 22px;
+  }
+  .homeMenuTitleRow{
+    display:flex;
+    align-items:end;
+    justify-content:space-between;
+    padding: 0 16px 10px 16px;
+    gap:12px;
+  }
+  .homeMenuTitle{ font-weight: 900; }
+  .homeMenuHint{ font-size: 12px; color: rgba(242,245,255,.65); }
 
-    .homeCarousel{
-      display:flex;
-      gap:10px;
-      overflow-x:auto;
-      padding: 0 12px;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-    }
-    .homeCarousel::-webkit-scrollbar{ display:none; }
+  /* ===== Carrusel “de verdad” ===== */
+  .homeCarousel{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding: 0 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .homeCarousel::-webkit-scrollbar{ display:none; }
 
-    .homeChip{
-      scroll-snap-align: center;
-      flex: 0 0 auto;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.05);
-      color: rgba(242,245,255,.92);
-      cursor:pointer;
-      transform: scale(.92);
-      opacity: .70;
-      transition: transform .18s ease, opacity .18s ease, background .18s ease, border-color .18s ease;
-    }
-    .homeChipIcon{ font-weight: 900; opacity: .9; }
-    .homeChipLabel{ font-weight: 900; white-space:nowrap; }
+  /* Espacio lateral para centrar primera/última tarjeta */
+  .homeCarousel{
+    padding-left: calc((100% - min(320px, 78vw)) / 2 + 16px);
+    padding-right: calc((100% - min(320px, 78vw)) / 2 + 16px);
+  }
 
-    .homeChip.is-active{
-      transform: scale(1.0);
-      opacity: 1;
-      background: rgba(138,230,255,.10);
-      border-color: rgba(138,230,255,.25);
-    }
+  .homeTile{
+    scroll-snap-align: center;
+    flex: 0 0 auto;
+    width: min(320px, 78vw);
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.05);
+    box-shadow: var(--shadow);
+    padding: 14px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
 
-    @media (max-width:520px){
-      .homePanelBody{ align-items:flex-end; }
-      .homePanelTitle{ font-size: 18px; }
-    }
-  `;
+    transform: scale(.92);
+    opacity: .65;
+    transition: transform .18s ease, opacity .18s ease, border-color .18s ease, background .18s ease;
+    cursor: pointer;
+  }
+
+  .homeTile.is-active{
+    transform: scale(1);
+    opacity: 1;
+    background: rgba(138,230,255,.10);
+    border-color: rgba(138,230,255,.25);
+  }
+
+  .homeTileLeft{ min-width:0; display:flex; flex-direction:column; gap:4px; }
+  .homeTileTitle{ font-weight: 950; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .homeTileSub{ font-size: 12px; color: rgba(242,245,255,.70); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .homeTileIcon{
+    width: 44px; height: 44px;
+    border-radius: 14px;
+    display:grid; place-items:center;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.06);
+    font-weight: 900;
+  }
+`;
   document.head.appendChild(style);
 
   // Ajuste dinámico del sticky top según topbar real
