@@ -1,0 +1,39 @@
+{
+  "skins": [
+    {
+      "id": "basic",
+      "name": "Básico",
+      "thumb": "assets/skins/thumb-basic.png",
+      "url": "assets/skins/dock-skin.png",
+      "portrait": "assets/skins/dock-skin.png"
+    },
+    {
+      "id": "stranger",
+      "name": "Stranger Things",
+      "thumb": "assets/skins/thumb-stranger.png",
+      "url": "assets/skins/dock-skin-stranger.png",
+      "portrait": "assets/skins/dock-skin-stranger.png"
+    },
+    {
+      "id": "neon",
+      "name": "Neon",
+      "thumb": "assets/skins/thumb-neon.png",
+      "url": "assets/skins/dock-skin-neon.png",
+      "portrait": "assets/skins/dock-skin-neon.png"
+    },
+    {
+      "id": "space",
+      "name": "Space",
+      "thumb": "assets/skins/thumb-space.png",
+      "url": "assets/skins/dock-skin-space.png",
+      "portrait": "assets/skins/dock-skin-space.png"
+    },
+    {
+      "id": "ufc",
+      "name": "UFC",
+      "thumb": "assets/skins/thumb-ufc.png",
+      "url": "assets/skins/dock-skin-ufc.png",
+      "portrait": "assets/skins/dock-skin-ufc.png"
+    }
+  ]
+}
