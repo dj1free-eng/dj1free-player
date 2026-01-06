@@ -589,71 +589,447 @@ function onAppClick(e){
   }
 }
 
-function buildHome(){
+ function buildHome(){
+  // 1) Asegura estilos del Home (solo se inyectan una vez)
+  ensureHomeMenuStyles();
+
+  // 2) Calcula featured para el panel "Destacado"
   const featured = byId(DATA.tracks, DATA.featured?.trackId) || DATA.tracks[0];
   const rel = featured ? releaseById(featured.releaseId) : null;
   const heroBg = coverForTrack(featured);
 
-  $("#app").innerHTML = `
-    <section class="hero">
-      <div class="heroBg" style="background-image:url('${encodeURI(heroBg)}')"></div>
-      <div class="heroOverlay"></div>
-      <div class="heroBody">
-        <div class="heroCover" style="background-image:url('${encodeURI(heroBg)}')"></div>
-        <div class="heroText">
-          <div class="heroKicker">Destacado</div>
-          <div class="heroTitle">${escapeHtml(featured?.title || "—")}</div>
-          <div class="heroMeta">${escapeHtml(artistName(featured?.artistId))}${rel?.title ? " · " + escapeHtml(rel.title) : ""}</div>
+  // 3) Secciones del carrusel (menú principal)
+  const sections = getHomeSections();
 
-          <div class="heroBtns">
-            <button class="btn primary" data-action="play" data-track="${featured?.id || ""}">▶ Reproducir 30s</button>
-            ${featured?.spotifyUrl ? `<a class="btn" target="_blank" rel="noreferrer noopener" href="${featured.spotifyUrl}">Spotify</a>` : ""}
-            ${featured?.ytMusicUrl ? `<a class="btn" target="_blank" rel="noreferrer noopener" href="${featured.ytMusicUrl}">YouTube Music</a>` : ""}
+  // 4) Estado persistente: qué sección está seleccionada
+  const active = getSavedHomeSectionId(sections) || "featured";
+
+  $("#app").innerHTML = `
+    <section class="homeShell">
+
+      <!-- PANEL SUPERIOR (cambia según tarjeta centrada) -->
+      <section class="homePanel" id="homePanel" aria-live="polite">
+        ${renderHomePanel(active, { featured, rel, heroBg })}
+      </section>
+
+      <!-- CARRUSEL STICKY (menú) -->
+      <section class="homeMenuSticky" id="homeMenuSticky">
+        <div class="homeMenuTitleRow">
+          <div class="homeMenuTitle">Explorar</div>
+          <div class="homeMenuHint">Desliza y centra</div>
+        </div>
+
+        <div class="homeCarousel" id="homeCarousel" role="tablist" aria-label="Secciones">
+          ${sections.map(s => `
+            <button
+              type="button"
+              class="homeChip ${s.id === active ? "is-active" : ""}"
+              data-home-section="${s.id}"
+              role="tab"
+              aria-selected="${s.id === active ? "true" : "false"}"
+            >
+              <span class="homeChipIcon" aria-hidden="true">${s.icon}</span>
+              <span class="homeChipLabel">${escapeHtml(s.label)}</span>
+            </button>
+          `).join("")}
+        </div>
+      </section>
+
+    </section>
+  `;
+
+  // 5) Inicializa interacción del carrusel (tap + centrado + observer)
+  initHomeCarousel();
+}
+/* =========================
+   HOME: Carrusel sticky + panel dinámico
+========================= */
+const LS_HOME_SECTION = "dj1free_home_section";
+
+function getHomeSections(){
+  return [
+    { id:"featured", label:"Destacado", icon:"▶" },
+    { id:"albums",   label:"Álbumes",   icon:"▦" },
+    { id:"singles",  label:"Singles",   icon:"◉" },
+    { id:"artists",  label:"Artistas",  icon:"✦" }
+  ];
+}
+
+function getSavedHomeSectionId(sections){
+  const allowed = new Set(sections.map(s => s.id));
+  try{
+    const v = localStorage.getItem(LS_HOME_SECTION);
+    return allowed.has(v) ? v : null;
+  }catch(_){
+    return null;
+  }
+}
+
+function setSavedHomeSectionId(id){
+  try{ localStorage.setItem(LS_HOME_SECTION, id); }catch(_){}
+}
+
+function renderHomePanel(id, ctx){
+  const featured = ctx?.featured;
+  const rel = ctx?.rel;
+  const heroBg = ctx?.heroBg;
+
+  if(id === "featured"){
+    const sp = safeUrl(featured?.spotifyUrl);
+    const yt = safeUrl(featured?.ytMusicUrl);
+
+    return `
+      <div class="homePanelCard">
+        <div class="homePanelBg" style="background-image:url('${encodeURI(heroBg)}')"></div>
+        <div class="homePanelOverlay"></div>
+
+        <div class="homePanelBody">
+          <div class="homePanelCover" style="background-image:url('${encodeURI(heroBg)}')"></div>
+
+          <div class="homePanelText">
+            <div class="homePanelKicker">Destacado</div>
+            <div class="homePanelTitle">${escapeHtml(featured?.title || "—")}</div>
+            <div class="homePanelMeta">
+              ${escapeHtml(artistName(featured?.artistId))}
+              ${rel?.title ? " · " + escapeHtml(rel.title) : ""}
+            </div>
+
+            <div class="homePanelBtns">
+              <button class="btn primary" data-action="play" data-track="${featured?.id || ""}">▶ Reproducir 30s</button>
+              ${sp ? `<a class="btn" target="_blank" rel="noreferrer noopener" href="${sp}">Spotify</a>` : ""}
+              ${yt ? `<a class="btn" target="_blank" rel="noreferrer noopener" href="${yt}">YouTube Music</a>` : ""}
+            </div>
           </div>
         </div>
       </div>
-    </section>
+    `;
+  }
 
-    <section class="section">
-      <div class="sectionHead">
-        <h2 class="h2">Explorar</h2>
-        <div class="small">Elige una sección</div>
+  if(id === "albums"){
+    const albums = (DATA.releases||[])
+      .filter(r => r.type === "album")
+      .sort((a,b)=>(b.year||0)-(a.year||0))
+      .slice(0, 3);
+
+    return `
+      <div class="homePanelMini">
+        <div class="homePanelMiniHead">
+          <div class="homePanelMiniTitle">Álbumes</div>
+          <a class="btn ghost" href="#/albums">Ver todos</a>
+        </div>
+        <div class="homePanelMiniList">
+          ${albums.map(r => `
+            <button class="homeMiniRow" type="button" onclick="location.hash='#/release/${encodeURIComponent(r.id)}'">
+              <span class="homeMiniCover" style="background-image:url('${encodeURI(safeUrl(r.cover))}')"></span>
+              <span class="homeMiniText">
+                <span class="homeMiniName">${escapeHtml(r.title)}</span>
+                <span class="homeMiniSub">${escapeHtml(artistName(r.artistId))}${r.year ? " · " + r.year : ""}</span>
+              </span>
+              <span class="homeMiniGo">›</span>
+            </button>
+          `).join("")}
+        </div>
       </div>
-      <div class="grid">
-        <article class="card" onclick="location.hash='#/albums'">
-          <div class="cardInner">
-            <div>
-              <div class="cardTitle">Álbumes</div>
-              <div class="cardSub">Ver todos los álbumes</div>
-            </div>
-            <div class="badge good">Abrir</div>
-          </div>
-        </article>
+    `;
+  }
 
-        <article class="card" onclick="location.hash='#/singles'">
-          <div class="cardInner">
-            <div>
-              <div class="cardTitle">Singles</div>
-              <div class="cardSub">Ver todos los singles</div>
-            </div>
-            <div class="badge good">Abrir</div>
-          </div>
-        </article>
+  if(id === "singles"){
+    const singles = (DATA.releases||[])
+      .filter(r => r.type === "single")
+      .sort((a,b)=>(b.year||0)-(a.year||0))
+      .slice(0, 3);
 
-        <article class="card" onclick="location.hash='#/artists'">
-          <div class="cardInner">
-            <div>
-              <div class="cardTitle">Artistas</div>
-              <div class="cardSub">Ir a artistas</div>
-            </div>
-            <div class="badge good">Abrir</div>
-          </div>
-        </article>
+    return `
+      <div class="homePanelMini">
+        <div class="homePanelMiniHead">
+          <div class="homePanelMiniTitle">Singles</div>
+          <a class="btn ghost" href="#/singles">Ver todos</a>
+        </div>
+        <div class="homePanelMiniList">
+          ${singles.map(r => `
+            <button class="homeMiniRow" type="button" onclick="location.hash='#/release/${encodeURIComponent(r.id)}'">
+              <span class="homeMiniCover" style="background-image:url('${encodeURI(safeUrl(r.cover))}')"></span>
+              <span class="homeMiniText">
+                <span class="homeMiniName">${escapeHtml(r.title)}</span>
+                <span class="homeMiniSub">${escapeHtml(artistName(r.artistId))}${r.year ? " · " + r.year : ""}</span>
+              </span>
+              <span class="homeMiniGo">›</span>
+            </button>
+          `).join("")}
+        </div>
       </div>
-    </section>
-  `;
+    `;
+  }
+
+  if(id === "artists"){
+    // “Top” artistas por número de releases
+    const counts = new Map();
+    (DATA.releases||[]).forEach(r => {
+      if(!r?.artistId) return;
+      counts.set(r.artistId, (counts.get(r.artistId)||0)+1);
+    });
+
+    const top = (DATA.artists||[])
+      .slice()
+      .sort((a,b)=>(counts.get(b.id)||0)-(counts.get(a.id)||0))
+      .slice(0, 3);
+
+    return `
+      <div class="homePanelMini">
+        <div class="homePanelMiniHead">
+          <div class="homePanelMiniTitle">Artistas</div>
+          <a class="btn ghost" href="#/artists">Ver todos</a>
+        </div>
+        <div class="homePanelMiniList">
+          ${top.map(a => `
+            <button class="homeMiniRow" type="button" onclick="location.hash='#/artist/${encodeURIComponent(a.id)}'">
+              <span class="homeMiniCover" style="background-image:url('${encodeURI(safeUrl(a.banner))}')"></span>
+              <span class="homeMiniText">
+                <span class="homeMiniName">${escapeHtml(a.name)}</span>
+                <span class="homeMiniSub">${counts.get(a.id)||0} releases</span>
+              </span>
+              <span class="homeMiniGo">›</span>
+            </button>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  // fallback seguro
+  return `<div class="homePanelMini"><div class="homePanelMiniTitle">—</div></div>`;
 }
 
+function setHomeActive(id){
+  const sections = getHomeSections();
+  const allowed = new Set(sections.map(s=>s.id));
+  if(!allowed.has(id)) return;
+
+  setSavedHomeSectionId(id);
+
+  // Actualiza ARIA + clases en chips
+  const chips = document.querySelectorAll("[data-home-section]");
+  chips.forEach(ch => {
+    const is = ch.dataset.homeSection === id;
+    ch.classList.toggle("is-active", is);
+    ch.setAttribute("aria-selected", is ? "true" : "false");
+  });
+
+  // Re-render del panel
+  const featured = byId(DATA.tracks, DATA.featured?.trackId) || DATA.tracks[0];
+  const rel = featured ? releaseById(featured.releaseId) : null;
+  const heroBg = coverForTrack(featured);
+
+  const panel = document.getElementById("homePanel");
+  if(panel){
+    panel.innerHTML = renderHomePanel(id, { featured, rel, heroBg });
+  }
+}
+
+function initHomeCarousel(){
+  const wrap = document.getElementById("homeCarousel");
+  if(!wrap) return;
+
+  // Tap: activa y centra
+  wrap.addEventListener("click", (e)=>{
+    const chip = e.target.closest("[data-home-section]");
+    if(!chip) return;
+    const id = chip.dataset.homeSection;
+    if(!id) return;
+
+    // centra suavemente
+    chip.scrollIntoView({ behavior:"smooth", inline:"center", block:"nearest" });
+    setHomeActive(id);
+  });
+
+  // Observer: cuando una chip queda centrada (aprox), activamos
+  const chips = Array.from(wrap.querySelectorAll("[data-home-section]"));
+  if(!chips.length) return;
+
+  // Si el navegador no soporta IO, nos quedamos con tap.
+  if(!("IntersectionObserver" in window)) return;
+
+  const obs = new IntersectionObserver((entries)=>{
+    // elegimos la más visible
+    const best = entries
+      .filter(en => en.isIntersecting)
+      .sort((a,b)=> (b.intersectionRatio||0) - (a.intersectionRatio||0))[0];
+
+    if(!best) return;
+
+    const id = best.target?.dataset?.homeSection;
+    if(!id) return;
+
+    // Evita loops: solo si cambia
+    const current = getSavedHomeSectionId(getHomeSections()) || "featured";
+    if(current !== id) setHomeActive(id);
+  }, {
+    root: wrap,
+    threshold: [0.55, 0.7, 0.85]
+  });
+
+  chips.forEach(ch => obs.observe(ch));
+
+  // Al entrar al Home, centra el activo
+  const active = getSavedHomeSectionId(getHomeSections()) || "featured";
+  const activeEl = wrap.querySelector(`[data-home-section="${active}"]`);
+  activeEl?.scrollIntoView({ behavior:"auto", inline:"center", block:"nearest" });
+}
+
+/* =========================
+   Estilos Home inyectados (para no tocar style.css ahora)
+========================= */
+function ensureHomeMenuStyles(){
+  if(document.getElementById("homeMenuStyles")) return;
+
+  const style = document.createElement("style");
+  style.id = "homeMenuStyles";
+  style.textContent = `
+    .homeShell{ display:block; }
+
+    /* Panel arriba */
+    .homePanel{ margin-top: 10px; }
+    .homePanelCard{
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      box-shadow: var(--shadow);
+      min-height: 170px;
+    }
+    .homePanelBg{ position:absolute; inset:0; background-size:cover; background-position:center; filter: saturate(1.05) contrast(1.05); }
+    .homePanelOverlay{ position:absolute; inset:0; background: linear-gradient(90deg, rgba(7,9,19,.92), rgba(7,9,19,.60) 55%, rgba(7,9,19,.22)); }
+    .homePanelBody{ position:relative; display:flex; gap:14px; padding:16px; align-items:center; }
+    .homePanelCover{
+      width:92px; height:92px; border-radius:18px;
+      background-size:cover; background-position:center;
+      border:1px solid rgba(255,255,255,.10);
+      flex: 0 0 auto;
+    }
+    .homePanelText{ min-width:0; }
+    .homePanelKicker{ font-size:12px; color: rgba(242,245,255,.70); margin-bottom:6px; }
+    .homePanelTitle{ font-size:20px; font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .homePanelMeta{ margin-top:4px; font-size:13px; color: rgba(242,245,255,.72); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .homePanelBtns{ margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; }
+
+    /* Panel mini (listas) */
+    .homePanelMini{
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+    .homePanelMiniHead{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin-bottom: 10px;
+    }
+    .homePanelMiniTitle{ font-weight: 900; font-size: 16px; }
+    .homePanelMiniList{ display:flex; flex-direction:column; gap:10px; }
+
+    .homeMiniRow{
+      width:100%;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      border-radius: 16px;
+      padding: 10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      cursor:pointer;
+      color: inherit;
+    }
+    .homeMiniRow:hover{ background: rgba(255,255,255,.07); }
+    .homeMiniCover{
+      width:72px; height:48px; border-radius: 12px;
+      background-size:cover; background-position:center;
+      border:1px solid rgba(255,255,255,.10);
+      flex:0 0 auto;
+    }
+    .homeMiniText{ min-width:0; display:flex; flex-direction:column; gap:2px; text-align:left; }
+    .homeMiniName{ font-weight: 900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .homeMiniSub{ font-size:12px; color: rgba(242,245,255,.70); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .homeMiniGo{ margin-left:auto; font-size:22px; opacity:.7; }
+
+    /* Sticky menú */
+    .homeMenuSticky{
+      position: sticky;
+      top: calc(var(--homeStickyTop, 0px) + env(safe-area-inset-top, 0px));
+      z-index: 60;
+      margin-top: 12px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(7,9,19,.55);
+      border-top: 1px solid rgba(255,255,255,.06);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+    }
+    .homeMenuTitleRow{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      padding: 0 12px 8px 12px;
+      gap:12px;
+    }
+    .homeMenuTitle{ font-weight: 900; }
+    .homeMenuHint{ font-size: 12px; color: rgba(242,245,255,.65); }
+
+    .homeCarousel{
+      display:flex;
+      gap:10px;
+      overflow-x:auto;
+      padding: 0 12px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .homeCarousel::-webkit-scrollbar{ display:none; }
+
+    .homeChip{
+      scroll-snap-align: center;
+      flex: 0 0 auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color: rgba(242,245,255,.92);
+      cursor:pointer;
+      transform: scale(.92);
+      opacity: .70;
+      transition: transform .18s ease, opacity .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .homeChipIcon{ font-weight: 900; opacity: .9; }
+    .homeChipLabel{ font-weight: 900; white-space:nowrap; }
+
+    .homeChip.is-active{
+      transform: scale(1.0);
+      opacity: 1;
+      background: rgba(138,230,255,.10);
+      border-color: rgba(138,230,255,.25);
+    }
+
+    @media (max-width:520px){
+      .homePanelBody{ align-items:flex-end; }
+      .homePanelTitle{ font-size: 18px; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Ajuste dinámico del sticky top según topbar real
+  syncHomeStickyTop();
+  window.addEventListener("resize", syncHomeStickyTop);
+}
+
+function syncHomeStickyTop(){
+  const topbar = document.querySelector(".topbar");
+  const h = topbar ? topbar.offsetHeight : 0;
+  document.documentElement.style.setProperty("--homeStickyTop", `${h}px`);
+}
 function buildArtists(){
   $("#app").innerHTML = `
     <section class="section">
