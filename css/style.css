@@ -890,3 +890,42 @@ body{
 .homePanelShot.s1{ left: 0; top: 6px; transform: rotate(-7deg); }
 .homePanelShot.s2{ left: 72px; top: 0; transform: rotate(1deg); }
 .homePanelShot.s3{ left: 144px; top: 8px; transform: rotate(8deg); }
+.homePanelShot.s3{ left: 144px; top: 8px; transform: rotate(8deg); }
+
+/* =========================================================
+   HOME layout: evita solape Panel vs Carrusel sticky
+========================================================= */
+
+:root{
+  --homeStickyH: 170px;
+}
+
+.homeShell{
+  position: relative;
+  padding-bottom: calc(var(--homeStickyH) + 18px);
+}
+
+#homePanel{
+  margin-bottom: 18px;
+}
+
+.homeMenuSticky{
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.homeMenuSticky::before{
+  content:"";
+  position:absolute;
+  left:0; right:0;
+  top:-22px;
+  height:22px;
+  background: linear-gradient(
+    to top,
+    rgba(7,9,19,0),
+    rgba(7,9,19,.55)
+  );
+  pointer-events:none;
+}
