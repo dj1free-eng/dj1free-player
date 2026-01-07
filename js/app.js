@@ -268,6 +268,26 @@ function cycleDockSkin(){
   const next = DOCK_SKINS[(idx + 1 + DOCK_SKINS.length) % DOCK_SKINS.length];
   applyDockSkinById(next.id);
 }
+function renderExploreSceneAlbums(releases){
+  const covers = releases
+    .filter(r => r.cover)
+    .slice(0, 3)
+    .map(r => `url('${encodeURI(safeUrl(r.cover))}')`);
+
+  const bg = covers.join(",");
+
+  return `
+    <section class="exploreScene exploreScene--albums">
+      <div class="exploreSceneBg" style="background-image:${bg}"></div>
+      <div class="exploreSceneOverlay"></div>
+
+      <div class="exploreSceneContent">
+        <h2>Álbumes</h2>
+        <p>Colecciones completas</p>
+      </div>
+    </section>
+  `;
+}
 function renderSkinList(){
   ensureDockSkins();
   const list = document.getElementById("skinList");
