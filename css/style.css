@@ -869,3 +869,24 @@ body{
   margin:4px 0 0;
   color: rgba(242,245,255,.75);
 }
+.homePanelCollage{
+  position: relative;
+  margin-top: 12px;
+  height: 74px;
+  width: 220px;
+}
+
+.homePanelShot{
+  position:absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.12);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 14px 40px rgba(0,0,0,.45);
+}
+
+.homePanelShot.s1{ left: 0; top: 6px; transform: rotate(-7deg); }
+.homePanelShot.s2{ left: 72px; top: 0; transform: rotate(1deg); }
+.homePanelShot.s3{ left: 144px; top: 8px; transform: rotate(8deg); }
