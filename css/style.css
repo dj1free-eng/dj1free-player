@@ -890,7 +890,7 @@ body{
 .homePanelShot.s1{ left: 0; top: 6px; transform: rotate(-7deg); }
 .homePanelShot.s2{ left: 72px; top: 0; transform: rotate(1deg); }
 .homePanelShot.s3{ left: 144px; top: 8px; transform: rotate(8deg); }
-.homePanelShot.s3{ left: 144px; top: 8px; transform: rotate(8deg); }
+
 
 /* =========================================================
    HOME layout: evita solape Panel vs Carrusel sticky
@@ -928,6 +928,132 @@ body{
     rgba(7,9,19,.22)
   );
   pointer-events:none;
+}
+/* =========================================================
+   HOME CAROUSEL — abanico tipo Epson (3D + snap)
+========================================================= */
+
+/* Contenedor del carrusel */
+.homeCarousel{
+  position: relative;
+  display: flex;
+  gap: 14px;
+  padding: 14px 16px 18px;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  /* “escenario 3D” */
+  perspective: 900px;
+  perspective-origin: 50% 50%;
+
+  /* quita scrollbar fea */
+  scrollbar-width: none;
+}
+.homeCarousel::-webkit-scrollbar{ display:none; }
+
+/* Sombra/viñeta lateral (sensación de dock) */
+.homeCarousel::before,
+.homeCarousel::after{
+  content:"";
+  position:absolute;
+  top:0; bottom:0;
+  width: 56px;
+  pointer-events:none;
+  z-index: 5;
+}
+.homeCarousel::before{
+  left:0;
+  background: linear-gradient(90deg, rgba(7,9,19,.85), rgba(7,9,19,0));
+}
+.homeCarousel::after{
+  right:0;
+  background: linear-gradient(270deg, rgba(7,9,19,.85), rgba(7,9,19,0));
+}
+
+/* Tile base (más “hoja”) */
+.homeTile{
+  flex: 0 0 auto;
+  width: min(78vw, 360px);
+  height: 96px;                 /* estable, no cambia por contenido */
+  scroll-snap-align: center;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 14px;
+
+  padding: 16px 16px;
+
+  transform-style: preserve-3d;
+  will-change: transform, filter, opacity;
+
+  /* por defecto “de lado” (se corrige con data-pos) */
+  transform: translateZ(-10px) rotateY(0deg) scale(.96);
+  opacity: .78;
+  filter: saturate(.95) contrast(.98);
+}
+
+/* Texto dentro del tile (asegura estabilidad) */
+.homeTileLeft{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap: 4px;
+}
+.homeTileTitle{
+  font-weight: 900;
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
+}
+.homeTileSub{
+  color: rgba(242,245,255,.70);
+  font-weight: 650;
+  white-space: nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
+}
+
+/* “Posición en abanico” controlada por data-pos (JS) */
+.homeTile[data-pos="0"]{
+  transform: translateZ(40px) rotateY(0deg) scale(1.00);
+  opacity: 1;
+  filter: saturate(1.08) contrast(1.04);
+}
+.homeTile[data-pos="1"]{
+  transform: translateZ(10px) rotateY(-16deg) scale(.96);
+  opacity: .85;
+}
+.homeTile[data-pos="2"]{
+  transform: translateZ(-10px) rotateY(-26deg) scale(.93);
+  opacity: .70;
+}
+.homeTile[data-pos="3"]{
+  transform: translateZ(-20px) rotateY(-34deg) scale(.90);
+  opacity: .55;
+}
+
+.homeTile[data-pos="-1"]{
+  transform: translateZ(10px) rotateY(16deg) scale(.96);
+  opacity: .85;
+}
+.homeTile[data-pos="-2"]{
+  transform: translateZ(-10px) rotateY(26deg) scale(.93);
+  opacity: .70;
+}
+.homeTile[data-pos="-3"]{
+  transform: translateZ(-20px) rotateY(34deg) scale(.90);
+  opacity: .55;
+}
+
+/* Activo: extra “premium” */
+.homeTile.is-active{
+  opacity: 1;
+  transform: translateZ(52px) rotateY(0deg) scale(1.02);
 }
 /* ===== Home tiles con imagen (look Epson) ===== */
 .homeTile{
