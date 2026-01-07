@@ -1115,3 +1115,56 @@ body{
   opacity: .55;
   filter: blur(9px) saturate(1.12) contrast(1.08);
 }
+/* =========================================
+   HOME Carousel Fan (tipo Epson) por data-pos
+   Pegar al FINAL del CSS
+========================================= */
+
+/* El carrusel necesita perspectiva para el “abanico” */
+.homeCarousel{
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 14px 16px 18px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+/* Cada tile debe poder “salirse” hacia arriba sin cortarse */
+.homeTile{
+  flex: 0 0 78%;
+  max-width: 520px;
+
+  scroll-snap-align: center;
+
+  transform-style: preserve-3d;
+  transition: transform 220ms ease, filter 220ms ease, opacity 220ms ease;
+  will-change: transform;
+
+  opacity: .80;
+  filter: saturate(.95) contrast(1.02);
+}
+
+/* El centro: protagonista */
+.homeTile[data-pos="0"]{
+  transform: translateZ(60px) scale(1.02);
+  opacity: 1;
+  filter: saturate(1.05) contrast(1.06);
+}
+
+/* Lado derecho */
+.homeTile[data-pos="1"]{ transform: rotateY(-18deg) translateX(6px)  translateZ(18px) scale(.98); opacity:.78; }
+.homeTile[data-pos="2"]{ transform: rotateY(-28deg) translateX(12px) translateZ(8px)  scale(.95); opacity:.60; }
+.homeTile[data-pos="3"]{ transform: rotateY(-36deg) translateX(18px) translateZ(0px)  scale(.92); opacity:.45; }
+
+/* Lado izquierdo */
+.homeTile[data-pos="-1"]{ transform: rotateY(18deg)  translateX(-6px)  translateZ(18px) scale(.98); opacity:.78; }
+.homeTile[data-pos="-2"]{ transform: rotateY(28deg)  translateX(-12px) translateZ(8px)  scale(.95); opacity:.60; }
+.homeTile[data-pos="-3"]{ transform: rotateY(36deg)  translateX(-18px) translateZ(0px)  scale(.92); opacity:.45; }
+
+/* Quita la barra fea en iOS */
+.homeCarousel::-webkit-scrollbar{ display:none; }
