@@ -1168,3 +1168,8 @@ body{
 
 /* Quita la barra fea en iOS */
 .homeCarousel::-webkit-scrollbar{ display:none; }
+
+/* DEBUG: si esto no se ve, tu CSS NO está cargando */
+.homeCarousel{ outline: 3px solid #ff00ff !important; }
+.homeTile{ outline: 3px solid #00ffea !important; }
+.homeTile[data-pos]{ box-shadow: 0 0 0 4px rgba(255,0,0,.6) inset !important; }
