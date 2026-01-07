@@ -992,50 +992,81 @@ function initHomeCarousel(){
   const wrap = document.getElementById("homeCarousel");
   if(!wrap) return;
 
-  // Tap: activa y centra
-  wrap.addEventListener("click", (e)=>{
-    const chip = e.target.closest("[data-home-section]");
-    if(!chip) return;
-    const id = chip.dataset.homeSection;
-    if(!id) return;
-
-    // centra suavemente
-    chip.scrollIntoView({ behavior:"smooth", inline:"center", block:"nearest" });
-    setHomeActive(id);
-  });
-
-  // Observer: cuando una chip queda centrada (aprox), activamos
   const chips = Array.from(wrap.querySelectorAll("[data-home-section]"));
   if(!chips.length) return;
 
-  // Si el navegador no soporta IO, nos quedamos con tap.
-  if(!("IntersectionObserver" in window)) return;
+  // --- Helper: aplica "abanico" tipo Epson asignando data-pos ---
+  function applyFanByCenter(){
+    const wrapRect = wrap.getBoundingClientRect();
+    const wrapCenter = wrapRect.left + wrapRect.width / 2;
 
-  const obs = new IntersectionObserver((entries)=>{
-    // elegimos la más visible
-    const best = entries
-      .filter(en => en.isIntersecting)
-      .sort((a,b)=> (b.intersectionRatio||0) - (a.intersectionRatio||0))[0];
+    // Encuentra el chip más cercano al centro del carrusel
+    let bestIdx = 0;
+    let bestDist = Infinity;
 
-    if(!best) return;
+    chips.forEach((ch, i) => {
+      const r = ch.getBoundingClientRect();
+      const c = r.left + r.width / 2;
+      const d = Math.abs(c - wrapCenter);
+      if(d < bestDist){
+        bestDist = d;
+        bestIdx = i;
+      }
+    });
 
-    const id = best.target?.dataset?.homeSection;
-    if(!id) return;
+    // Asigna data-pos relativo (-3..3) y limpia lo demás
+    chips.forEach((ch, i) => {
+      const rel = i - bestIdx;              // izquierda negativo, derecha positivo
+      const clamped = Math.max(-3, Math.min(3, rel));
 
-    // Evita loops: solo si cambia
-    const current = getSavedHomeSectionId(getHomeSections()) || "featured";
-    if(current !== id) setHomeActive(id);
-  }, {
-    root: wrap,
-    threshold: [0.55, 0.7, 0.85]
+      ch.dataset.pos = String(clamped);
+
+      // Opcional: si quieres que fuera de rango se "aplane", puedes bajar opacidad con CSS.
+      // Aquí solo dejamos el clamp, que ya queda bien.
+    });
+
+    // Devuelve el id centrado por si lo quieres usar
+    return chips[bestIdx]?.dataset?.homeSection || null;
+  }
+
+  // --- Throttle scroll con RAF (para no freír el iPhone) ---
+  let ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(()=>{
+      ticking = false;
+      const centeredId = applyFanByCenter();
+
+      // Si cambia el centrado, activamos esa sección (sin loops raros)
+      const current = getSavedHomeSectionId(getHomeSections()) || "featured";
+      if(centeredId && centeredId !== current){
+        setHomeActive(centeredId);
+      }
+    });
+  }
+
+  // Tap: centra y activa
+  wrap.addEventListener("click", (e)=>{
+    const chip = e.target.closest("[data-home-section]");
+    if(!chip) return;
+
+    chip.scrollIntoView({ behavior:"smooth", inline:"center", block:"nearest" });
+    const id = chip.dataset.homeSection;
+    if(id) setHomeActive(id);
   });
 
-  chips.forEach(ch => obs.observe(ch));
+  // Scroll: abanico + detectar centrado
+  wrap.addEventListener("scroll", onScroll, { passive:true });
 
-  // Al entrar al Home, centra el activo
+  // Al entrar al Home: centra el activo y aplica abanico
   const active = getSavedHomeSectionId(getHomeSections()) || "featured";
   const activeEl = wrap.querySelector(`[data-home-section="${active}"]`);
   activeEl?.scrollIntoView({ behavior:"auto", inline:"center", block:"nearest" });
+
+  // Aplica abanico una vez al cargar (y otra justo después por si iOS tarda en layout)
+  applyFanByCenter();
+  setTimeout(applyFanByCenter, 50);
 }
 
 /* =========================
