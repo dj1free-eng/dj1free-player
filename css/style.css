@@ -920,12 +920,12 @@ body{
   content:"";
   position:absolute;
   left:0; right:0;
-  top:-22px;
-  height:22px;
+  top:-14px;
+  height:14px;
   background: linear-gradient(
     to top,
     rgba(7,9,19,0),
-    rgba(7,9,19,.55)
+    rgba(7,9,19,.22)
   );
   pointer-events:none;
 }
