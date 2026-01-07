@@ -814,30 +814,122 @@ function renderHomePanel(id, ctx){
   `;
 }
 
-  if(id === "artists"){
+if(id === "artists"){
+  // Ordena artistas por nº de releases (desc)
   const counts = new Map();
   (DATA.releases||[]).forEach(r => {
     if(!r?.artistId) return;
     counts.set(r.artistId, (counts.get(r.artistId)||0)+1);
   });
 
-  const top = (DATA.artists||[])
+  const artists = (DATA.artists||[])
     .slice()
-    .sort((a,b)=>(counts.get(b.id)||0)-(counts.get(a.id)||0))
-    .slice(0, 3);
+    .sort((a,b)=> (counts.get(b.id)||0) - (counts.get(a.id)||0));
 
-  const bg = top[0]?.banner || "";
+  const total = artists.length;
 
   return `
-    ${renderPanelHero({
-      kicker: "Explorar",
-      title: "Artistas",
-      sub: `${(DATA.artists||[]).length} artistas`,
-      bgUrl: bg,
-      coverUrls: top.map(a => a.banner),
-      ctaHref: "#/artists",
-      ctaLabel: "Ver todos"
-    })}
+    <div style="
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    ">
+      <div style="
+        display:flex;
+        align-items:baseline;
+        justify-content:space-between;
+        gap:12px;
+        padding: 14px 14px 10px 14px;
+      ">
+        <div>
+          <div style="font-weight:900; font-size:16px; color:rgba(242,245,255,.92)">Artistas</div>
+          <div style="font-size:12px; color:rgba(242,245,255,.65)">${total} artistas · desliza</div>
+        </div>
+        <a class="btn ghost" href="#/artists">Ver todos</a>
+      </div>
+
+      <div style="
+        display:flex;
+        gap:12px;
+        overflow-x:auto;
+        padding: 12px 14px 16px 14px;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+      ">
+        ${artists.map(a => {
+          const img = encodeURI(safeUrl(a.banner));
+          const name = escapeHtml(a.name);
+          const n = counts.get(a.id) || 0;
+
+          return `
+            <button type="button"
+              onclick="location.hash='#/artist/${encodeURIComponent(a.id)}'"
+              style="
+                flex: 0 0 auto;
+                width: 210px;
+                height: 170px;
+                scroll-snap-align: center;
+                border-radius: 18px;
+                border: 1px solid rgba(255,255,255,.12);
+                background: rgba(255,255,255,.05);
+                padding: 0;
+                overflow: hidden;
+                cursor: pointer;
+                position: relative;
+                box-shadow: 0 18px 55px rgba(0,0,0,.55);
+              "
+              aria-label="Abrir artista ${name}"
+            >
+              <span style="
+                position:absolute;
+                inset:0;
+                background-image:url('${img}');
+                background-size:cover;
+                background-position:center;
+                filter: saturate(1.05) contrast(1.05);
+              "></span>
+
+              <span style="
+                position:absolute;
+                inset:0;
+                background: linear-gradient(180deg,
+                  rgba(0,0,0,.00) 0%,
+                  rgba(0,0,0,.15) 35%,
+                  rgba(0,0,0,.65) 100%
+                );
+              "></span>
+
+              <span style="
+                position:absolute;
+                left:12px;
+                right:12px;
+                bottom:12px;
+                display:flex;
+                flex-direction:column;
+                gap:4px;
+                text-align:left;
+              ">
+                <span style="
+                  font-weight:900;
+                  font-size:14px;
+                  color: rgba(242,245,255,.95);
+                  white-space:nowrap;
+                  overflow:hidden;
+                  text-overflow:ellipsis;
+                ">${name}</span>
+
+                <span style="
+                  font-size:12px;
+                  color: rgba(242,245,255,.70);
+                ">${n} releases</span>
+              </span>
+            </button>
+          `;
+        }).join("")}
+      </div>
+    </div>
   `;
 }
 
