@@ -699,7 +699,43 @@ function getSavedHomeSectionId(sections){
 function setSavedHomeSectionId(id){
   try{ localStorage.setItem(LS_HOME_SECTION, id); }catch(_){}
 }
+function pickFirst3(arr){
+  return (arr || []).filter(Boolean).slice(0,3);
+}
 
+function renderPanelHero({ kicker, title, sub, bgUrl, coverUrls = [], ctaHref, ctaLabel }){
+  const c = pickFirst3(coverUrls).map(u => encodeURI(safeUrl(u)));
+  const c1 = c[0] || "";
+  const c2 = c[1] || c1;
+  const c3 = c[2] || c2;
+
+  return `
+    <div class="homePanelCard">
+      <div class="homePanelBg" style="background-image:url('${encodeURI(safeUrl(bgUrl))}')"></div>
+      <div class="homePanelOverlay"></div>
+
+      <div class="homePanelBody">
+        <div class="homePanelCover" style="background-image:url('${c2 ? c2 : encodeURI(safeUrl(bgUrl))}')"></div>
+
+        <div class="homePanelText">
+          <div class="homePanelKicker">${escapeHtml(kicker || "")}</div>
+          <div class="homePanelTitle">${escapeHtml(title || "—")}</div>
+          <div class="homePanelMeta">${escapeHtml(sub || "")}</div>
+
+          <div class="homePanelBtns">
+            ${ctaHref ? `<a class="btn primary" href="${ctaHref}">${escapeHtml(ctaLabel || "Abrir")}</a>` : ""}
+          </div>
+
+          <div class="homePanelCollage" aria-hidden="true">
+            <span class="homePanelShot s1" style="background-image:url('${c1}')"></span>
+            <span class="homePanelShot s2" style="background-image:url('${c2}')"></span>
+            <span class="homePanelShot s3" style="background-image:url('${c3}')"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
 function renderHomePanel(id, ctx){
   const featured = ctx?.featured;
   const rel = ctx?.rel;
@@ -737,95 +773,73 @@ function renderHomePanel(id, ctx){
   }
 
   if(id === "albums"){
-    const albums = (DATA.releases||[])
-      .filter(r => r.type === "album")
-      .sort((a,b)=>(b.year||0)-(a.year||0))
-      .slice(0, 3);
+  const albums = (DATA.releases||[])
+    .filter(r => r.type === "album")
+    .sort((a,b)=>(b.year||0)-(a.year||0));
 
-    return `
-      <div class="homePanelMini">
-        <div class="homePanelMiniHead">
-          <div class="homePanelMiniTitle">Álbumes</div>
-          <a class="btn ghost" href="#/albums">Ver todos</a>
-        </div>
-        <div class="homePanelMiniList">
-          ${albums.map(r => `
-            <button class="homeMiniRow" type="button" onclick="location.hash='#/release/${encodeURIComponent(r.id)}'">
-              <span class="homeMiniCover" style="background-image:url('${encodeURI(safeUrl(r.cover))}')"></span>
-              <span class="homeMiniText">
-                <span class="homeMiniName">${escapeHtml(r.title)}</span>
-                <span class="homeMiniSub">${escapeHtml(artistName(r.artistId))}${r.year ? " · " + r.year : ""}</span>
-              </span>
-              <span class="homeMiniGo">›</span>
-            </button>
-          `).join("")}
-        </div>
-      </div>
-    `;
-  }
+  const top3 = albums.slice(0,3);
+  const bg = top3[0]?.cover || "";
+
+  return `
+    ${renderPanelHero({
+      kicker: "Explorar",
+      title: "Álbumes",
+      sub: `${albums.length} álbumes disponibles`,
+      bgUrl: bg,
+      coverUrls: top3.map(r => r.cover),
+      ctaHref: "#/albums",
+      ctaLabel: "Ver todos"
+    })}
+  `;
+}
 
   if(id === "singles"){
-    const singles = (DATA.releases||[])
-      .filter(r => r.type === "single")
-      .sort((a,b)=>(b.year||0)-(a.year||0))
-      .slice(0, 3);
+  const singles = (DATA.releases||[])
+    .filter(r => r.type === "single")
+    .sort((a,b)=>(b.year||0)-(a.year||0));
 
-    return `
-      <div class="homePanelMini">
-        <div class="homePanelMiniHead">
-          <div class="homePanelMiniTitle">Singles</div>
-          <a class="btn ghost" href="#/singles">Ver todos</a>
-        </div>
-        <div class="homePanelMiniList">
-          ${singles.map(r => `
-            <button class="homeMiniRow" type="button" onclick="location.hash='#/release/${encodeURIComponent(r.id)}'">
-              <span class="homeMiniCover" style="background-image:url('${encodeURI(safeUrl(r.cover))}')"></span>
-              <span class="homeMiniText">
-                <span class="homeMiniName">${escapeHtml(r.title)}</span>
-                <span class="homeMiniSub">${escapeHtml(artistName(r.artistId))}${r.year ? " · " + r.year : ""}</span>
-              </span>
-              <span class="homeMiniGo">›</span>
-            </button>
-          `).join("")}
-        </div>
-      </div>
-    `;
-  }
+  const top3 = singles.slice(0,3);
+  const bg = top3[0]?.cover || "";
+
+  return `
+    ${renderPanelHero({
+      kicker: "Explorar",
+      title: "Singles",
+      sub: `${singles.length} singles disponibles`,
+      bgUrl: bg,
+      coverUrls: top3.map(r => r.cover),
+      ctaHref: "#/singles",
+      ctaLabel: "Ver todos"
+    })}
+  `;
+}
 
   if(id === "artists"){
-    // “Top” artistas por número de releases
-    const counts = new Map();
-    (DATA.releases||[]).forEach(r => {
-      if(!r?.artistId) return;
-      counts.set(r.artistId, (counts.get(r.artistId)||0)+1);
-    });
+  const counts = new Map();
+  (DATA.releases||[]).forEach(r => {
+    if(!r?.artistId) return;
+    counts.set(r.artistId, (counts.get(r.artistId)||0)+1);
+  });
 
-    const top = (DATA.artists||[])
-      .slice()
-      .sort((a,b)=>(counts.get(b.id)||0)-(counts.get(a.id)||0))
-      .slice(0, 3);
+  const top = (DATA.artists||[])
+    .slice()
+    .sort((a,b)=>(counts.get(b.id)||0)-(counts.get(a.id)||0))
+    .slice(0, 3);
 
-    return `
-      <div class="homePanelMini">
-        <div class="homePanelMiniHead">
-          <div class="homePanelMiniTitle">Artistas</div>
-          <a class="btn ghost" href="#/artists">Ver todos</a>
-        </div>
-        <div class="homePanelMiniList">
-          ${top.map(a => `
-            <button class="homeMiniRow" type="button" onclick="location.hash='#/artist/${encodeURIComponent(a.id)}'">
-              <span class="homeMiniCover" style="background-image:url('${encodeURI(safeUrl(a.banner))}')"></span>
-              <span class="homeMiniText">
-                <span class="homeMiniName">${escapeHtml(a.name)}</span>
-                <span class="homeMiniSub">${counts.get(a.id)||0} releases</span>
-              </span>
-              <span class="homeMiniGo">›</span>
-            </button>
-          `).join("")}
-        </div>
-      </div>
-    `;
-  }
+  const bg = top[0]?.banner || "";
+
+  return `
+    ${renderPanelHero({
+      kicker: "Explorar",
+      title: "Artistas",
+      sub: `${(DATA.artists||[]).length} artistas`,
+      bgUrl: bg,
+      coverUrls: top.map(a => a.banner),
+      ctaHref: "#/artists",
+      ctaLabel: "Ver todos"
+    })}
+  `;
+}
 
   // fallback seguro
   return `<div class="homePanelMini"><div class="homePanelMiniTitle">—</div></div>`;
