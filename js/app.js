@@ -648,21 +648,46 @@ const heroBg = absUrl(coverForTrack(featured));
         </div>
 
         <div class="homeCarousel" id="homeCarousel" role="tablist" aria-label="Secciones">
-          ${sections.map(s => `
+${sections.map(s => {
+  // Imagen por sección (si falta, cae a heroBg)
+  let img = heroBg;
+
+  if(s.id === "albums"){
+    const a = (DATA.releases||[]).filter(r=>r.type==="album").sort((x,y)=>(y.year||0)-(x.year||0))[0];
+    img = safeUrl(a?.cover) || heroBg;
+  } else if(s.id === "singles"){
+    const si = (DATA.releases||[]).filter(r=>r.type==="single").sort((x,y)=>(y.year||0)-(x.year||0))[0];
+    img = safeUrl(si?.cover) || heroBg;
+  } else if(s.id === "artists"){
+    // top artista por releases
+    const counts = new Map();
+    (DATA.releases||[]).forEach(r => r?.artistId && counts.set(r.artistId, (counts.get(r.artistId)||0)+1));
+    const top = (DATA.artists||[]).slice().sort((a,b)=>(counts.get(b.id)||0)-(counts.get(a.id)||0))[0];
+    img = safeUrl(top?.banner) || heroBg;
+  } else if(s.id === "featured"){
+    img = heroBg;
+  }
+
+  const bg = encodeURI(absUrl(img));
+
+  return `
 <button
   type="button"
   class="homeTile ${s.id === active ? "is-active" : ""}"
   data-home-section="${s.id}"
   role="tab"
   aria-selected="${s.id === active ? "true" : "false"}"
+  style="--tile-bg:url('${bg}')"
 >
+  <span class="homeTileBg" aria-hidden="true"></span>
   <span class="homeTileLeft">
     <span class="homeTileTitle">${escapeHtml(s.label)}</span>
     <span class="homeTileSub">${escapeHtml(s.hint || "")}</span>
   </span>
   <span class="homeTileIcon" aria-hidden="true">${s.icon}</span>
 </button>
-          `).join("")}
+  `;
+}).join("")}
         </div>
       </section>
 
