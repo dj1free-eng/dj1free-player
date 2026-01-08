@@ -972,130 +972,68 @@ body{
   right:0;
   background: linear-gradient(270deg, rgba(7,9,19,.85), rgba(7,9,19,0));
 }
-
-/* Tile base (más “hoja”) */
+/* ===== HOME TILE BASE (cuadradas tipo Epson) ===== */
 .homeTile{
   flex: 0 0 auto;
-  width: min(78vw, 360px);
-  height: 96px;                 /* estable, no cambia por contenido */
-  scroll-snap-align: center;
-
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap: 14px;
-
-  padding: 16px 16px;
-
-  transform-style: preserve-3d;
-  will-change: transform, filter, opacity;
-
-  /* por defecto “de lado” (se corrige con data-pos) */
-  transform: translateZ(-10px) rotateY(0deg) scale(.96);
-  opacity: .78;
-  filter: saturate(.95) contrast(.98);
-}
-
-/* Texto dentro del tile (asegura estabilidad) */
-.homeTileLeft{
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  gap: 4px;
-}
-.homeTileTitle{
-  font-weight: 900;
-  line-height: 1.05;
-  white-space: nowrap;
-  overflow:hidden;
-  text-overflow: ellipsis;
-}
-.homeTileSub{
-  color: rgba(242,245,255,.70);
-  font-weight: 650;
-  white-space: nowrap;
-  overflow:hidden;
-  text-overflow: ellipsis;
-}
-/* ================================
-   Epson Fan Carousel (REAL)
-   Pegar al FINAL del CSS
-================================ */
-
-.homeCarousel{
-  display:flex;
-  align-items:center;
-
-  /* clave: muchas visibles y solape tipo abanico */
-  gap: 0;
-  padding: 14px 14px 18px;
-  overflow-x: auto;
-  overflow-y: visible;
-  -webkit-overflow-scrolling: touch;
-
-  scroll-snap-type: x mandatory;
-
-  perspective: 1200px;
-  transform-style: preserve-3d;
-}
-
-.homeCarousel::-webkit-scrollbar{ display:none; }
-
-.homeTile{
-  /* ancho fijo tipo “tarjetita Epson” */
-  flex: 0 0 190px;
+  width: 92px;
   height: 92px;
+  border-radius: 20px;
 
-  margin-right: -78px; /* SOLAPE (abanico) */
-  scroll-snap-align: center;
+  position: relative;
+  overflow: hidden;
 
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,.10);
   background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
 
-  transform-style: preserve-3d;
-  transform-origin: center center;
-  will-change: transform;
+  display: grid;
+  place-items: center;
 
-  transition: transform 220ms ease, opacity 220ms ease, filter 220ms ease;
-  opacity: .45;
-  filter: saturate(.9);
+  transition:
+    transform .25s ease,
+    width .25s ease,
+    opacity .25s ease,
+    filter .25s ease;
 }
-
-/* Centro */
+/* ===== Posiciones del carrusel (Epson-style) ===== */
 .homeTile[data-pos="0"]{
-  margin-right: -40px;              /* menos solape para “empujar” */
+  width: 108px;
+  transform: rotateY(0deg) translateZ(40px);
   opacity: 1;
-  filter: saturate(1.06) contrast(1.04);
-  transform: translateZ(80px) rotateY(0deg) scaleX(1.08);
-  z-index: 10;
+  filter: none;
 }
 
-/* Lados (muy ladeadas + estrechas) */
+.homeTile[data-pos="-1"],
 .homeTile[data-pos="1"]{
-  transform: translateZ(30px) rotateY(-58deg) scaleX(.58);
-  z-index: 6;
-}
-.homeTile[data-pos="2"]{
-  transform: translateZ(14px) rotateY(-72deg) scaleX(.46);
-  z-index: 4;
-}
-.homeTile[data-pos="3"]{
-  transform: translateZ(6px) rotateY(-78deg) scaleX(.40);
-  opacity: .28;
-  z-index: 2;
+  width: 72px;
+  opacity: .75;
 }
 
-.homeTile[data-pos="-1"]{
-  transform: translateZ(30px) rotateY(58deg) scaleX(.58);
-  z-index: 6;
+.homeTile[data-pos="-2"],
+.homeTile[data-pos="2"]{
+  width: 54px;
+  opacity: .45;
 }
-.homeTile[data-pos="-2"]{
-  transform: translateZ(14px) rotateY(72deg) scaleX(.46);
-  z-index: 4;
+
+.homeTile[data-pos="-3"],
+.homeTile[data-pos="3"]{
+  width: 36px;
+  opacity: .25;
 }
-.homeTile[data-pos="-3"]{
-  transform: translateZ(6px) rotateY(78deg) scaleX(.40);
-  opacity: .28;
-  z-index: 2;
+
+/* Inclinación */
+.homeTile[data-pos="-1"]{ transform: rotateY(38deg) translateZ(10px); }
+.homeTile[data-pos="-2"]{ transform: rotateY(55deg) translateZ(-10px); }
+.homeTile[data-pos="-3"]{ transform: rotateY(68deg) translateZ(-22px); }
+
+.homeTile[data-pos="1"]{ transform: rotateY(-38deg) translateZ(10px); }
+.homeTile[data-pos="2"]{ transform: rotateY(-55deg) translateZ(-10px); }
+.homeTile[data-pos="3"]{ transform: rotateY(-68deg) translateZ(-22px); }
+.homeCarousel{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  perspective: 900px;
+  transform-style: preserve-3d;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
 }
