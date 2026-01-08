@@ -930,110 +930,213 @@ body{
   pointer-events:none;
 }
 /* =========================================================
-   HOME CAROUSEL — abanico tipo Epson (3D + snap)
+   HOME: Panel + Dock premium (Opción 1)
 ========================================================= */
-
-/* Contenedor del carrusel */
-.homeCarousel{
+.homeShell{
   position: relative;
-  display: flex;
-  gap: 14px;
-  padding: 14px 16px 18px;
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-
-  /* “escenario 3D” */
-  perspective: 900px;
-  perspective-origin: 50% 50%;
-
-  /* quita scrollbar fea */
-  scrollbar-width: none;
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
 }
-.homeCarousel::-webkit-scrollbar{ display:none; }
 
-/* Sombra/viñeta lateral (sensación de dock) */
-.homeCarousel::before,
-.homeCarousel::after{
-  content:"";
-  position:absolute;
-  top:0; bottom:0;
-  width: 56px;
-  pointer-events:none;
-  z-index: 5;
+.homePanel{
+  margin-top: 10px;
 }
-.homeCarousel::before{
-  left:0;
-  background: linear-gradient(90deg, rgba(7,9,19,.85), rgba(7,9,19,0));
-}
-.homeCarousel::after{
-  right:0;
-  background: linear-gradient(270deg, rgba(7,9,19,.85), rgba(7,9,19,0));
-}
-/* ===== HOME TILE BASE (cuadradas tipo Epson) ===== */
-.homeTile{
-  flex: 0 0 auto;
-  width: 92px;
-  height: 92px;
-  border-radius: 20px;
 
+/* Panel destacado estilo “card” */
+.homePanelCard{
   position: relative;
-  overflow: hidden;
-
-  background: rgba(255,255,255,.06);
+  border-radius: 22px;
   border: 1px solid rgba(255,255,255,.10);
-
-  display: grid;
-  place-items: center;
-
-  transition:
-    transform .25s ease,
-    width .25s ease,
-    opacity .25s ease,
-    filter .25s ease;
-}
-/* ===== Posiciones del carrusel (Epson-style) ===== */
-.homeTile[data-pos="0"]{
-  width: 108px;
-  transform: rotateY(0deg) translateZ(40px);
-  opacity: 1;
-  filter: none;
+  background: rgba(255,255,255,.05);
+  overflow: hidden;
+  box-shadow: 0 22px 80px rgba(0,0,0,.45);
 }
 
-.homeTile[data-pos="-1"],
-.homeTile[data-pos="1"]{
-  width: 72px;
-  opacity: .75;
+.homePanelBg{
+  position:absolute;
+  inset:-20px;
+  background-size:cover;
+  background-position:center;
+  filter: blur(18px) saturate(1.06) contrast(1.06);
+  opacity:.45;
+  transform: scale(1.06);
 }
 
-.homeTile[data-pos="-2"],
-.homeTile[data-pos="2"]{
-  width: 54px;
-  opacity: .45;
+.homePanelOverlay{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(90deg,
+    rgba(7,9,19,.92) 0%,
+    rgba(7,9,19,.62) 55%,
+    rgba(7,9,19,.22) 100%
+  );
 }
 
-.homeTile[data-pos="-3"],
-.homeTile[data-pos="3"]{
-  width: 36px;
-  opacity: .25;
-}
-
-/* Inclinación */
-.homeTile[data-pos="-1"]{ transform: rotateY(38deg) translateZ(10px); }
-.homeTile[data-pos="-2"]{ transform: rotateY(55deg) translateZ(-10px); }
-.homeTile[data-pos="-3"]{ transform: rotateY(68deg) translateZ(-22px); }
-
-.homeTile[data-pos="1"]{ transform: rotateY(-38deg) translateZ(10px); }
-.homeTile[data-pos="2"]{ transform: rotateY(-55deg) translateZ(-10px); }
-.homeTile[data-pos="3"]{ transform: rotateY(-68deg) translateZ(-22px); }
-.homeCarousel{
-  display: flex;
+.homePanelBody{
+  position: relative;
+  display:flex;
+  gap:14px;
+  padding: 14px;
   align-items: center;
+}
+
+.homePanelCover{
+  width: 96px;
+  height: 96px;
+  border-radius: 18px;
+  background-size: cover;
+  background-position:center;
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 14px 40px rgba(0,0,0,.45);
+  flex: 0 0 auto;
+}
+
+.homePanelText{ min-width:0; }
+.homePanelKicker{ font-size:12px; color: rgba(242,245,255,.70); margin-bottom: 4px; }
+.homePanelTitle{
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.homePanelMeta{ margin-top: 4px; color: rgba(242,245,255,.72); font-size: 13px; }
+.homePanelBtns{ margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap; }
+
+/* Panel mini (albums/singles/artists) */
+.homePanelMini{
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  box-shadow: 0 22px 80px rgba(0,0,0,.35);
+  padding: 12px;
+}
+
+.homePanelMiniHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom: 10px;
+}
+
+.homePanelMiniTitle{
+  font-weight: 900;
+  color: rgba(242,245,255,.92);
+}
+
+/* Tira horizontal visual */
+.homeStrip{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.homeCoverCard{
+  flex: 0 0 auto;
+  width: 170px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+  overflow:hidden;
+  padding:0;
+  color: inherit;
+  cursor: pointer;
+  text-align:left;
+}
+
+.homeCoverImg{
+  display:block;
+  width: 100%;
+  height: 96px;
+  background-size: cover;
+  background-position:center;
+}
+
+.homeCoverMeta{
+  display:block;
+  padding: 10px 10px 12px;
+}
+
+.homeCoverTitle{
+  display:block;
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.homeCoverSub{
+  display:block;
+  margin-top: 2px;
+  color: rgba(242,245,255,.70);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dock inferior */
+.homeDock{
+  position: fixed;
+  left: 10px;
+  right: 10px;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  width: min(1100px, calc(100vw - 20px));
+  margin: 0 auto;
+
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+
+  padding: 10px;
+  border-radius: 22px;
+  background: rgba(9,12,24,.78);
+  border: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
+
+  z-index: 60;
+}
+
+.homeDockBtn{
+  appearance:none;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.06);
+  color: rgba(242,245,255,.88);
+  border-radius: 18px;
+  padding: 10px 8px;
+
+  display:flex;
+  flex-direction: column;
   gap: 6px;
-  perspective: 900px;
-  transform-style: preserve-3d;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  align-items:center;
+  justify-content:center;
+
+  cursor:pointer;
+}
+
+.homeDockIcon{
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  display:grid;
+  place-items:center;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.12);
+  font-size: 18px;
+}
+
+.homeDockTxt{
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.homeDockBtn.is-active{
+  background: rgba(138,230,255,.12);
+  border-color: rgba(138,230,255,.22);
+  box-shadow: 0 0 0 1px rgba(138,230,255,.10) inset;
 }
