@@ -991,7 +991,7 @@ function setHomeActive(id){
 function initHomeCarousel(){
   const wrap = document.getElementById("homeCarousel");
   if(!wrap) return;
-
+console.log("[HOME] initHomeCarousel NEW running");
   const chips = Array.from(wrap.querySelectorAll("[data-home-section]"));
   if(!chips.length) return;
 
