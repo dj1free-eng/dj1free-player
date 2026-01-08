@@ -1017,88 +1017,85 @@ body{
   overflow:hidden;
   text-overflow: ellipsis;
 }
-
-/* =========================================
-   HOME Carousel — Epson Fan (fuerte 3D)
-   Pegar AL FINAL del CSS
-========================================= */
+/* ================================
+   Epson Fan Carousel (REAL)
+   Pegar al FINAL del CSS
+================================ */
 
 .homeCarousel{
   display:flex;
-  gap: 10px;
-  overflow-x:auto;
-  overflow-y: visible;
+  align-items:center;
+
+  /* clave: muchas visibles y solape tipo abanico */
+  gap: 0;
   padding: 14px 14px 18px;
-  scroll-snap-type: x mandatory;
+  overflow-x: auto;
+  overflow-y: visible;
   -webkit-overflow-scrolling: touch;
+
+  scroll-snap-type: x mandatory;
 
   perspective: 1200px;
   transform-style: preserve-3d;
 }
 
-/* Base: estrechas para que quepan muchas */
-.homeTile{
-  position: relative;
-  flex: 0 0 28%;
-  min-width: 170px;
-  max-width: 260px;
+.homeCarousel::-webkit-scrollbar{ display:none; }
 
+.homeTile{
+  /* ancho fijo tipo “tarjetita Epson” */
+  flex: 0 0 190px;
+  height: 92px;
+
+  margin-right: -78px; /* SOLAPE (abanico) */
   scroll-snap-align: center;
 
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.06);
+
   transform-style: preserve-3d;
-  transition: transform 240ms ease, opacity 240ms ease, filter 240ms ease;
+  transform-origin: center center;
   will-change: transform;
 
-  opacity: .55;
-  filter: saturate(.92) contrast(1.02);
+  transition: transform 220ms ease, opacity 220ms ease, filter 220ms ease;
+  opacity: .45;
+  filter: saturate(.9);
 }
 
-/* Centro: plano, ancho, protagonista */
+/* Centro */
 .homeTile[data-pos="0"]{
+  margin-right: -40px;              /* menos solape para “empujar” */
   opacity: 1;
-  filter: saturate(1.08) contrast(1.06);
-
-  /* se “plana” (sin rotateY) y gana presencia */
-  transform: translateZ(90px) rotateY(0deg) scaleX(1.10) scaleY(1.02);
+  filter: saturate(1.06) contrast(1.04);
+  transform: translateZ(80px) rotateY(0deg) scaleX(1.08);
   z-index: 10;
 }
 
-/* Laterales: muy ladeadas + más estrechas (scaleX) */
+/* Lados (muy ladeadas + estrechas) */
 .homeTile[data-pos="1"]{
-  transform: translateZ(40px) rotateY(-52deg) scaleX(.78) scaleY(.98) translateX(26px);
+  transform: translateZ(30px) rotateY(-58deg) scaleX(.58);
+  z-index: 6;
 }
 .homeTile[data-pos="2"]{
-  transform: translateZ(18px) rotateY(-66deg) scaleX(.64) scaleY(.96) translateX(46px);
+  transform: translateZ(14px) rotateY(-72deg) scaleX(.46);
+  z-index: 4;
 }
 .homeTile[data-pos="3"]{
-  transform: translateZ(6px) rotateY(-74deg) scaleX(.54) scaleY(.94) translateX(62px);
+  transform: translateZ(6px) rotateY(-78deg) scaleX(.40);
+  opacity: .28;
+  z-index: 2;
 }
 
 .homeTile[data-pos="-1"]{
-  transform: translateZ(40px) rotateY(52deg) scaleX(.78) scaleY(.98) translateX(-26px);
+  transform: translateZ(30px) rotateY(58deg) scaleX(.58);
+  z-index: 6;
 }
 .homeTile[data-pos="-2"]{
-  transform: translateZ(18px) rotateY(66deg) scaleX(.64) scaleY(.96) translateX(-46px);
+  transform: translateZ(14px) rotateY(72deg) scaleX(.46);
+  z-index: 4;
 }
 .homeTile[data-pos="-3"]{
-  transform: translateZ(6px) rotateY(74deg) scaleX(.54) scaleY(.94) translateX(-62px);
+  transform: translateZ(6px) rotateY(78deg) scaleX(.40);
+  opacity: .28;
+  z-index: 2;
 }
-
-/* Opcional: más “tarjeta” hacia atrás */
-.homeTile[data-pos="2"],
-.homeTile[data-pos="-2"]{ opacity:.42; filter:saturate(.88) contrast(1.0); }
-
-.homeTile[data-pos="3"],
-.homeTile[data-pos="-3"]{ opacity:.28; filter:saturate(.82) contrast(.98); }
-
-/* Móvil: que sigan cabiendo muchas, pero sin volverse imposibles */
-@media (max-width: 520px){
-  .homeTile{
-    flex-basis: 34%;
-    min-width: 150px;
-    max-width: 220px;
-  }
-}
-
-/* Quita scrollbar iOS */
-.homeCarousel::-webkit-scrollbar{ display:none; }
