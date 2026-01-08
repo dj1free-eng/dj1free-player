@@ -1018,166 +1018,87 @@ body{
   text-overflow: ellipsis;
 }
 
-/* “Posición en abanico” controlada por data-pos (JS) */
-.homeTile[data-pos="0"]{
-  transform: translateZ(40px) rotateY(0deg) scale(1.00);
-  opacity: 1;
-  filter: saturate(1.08) contrast(1.04);
-}
-.homeTile[data-pos="1"]{
-  transform: translateZ(10px) rotateY(-16deg) scale(.96);
-  opacity: .85;
-}
-.homeTile[data-pos="2"]{
-  transform: translateZ(-10px) rotateY(-26deg) scale(.93);
-  opacity: .70;
-}
-.homeTile[data-pos="3"]{
-  transform: translateZ(-20px) rotateY(-34deg) scale(.90);
-  opacity: .55;
-}
-
-.homeTile[data-pos="-1"]{
-  transform: translateZ(10px) rotateY(16deg) scale(.96);
-  opacity: .85;
-}
-.homeTile[data-pos="-2"]{
-  transform: translateZ(-10px) rotateY(26deg) scale(.93);
-  opacity: .70;
-}
-.homeTile[data-pos="-3"]{
-  transform: translateZ(-20px) rotateY(34deg) scale(.90);
-  opacity: .55;
-}
-
-/* Activo: extra “premium” */
-.homeTile.is-active{
-  opacity: 1;
-  transform: translateZ(52px) rotateY(0deg) scale(1.02);
-}
-/* ===== Home tiles con imagen (look Epson) ===== */
-.homeTile{
-  position: relative;
-  overflow: hidden;
-  border-radius: 22px;
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.06);
-  box-shadow: 0 18px 60px rgba(0,0,0,.40);
-}
-
-.homeTileBg{
-  position:absolute;
-  inset:-14px;
-  background-image: var(--tile-bg);
-  background-size: cover;
-  background-position: center;
-  filter: blur(10px) saturate(1.05) contrast(1.05);
-  opacity: .42;
-  transform: scale(1.06);
-}
-
-.homeTile::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: linear-gradient(90deg,
-    rgba(7,9,19,.82) 0%,
-    rgba(7,9,19,.56) 55%,
-    rgba(7,9,19,.28) 100%
-  );
-  pointer-events:none;
-}
-
-.homeTileLeft, .homeTileIcon{
-  position: relative;
-  z-index: 1;
-}
-
-.homeTileIcon{
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
-  display:grid;
-  place-items:center;
-  background: rgba(255,255,255,.10);
-  border: 1px solid rgba(255,255,255,.12);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.10);
-}
-
-/* Activo = más “premium” */
-.homeTile.is-active{
-  border-color: rgba(138,230,255,.22);
-  box-shadow:
-    0 22px 80px rgba(0,0,0,.52),
-    0 0 0 1px rgba(138,230,255,.12) inset;
-}
-.homeTile.is-active .homeTileBg{
-  opacity: .55;
-  filter: blur(9px) saturate(1.12) contrast(1.08);
-}
 /* =========================================
-   HOME Carousel Fan (tipo Epson) por data-pos
-   Pegar al FINAL del CSS
+   HOME Carousel — Epson Fan (fuerte 3D)
+   Pegar AL FINAL del CSS
 ========================================= */
 
-/* El carrusel necesita perspectiva para el “abanico” */
 .homeCarousel{
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
+  display:flex;
+  gap: 10px;
+  overflow-x:auto;
   overflow-y: visible;
-  padding: 14px 16px 18px;
+  padding: 14px 14px 18px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
 
-  perspective: 900px;
+  perspective: 1200px;
   transform-style: preserve-3d;
 }
 
-/* Cada tile debe poder “salirse” hacia arriba sin cortarse */
+/* Base: estrechas para que quepan muchas */
 .homeTile{
-  flex: 0 0 78%;
-  max-width: 520px;
+  position: relative;
+  flex: 0 0 28%;
+  min-width: 170px;
+  max-width: 260px;
 
   scroll-snap-align: center;
 
   transform-style: preserve-3d;
-  transition: transform 220ms ease, filter 220ms ease, opacity 220ms ease;
+  transition: transform 240ms ease, opacity 240ms ease, filter 240ms ease;
   will-change: transform;
 
-  opacity: .80;
-  filter: saturate(.95) contrast(1.02);
+  opacity: .55;
+  filter: saturate(.92) contrast(1.02);
 }
 
-/* El centro: protagonista */
+/* Centro: plano, ancho, protagonista */
 .homeTile[data-pos="0"]{
-  transform: translateZ(60px) scale(1.02);
   opacity: 1;
-  filter: saturate(1.05) contrast(1.06);
+  filter: saturate(1.08) contrast(1.06);
+
+  /* se “plana” (sin rotateY) y gana presencia */
+  transform: translateZ(90px) rotateY(0deg) scaleX(1.10) scaleY(1.02);
+  z-index: 10;
 }
 
-/* Lado derecho */
-.homeTile[data-pos="1"]{ transform: rotateY(-18deg) translateX(6px)  translateZ(18px) scale(.98); opacity:.78; }
-.homeTile[data-pos="2"]{ transform: rotateY(-28deg) translateX(12px) translateZ(8px)  scale(.95); opacity:.60; }
-.homeTile[data-pos="3"]{ transform: rotateY(-36deg) translateX(18px) translateZ(0px)  scale(.92); opacity:.45; }
+/* Laterales: muy ladeadas + más estrechas (scaleX) */
+.homeTile[data-pos="1"]{
+  transform: translateZ(40px) rotateY(-52deg) scaleX(.78) scaleY(.98) translateX(26px);
+}
+.homeTile[data-pos="2"]{
+  transform: translateZ(18px) rotateY(-66deg) scaleX(.64) scaleY(.96) translateX(46px);
+}
+.homeTile[data-pos="3"]{
+  transform: translateZ(6px) rotateY(-74deg) scaleX(.54) scaleY(.94) translateX(62px);
+}
 
-/* Lado izquierdo */
-.homeTile[data-pos="-1"]{ transform: rotateY(18deg)  translateX(-6px)  translateZ(18px) scale(.98); opacity:.78; }
-.homeTile[data-pos="-2"]{ transform: rotateY(28deg)  translateX(-12px) translateZ(8px)  scale(.95); opacity:.60; }
-.homeTile[data-pos="-3"]{ transform: rotateY(36deg)  translateX(-18px) translateZ(0px)  scale(.92); opacity:.45; }
+.homeTile[data-pos="-1"]{
+  transform: translateZ(40px) rotateY(52deg) scaleX(.78) scaleY(.98) translateX(-26px);
+}
+.homeTile[data-pos="-2"]{
+  transform: translateZ(18px) rotateY(66deg) scaleX(.64) scaleY(.96) translateX(-46px);
+}
+.homeTile[data-pos="-3"]{
+  transform: translateZ(6px) rotateY(74deg) scaleX(.54) scaleY(.94) translateX(-62px);
+}
 
-/* Quita la barra fea en iOS */
+/* Opcional: más “tarjeta” hacia atrás */
+.homeTile[data-pos="2"],
+.homeTile[data-pos="-2"]{ opacity:.42; filter:saturate(.88) contrast(1.0); }
+
+.homeTile[data-pos="3"],
+.homeTile[data-pos="-3"]{ opacity:.28; filter:saturate(.82) contrast(.98); }
+
+/* Móvil: que sigan cabiendo muchas, pero sin volverse imposibles */
+@media (max-width: 520px){
+  .homeTile{
+    flex-basis: 34%;
+    min-width: 150px;
+    max-width: 220px;
+  }
+}
+
+/* Quita scrollbar iOS */
 .homeCarousel::-webkit-scrollbar{ display:none; }
-/* DEBUG: muestra el data-pos sobre cada tile */
-.homeTile::before{
-  content: attr(data-pos);
-  position:absolute;
-  top:10px;
-  right:12px;
-  z-index: 50;
-  font-weight: 900;
-  font-size: 14px;
-  color: #fff;
-  text-shadow: 0 2px 10px rgba(0,0,0,.8);
-  pointer-events:none;
-}
