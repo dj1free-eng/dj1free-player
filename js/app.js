@@ -1020,7 +1020,8 @@ function initHomeCarousel(){
       const clamped = Math.max(-3, Math.min(3, rel));
 
       ch.dataset.pos = String(clamped);
-
+// DEBUG visual: pinta cada tile según data-pos para verificar
+ch.style.setProperty("--debug-pos", String(clamped));
       // Opcional: si quieres que fuera de rango se "aplane", puedes bajar opacidad con CSS.
       // Aquí solo dejamos el clamp, que ya queda bien.
     });
