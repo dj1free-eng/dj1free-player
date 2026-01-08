@@ -617,85 +617,176 @@ function onAppClick(e){
   }
 }
 
- function buildHome(){
-  // 1) Asegura estilos del Home (solo se inyectan una vez)
-  ensureHomeMenuStyles();
+function buildHome(){
+  // Tab guardada
+  const LS_HOME_TAB = "dj1free_home_tab";
+  const getTab = ()=> {
+    try{ return localStorage.getItem(LS_HOME_TAB) || "featured"; }catch(_){ return "featured"; }
+  };
+  const setTab = (id)=> {
+    try{ localStorage.setItem(LS_HOME_TAB, id); }catch(_){}
+  };
 
-  // 2) Calcula featured para el panel "Destacado"
+  // Datos base
   const featured = byId(DATA.tracks, DATA.featured?.trackId) || DATA.tracks[0];
   const rel = featured ? releaseById(featured.releaseId) : null;
-const heroBg = absUrl(coverForTrack(featured));
+  const heroBg = coverForTrack(featured);
 
-  // 3) Secciones del carrusel (menú principal)
-  const sections = getHomeSections();
+  const renderPanel = (id)=>{
+    if(id === "featured"){
+      const sp = safeUrl(featured?.spotifyUrl);
+      const yt = safeUrl(featured?.ytMusicUrl);
 
-  // 4) Estado persistente: qué sección está seleccionada
-  const active = getSavedHomeSectionId(sections) || "featured";
+      return `
+        <div class="homePanelCard">
+          <div class="homePanelBg" style="background-image:url('${encodeURI(heroBg)}')"></div>
+          <div class="homePanelOverlay"></div>
+
+          <div class="homePanelBody">
+            <div class="homePanelCover" style="background-image:url('${encodeURI(heroBg)}')"></div>
+
+            <div class="homePanelText">
+              <div class="homePanelKicker">Destacado</div>
+              <div class="homePanelTitle">${escapeHtml(featured?.title || "—")}</div>
+              <div class="homePanelMeta">
+                ${escapeHtml(artistName(featured?.artistId))}
+                ${rel?.title ? " · " + escapeHtml(rel.title) : ""}
+              </div>
+
+              <div class="homePanelBtns">
+                <button class="btn primary" data-action="play" data-track="${featured?.id || ""}">▶ Reproducir 30s</button>
+                ${sp ? `<a class="btn" target="_blank" rel="noreferrer noopener" href="${sp}">Spotify</a>` : ""}
+                ${yt ? `<a class="btn" target="_blank" rel="noreferrer noopener" href="${yt}">YouTube Music</a>` : ""}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    if(id === "albums"){
+      const albums = (DATA.releases||[]).filter(r => r.type === "album").sort((a,b)=>(b.year||0)-(a.year||0));
+      const top = albums.slice(0, 6);
+      return `
+        <div class="homePanelMini">
+          <div class="homePanelMiniHead">
+            <div class="homePanelMiniTitle">Álbumes</div>
+            <a class="btn ghost" href="#/albums">Ver todos</a>
+          </div>
+
+          <div class="homeStrip">
+            ${top.map(r => `
+              <button class="homeCoverCard" type="button" onclick="location.hash='#/release/${encodeURIComponent(r.id)}'">
+                <span class="homeCoverImg" style="background-image:url('${encodeURI(safeUrl(r.cover))}')"></span>
+                <span class="homeCoverMeta">
+                  <span class="homeCoverTitle">${escapeHtml(r.title)}</span>
+                  <span class="homeCoverSub">${escapeHtml(artistName(r.artistId))}${r.year ? " · " + r.year : ""}</span>
+                </span>
+              </button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    if(id === "singles"){
+      const singles = (DATA.releases||[]).filter(r => r.type === "single").sort((a,b)=>(b.year||0)-(a.year||0));
+      const top = singles.slice(0, 6);
+      return `
+        <div class="homePanelMini">
+          <div class="homePanelMiniHead">
+            <div class="homePanelMiniTitle">Singles</div>
+            <a class="btn ghost" href="#/singles">Ver todos</a>
+          </div>
+
+          <div class="homeStrip">
+            ${top.map(r => `
+              <button class="homeCoverCard" type="button" onclick="location.hash='#/release/${encodeURIComponent(r.id)}'">
+                <span class="homeCoverImg" style="background-image:url('${encodeURI(safeUrl(r.cover))}')"></span>
+                <span class="homeCoverMeta">
+                  <span class="homeCoverTitle">${escapeHtml(r.title)}</span>
+                  <span class="homeCoverSub">${escapeHtml(artistName(r.artistId))}${r.year ? " · " + r.year : ""}</span>
+                </span>
+              </button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    if(id === "artists"){
+      const top = (DATA.artists||[]).slice(0, 8);
+      return `
+        <div class="homePanelMini">
+          <div class="homePanelMiniHead">
+            <div class="homePanelMiniTitle">Artistas</div>
+            <a class="btn ghost" href="#/artists">Ver todos</a>
+          </div>
+
+          <div class="homeStrip">
+            ${top.map(a => `
+              <button class="homeCoverCard" type="button" onclick="location.hash='#/artist/${encodeURIComponent(a.id)}'">
+                <span class="homeCoverImg" style="background-image:url('${encodeURI(safeUrl(a.banner))}')"></span>
+                <span class="homeCoverMeta">
+                  <span class="homeCoverTitle">${escapeHtml(a.name)}</span>
+                  <span class="homeCoverSub">Discografía</span>
+                </span>
+              </button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    return `<div class="homePanelMini"><div class="homePanelMiniTitle">—</div></div>`;
+  };
+
+  const active = getTab();
 
   $("#app").innerHTML = `
     <section class="homeShell">
-
-      <!-- PANEL SUPERIOR (cambia según tarjeta centrada) -->
-      <section class="homePanel" id="homePanel" aria-live="polite">
-        ${renderHomePanel(active, { featured, rel, heroBg })}
+      <section id="homePanel" class="homePanel" aria-live="polite">
+        ${renderPanel(active)}
       </section>
 
-      <!-- CARRUSEL STICKY (menú) -->
-      <section class="homeMenuSticky" id="homeMenuSticky">
-        <div class="homeMenuTitleRow">
-          <div class="homeMenuTitle">Explorar</div>
-          <div class="homeMenuHint">Desliza y centra</div>
-        </div>
-
-        <div class="homeCarousel" id="homeCarousel" role="tablist" aria-label="Secciones">
-${sections.map(s => {
-  // Imagen por sección (si falta, cae a heroBg)
-  let img = heroBg;
-
-  if(s.id === "albums"){
-    const a = (DATA.releases||[]).filter(r=>r.type==="album").sort((x,y)=>(y.year||0)-(x.year||0))[0];
-    img = safeUrl(a?.cover) || heroBg;
-  } else if(s.id === "singles"){
-    const si = (DATA.releases||[]).filter(r=>r.type==="single").sort((x,y)=>(y.year||0)-(x.year||0))[0];
-    img = safeUrl(si?.cover) || heroBg;
-  } else if(s.id === "artists"){
-    // top artista por releases
-    const counts = new Map();
-    (DATA.releases||[]).forEach(r => r?.artistId && counts.set(r.artistId, (counts.get(r.artistId)||0)+1));
-    const top = (DATA.artists||[]).slice().sort((a,b)=>(counts.get(b.id)||0)-(counts.get(a.id)||0))[0];
-    img = safeUrl(top?.banner) || heroBg;
-  } else if(s.id === "featured"){
-    img = heroBg;
-  }
-
-  const bg = encodeURI(absUrl(img));
-
-  return `
-<button
-  type="button"
-  class="homeTile ${s.id === active ? "is-active" : ""}"
-  data-home-section="${s.id}"
-  role="tab"
-  aria-selected="${s.id === active ? "true" : "false"}"
-  style="--tile-bg:url('${bg}')"
->
-  <span class="homeTileBg" aria-hidden="true"></span>
-  <span class="homeTileLeft">
-    <span class="homeTileTitle">${escapeHtml(s.label)}</span>
-    <span class="homeTileSub">${escapeHtml(s.hint || "")}</span>
-  </span>
-  <span class="homeTileIcon" aria-hidden="true">${s.icon}</span>
-</button>
-  `;
-}).join("")}
-        </div>
-      </section>
-
+      <nav class="homeDock" id="homeDock" aria-label="Secciones">
+        <button class="homeDockBtn ${active==="featured"?"is-active":""}" data-home="featured" type="button">
+          <span class="homeDockIcon">▶</span><span class="homeDockTxt">Destacado</span>
+        </button>
+        <button class="homeDockBtn ${active==="albums"?"is-active":""}" data-home="albums" type="button">
+          <span class="homeDockIcon">▦</span><span class="homeDockTxt">Álbumes</span>
+        </button>
+        <button class="homeDockBtn ${active==="singles"?"is-active":""}" data-home="singles" type="button">
+          <span class="homeDockIcon">◉</span><span class="homeDockTxt">Singles</span>
+        </button>
+        <button class="homeDockBtn ${active==="artists"?"is-active":""}" data-home="artists" type="button">
+          <span class="homeDockIcon">✦</span><span class="homeDockTxt">Artistas</span>
+        </button>
+      </nav>
     </section>
   `;
 
-  // 5) Inicializa interacción del carrusel (tap + centrado + observer)
-  initHomeCarousel();
+  // Click dock
+  const dock = document.getElementById("homeDock");
+  const panel = document.getElementById("homePanel");
+
+  dock?.addEventListener("click", (e)=>{
+    const btn = e.target.closest("[data-home]");
+    if(!btn) return;
+
+    const id = btn.dataset.home;
+    if(!id) return;
+
+    setTab(id);
+
+    // estado visual
+    dock.querySelectorAll(".homeDockBtn").forEach(b=>{
+      b.classList.toggle("is-active", b.dataset.home === id);
+    });
+
+    // actualiza panel
+    if(panel) panel.innerHTML = renderPanel(id);
+  });
 }
 /* =========================
    HOME: Carrusel sticky + panel dinámico
